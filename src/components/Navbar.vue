@@ -1,5 +1,5 @@
 <template>
-  
+  <nav>Pruebaaaa</nav>
 </template>
 
 <script>
