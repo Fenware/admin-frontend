@@ -64,8 +64,7 @@ export default {
   }
   &:hover{
     cursor: pointer;
-    /* border-color: white; */
-    background-color: white;
+    border-color: white;
   }
 }
 /* .navbar{
