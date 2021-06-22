@@ -1,5 +1,5 @@
 <template>
-  <nav class='navbar'>
+  <nav class='navbar bg-glass'>
     <ul class="navbar-nav">
       <li class="nav-item">
         <img class="nav-icon" src="@/assets/icons/home.svg">
