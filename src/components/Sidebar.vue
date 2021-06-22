@@ -1,6 +1,6 @@
 <template>
-  <div>
-      
+  <div class="bg-glass">
+
   </div>
 </template>
 
