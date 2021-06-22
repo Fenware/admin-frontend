@@ -55,11 +55,11 @@ export default {
 				password: this.userPassword,
 				type: 'admin'
 			}
-			let headers = {
-				'Content-Type': 'application/json'
-			}
+			// let headers = {
+			// 	'Content-Type': 'application/json'
+			// }
 			console.log(payload);
-			await this.axios.post(this.API_URL + "/auth", payload, {headers: headers}).then(response => {
+			await this.axios.post(this.API_URL + "/auth", payload).then(response => {
 					console.log(response);
 			}).catch(err => {
 				console.log(err.response);
