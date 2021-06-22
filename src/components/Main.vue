@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>Soy el contenido principal :D</h1>
+   <router-view/>
   </main>
 </template>
 
