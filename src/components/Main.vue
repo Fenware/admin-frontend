@@ -1,7 +1,5 @@
 <template>
-  <main>
-
-   <router-view/>
+  <main class='bg-glass'>
    
   </main>
 
@@ -9,7 +7,7 @@
 
 <script>
 export default {
-    name: 'Main'
+  name: 'Main'
 }
 </script>
 
