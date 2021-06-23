@@ -11,10 +11,10 @@
 import {mapActions} from 'vuex'
 export default {
   methods: {
-    ...mapActions(['obtenerToken'])
+    ...mapActions(['syncToken'])
   },
   created(){
-    this.obtenerToken()
+    this.syncToken()
   }
 }
 </script>
