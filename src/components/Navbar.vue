@@ -13,7 +13,7 @@
       <li class="nav-item">
         <img class="nav-icon" src="@/assets/icons/add-materia.svg">
       </li>
-      <li class="nav-item">
+      <li @click="logout()" class="nav-item">
         <img class="nav-icon" src="@/assets/icons/logout.svg">
       </li>
     </ul>
@@ -21,8 +21,12 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex';
 export default {
-    name: 'Navbar'
+    name: 'Navbar',
+    methods: {
+      ...mapActions(['logout'])
+    }
 }
 </script>
 
