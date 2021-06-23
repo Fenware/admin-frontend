@@ -8,9 +8,14 @@
 </template>
 
 <script>
-
+import {mapActions} from 'vuex'
 export default {
-  
+  methods: {
+    ...mapActions(['obtenerToken'])
+  },
+  created(){
+    this.obtenerToken()
+  }
 }
 </script>
 
