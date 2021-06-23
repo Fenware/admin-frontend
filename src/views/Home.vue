@@ -10,6 +10,7 @@
 import Navbar from '@/components/Navbar.vue';
 import Main from '@/components/Main.vue';
 import Sidebar from '@/components/Sidebar.vue';
+import {mapActions} from 'vuex';
 
 export default {
   name: 'Home',
@@ -17,6 +18,12 @@ export default {
     Navbar,
     Main,
     Sidebar
+  },
+  methods: {
+    ...mapActions(['syncToken'])
+  },
+  created(){
+    this.syncToken()
   }
 }
 </script>
