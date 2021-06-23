@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
-import axios from 'axios';
+import router from '@/router/index';
+import axios from "axios";
 
 export default createStore({
   state: {
@@ -13,22 +14,22 @@ export default createStore({
   },
   actions: {
     async login({ commit }, payload) {
-      console.log(payload);
       try {
         await axios
-          .post(this.state.API_URL + "/auth", payload, {headers: {"Content-Type": "application/json"} })
+          .post(this.state.API_URL + "/auth", payload, {
+            headers: { "Content-Type": "application/json" },
+          })
           .then((res) => {
             var token = res.data.result.token;
             commit("setToken", token);
-            localStorage.setItem('token', token);
+            localStorage.setItem("token", token);
           })
           .catch((error) => {
             console.log(error);
           });
+          router.push('home');
 
-          window.location.href = "http://localhost:8081/home";
-
-      }catch (error) {
+      } catch (error) {
         console.log("error: ", error);
       }
     },
@@ -38,6 +39,11 @@ export default createStore({
       } else {
         commit("setToken", null);
       }
+    },
+    logout({ commit }) {
+      commit("setToken", null);
+      localStorage.removeItem("token");
+      router.push('login');
     },
   },
 });
