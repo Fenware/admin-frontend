@@ -1,79 +1,75 @@
 <template>
-  <nav class='navbar bg-glass'>
+  <nav class="navbar bg-glass">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/home.svg">
+        <img class="nav-icon" src="@/assets/icons/home.svg" />
       </li>
       <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-user.svg">
+        <img class="nav-icon" src="@/assets/icons/add-user.svg" />
       </li>
       <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-group.svg">
+        <img class="nav-icon" src="@/assets/icons/add-group.svg" />
       </li>
       <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-materia.svg">
+        <img class="nav-icon" src="@/assets/icons/add-materia.svg" />
       </li>
       <li @click="logout()" class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/logout.svg">
+        <img class="nav-icon" src="@/assets/icons/logout.svg" />
       </li>
     </ul>
   </nav>
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import { mapActions } from "vuex";
 export default {
-    name: 'Navbar',
-    methods: {
-      ...mapActions(['logout'])
-    }
-}
+  name: "Navbar",
+  methods: {
+    ...mapActions(["logout"]),
+  },
+};
 </script>
 
 <style lang="scss">
-
-.navbar{
-  
+.navbar {
   /* justify-content: center; */
-  
+
   /* align-items: center; */
-  padding: 4rem 0;
+  padding: 4rem 0 1rem;
 }
 
-.navbar-nav{
+.navbar-nav {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.nav-item{
+.nav-item {
   list-style: none;
-  margin: 2rem auto;
+  margin: 1rem auto;
 
-  border-radius: .8rem;
-  padding: .5rem;
-  border: .3rem solid transparent;
+  border-radius: 1.5rem;
+  padding: 1.2rem;
 
-  transition: all 0.1s linear;
+  transition: all 0.08s ease-in-out;
 
-  .nav-icon{
+  .nav-icon {
     max-width: 4rem;
     transition: all 0.08s ease-in-out;
-
-    &:hover{
-      transform: scale(1.3);
-    }
   }
-  &:first-child{
+  &:first-child {
     margin-top: 0;
   }
-  &:last-child{
+  &:last-child {
     margin-top: auto;
     margin-bottom: 0;
+    padding-bottom: 0.8rem;
   }
-  &:hover{
+  &:hover {
     cursor: pointer;
-    /* border-color: white; */
+    background-color: rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(2.5rem);
+    backdrop-filter: blur(2.5rem);
   }
 }
 /* .navbar{
@@ -100,5 +96,4 @@ export default {
 .nav-item:last-child{
   margin-top: auto;
 } */
-
 </style>
