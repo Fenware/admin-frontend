@@ -54,10 +54,15 @@ export default {
   padding: .5rem;
   border: .3rem solid transparent;
 
-  transition: all 0.1s ease-in-out;
+  transition: all 0.1s linear;
 
   .nav-icon{
     max-width: 4rem;
+    transition: all 0.08s ease-in-out;
+
+    &:hover{
+      transform: scale(1.3);
+    }
   }
   &:first-child{
     margin-top: 0;
@@ -68,7 +73,7 @@ export default {
   }
   &:hover{
     cursor: pointer;
-    border-color: white;
+    /* border-color: white; */
   }
 }
 /* .navbar{
