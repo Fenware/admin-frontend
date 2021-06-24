@@ -14,7 +14,7 @@
         <input
           v-model="user.password"
           type="password"
-          placeholder="Password"
+          placeholder="Contraseña"
           required
         />
       </span>
@@ -35,12 +35,12 @@ export default {
       user: {
         user: "administrador@admin.com",
         password: "mnoseadmin1234",
-        type: 'admin'
+        type: "admin",
       },
     };
   },
   computed: {
-    ...mapState(["API_URL"])
+    ...mapState(["API_URL"]),
   },
   mounted() {
     const box1 = document.querySelector(".box1");
@@ -58,7 +58,7 @@ export default {
       box.style.transform = `translateX(${x}px) translateY(${y}px)`;
     }
   },
-  methods:{
+  methods: {
     ...mapActions(["login"]),
   },
 };
@@ -72,8 +72,9 @@ export default {
     background: -webkit-linear-gradient(to right, #4e54c8, #8f94fb);
     background: linear-gradient(to right, #4e54c8, #8f94fb);
 } */
+
 .page {
-  padding: 2rem;
+  padding: 1.8rem;
 }
 .login {
   height: 40rem;
@@ -83,7 +84,6 @@ export default {
   }
 }
 .login::before {
-  content: "";
   position: absolute;
   z-index: -1;
   left: 0;
@@ -120,27 +120,42 @@ export default {
 }
 .form-input {
   display: block;
-  width: 30rem;
+  width: 33rem;
   height: 5rem;
   margin-bottom: 2rem;
 }
 .form-input input {
   width: 100%;
   height: 100%;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   font-size: 16px;
   color: #fff;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   border: 0;
-  border-radius: 1rem;
+  border-radius: 1.3rem;
   box-sizing: border-box;
+  outline: none;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 60px rgba(0, 0, 0, 0.2);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+input:hover,
+input[type="text"]:focus,
+input[type="password"]:focus {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
+}
+input:active,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="submit"]:focus {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 4px 4px 60px 8px rgba(255, 255, 255, 0.2);
   outline: none;
 }
-
 .form-input input::placeholder {
   color: white;
   transition: 0.3s;
@@ -151,17 +166,13 @@ export default {
 .form-button {
   display: block;
   margin: 7rem auto;
-  padding: 15px 3rem;
-  font-size: 14px;
-  text-transform: uppercase;
+  padding: 1.6rem 5rem;
+  font-size: 1.6rem;
   color: #fff;
   border: 0;
   border-radius: 1rem;
   outline: none;
   cursor: pointer;
   transition: 0.3s ease-in-out;
-}
-.form-button:hover {
-  background-color: rgba(126, 126, 126, 0.548);
 }
 </style>
