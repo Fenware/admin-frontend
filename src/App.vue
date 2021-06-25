@@ -1,14 +1,32 @@
 <template>
-  <div class="">
+  <div class="" v-if="currentRouteName == 'Login'">
     <router-view />
+  </div>
+  <div class="page" v-else>
+    <Navbar />
+    <Main />
+    <Sidebar />
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import Navbar from "@/components/Navbar.vue";
+import Main from "@/components/Main.vue";
+import Sidebar from "@/components/Sidebar.vue";
 export default {
+  components: {
+    Navbar,
+    Main,
+    Sidebar,
+  },
   methods: {
     ...mapActions(["syncToken"]),
+  },
+  computed: {
+    currentRouteName() {
+      return this.$route.name;
+    },
   },
   created() {
     this.syncToken();
@@ -33,9 +51,9 @@ body {
 
   // Posibles fondos
 
-  background-image: url(https://4kwallpapers.com/images/wallpapers/macos-big-sur-apple-layers-fluidic-colorful-dark-wwdc-2020-5120x2880-1432.jpg);  
+  background-image: url(https://4kwallpapers.com/images/wallpapers/macos-big-sur-apple-layers-fluidic-colorful-dark-wwdc-2020-5120x2880-1432.jpg);
   /* background-image: url(https://4kwallpapers.com/images/wallpapers/macos-monterey-wwdc-21-stock-5k-6016x6016-5584.jpg); */
-  /* background: url(https://dl.dropbox.com/s/mpmu0gjtxv2x3fs/Webp.net-resizeimage%20%281%29.jpg?raw=1) no-repeat center center fixed;*/
+
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -43,7 +61,22 @@ body {
   align-items: center;
   justify-content: center;
 }
-
+.page{
+  width: 90vw;
+  height: 90vh;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 6% 69% 20%;
+  gap : 2%;
+  /* & > *{
+    background: rgba( 255, 255, 255, 0.10 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 4.5px );
+    -webkit-backdrop-filter: blur( 4.5px );
+    border-radius: 1rem;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+  } */
+}
 .bg-glass {
   background-color: rgba(255, 255, 255, 0.06);
   -webkit-backdrop-filter: blur(2.5rem);
