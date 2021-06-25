@@ -1,5 +1,5 @@
 <template>
-  <div class="page bg-glass">
+  <div class="container bg-glass">
     <form @submit.prevent="login(user)" class="login">
       <h1>Login</h1>
       <span class="form-input">
@@ -73,7 +73,7 @@ export default {
     background: linear-gradient(to right, #4e54c8, #8f94fb);
 } */
 
-.page {
+.container {
   padding: 1.8rem;
 }
 .login {
