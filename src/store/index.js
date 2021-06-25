@@ -38,6 +38,7 @@ export default createStore({
         commit("setToken", localStorage.getItem("token"));
       } else {
         commit("setToken", null);
+        router.push('login');
       }
     },
     logout({ commit }) {
