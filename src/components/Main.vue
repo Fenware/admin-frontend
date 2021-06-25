@@ -1,16 +1,20 @@
 <template>
-  <main class='bg-glass'>
-   
+  <main class="bg-glass">
+    <div class="" v-if="currentRouteName != 'Login'">
+      <router-view />
+    </div>
   </main>
-
 </template>
 
 <script>
 export default {
-  name: 'Main'
-}
+  name: "Main",
+  computed: {
+    currentRouteName() {
+      return this.$route.name;
+    },
+  },
+};
 </script>
 
-<style>
-    
-</style>
+<style></style>
