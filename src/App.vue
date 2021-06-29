@@ -79,8 +79,16 @@ body {
 }
 .bg-glass {
   background-color: rgba(255, 255, 255, 0.06);
+  /* background-color: rgba(0, 0, 0, 0.2); */
   -webkit-backdrop-filter: blur(2.5rem);
   backdrop-filter: blur(2.5rem);
   border-radius: 1.2rem;
+
+-webkit-box-shadow: 0px 0px 46px -6px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 0px 46px -6px rgba(0,0,0,0.75);
+box-shadow: 0px 0px 46px -6px rgba(0,0,0,0.75);
+/* -webkit-box-shadow: 0px 0px 41px 1px rgba(0,0,0,1);
+-moz-box-shadow: 0px 0px 41px 1px rgba(0,0,0,1);
+box-shadow: 0px 0px 41px 1px rgba(0,0,0,1); */
 }
 </style>
