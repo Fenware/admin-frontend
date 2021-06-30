@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import store from '../store';
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
+import Materias from "../views/Materias.vue";
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -15,6 +16,12 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/materias",
+    name: "Materias",
+    component: Materias,
+    meta: { requireAuth: true },
   },
 ];
 

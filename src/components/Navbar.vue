@@ -1,17 +1,17 @@
 <template>
   <nav class="navbar bg-glass">
     <ul class="navbar-nav">
-      <li class="nav-item">
+      <li class="nav-item" @click="this.$router.push('/home')">
         <img class="nav-icon" src="@/assets/icons/home.svg" />
+      </li>
+      <li class="nav-item" @click="this.$router.push('/materias')">
+        <img class="nav-icon" src="@/assets/icons/add-materia.svg" />
       </li>
       <li class="nav-item">
         <img class="nav-icon" src="@/assets/icons/add-user.svg" />
       </li>
       <li class="nav-item">
         <img class="nav-icon" src="@/assets/icons/add-group.svg" />
-      </li>
-      <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-materia.svg" />
       </li>
       <li @click="logout()" class="nav-item">
         <img class="nav-icon" src="@/assets/icons/logout.svg" />
