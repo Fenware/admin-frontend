@@ -14,42 +14,43 @@
       </form>
 
       <div class="add-subject-form bg-glass">
-        <form class="form-input">
-          <input type="text" placeholder="Nombre de la materia" required />
-          <input type="button" value="Agregar" placeholder="Buscar" required />
-        </form>
+        <div class="form-input">
+          <input v-model="subject_data.name" type="text" placeholder="Nombre de la materia" required/>
+          <input @click="addSubject()" type="button" value="Agregar" required/>
+        </div>
       </div>
       <div class="bg-glass subjects-parent">
         <div class="subjects">
           <div
             v-for="subject in subjects"
             :key="subject.id"
-            class="subject-card"
           >
-            <input
-              :id="subject.id"
-              type="text"
-              :value="subject.name"
-              disabled
-            />
-            <div class="card-buttons">
-              <button
-                @click="saveNewSubjectName(subject.id)"
-                :id="subject.id + 'btn_save'"
-                class="btn btn-save invisible"
-              >
-                Guardar
-              </button>
-              <button
-                @click="editSubjectInput(subject.id)"
-                :id="subject.id + 'btn_edit'"
-                class="btn btn-warning"
-              >
-                Editar
-              </button>
-              <button :id="subject.id + 'btn_delete'" class="btn btn-danger">
-                Eliminar
-              </button>
+            <div class="subject-card" v-if="subject.state == 1">
+              <input
+                :id="subject.id"
+                type="text"
+                :value="subject.name"
+                disabled
+              />
+              <div class="card-buttons">
+                <button
+                  @click="saveNewSubjectName(subject.id)"
+                  :id="subject.id + 'btn_save'"
+                  class="btn btn-save invisible"
+                >
+                  Guardar
+                </button>
+                <button
+                  @click="editSubjectInput(subject.id)"
+                  :id="subject.id + 'btn_edit'"
+                  class="btn btn-warning"
+                >
+                  Editar
+                </button>
+                <button @click='removeSubject({"id": subject.id})' :id="subject.id + 'btn_delete'" class="btn btn-danger">
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -59,14 +60,23 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "Materias",
+  data: function(){
+    return{
+      subject_data:{
+        id: null,
+        name:"",
+        state: 1
+      }
+    }
+  },
   computed: {
     ...mapState(["subjects"]),
   },
   methods: {
-    ...mapMutations(["changeSubjectName"]),
+    ...mapActions(["syncSubjects", "createSubject", "removeSubject","checkSession"]),
     saveNewSubjectName(id) {
       let newSubjectName = document.getElementById(id).value;
       let subjectInput = document.getElementById(id);
@@ -75,14 +85,13 @@ export default {
 
       let subject = {
         id: id,
-        name: newSubjectName
-      }
+        name: newSubjectName,
+      };
       this.changeSubjectName(subject);
       editButton.classList.remove("invisible");
       saveButton.classList.add("invisible");
       subjectInput.classList.remove("input-enable");
       subjectInput.disabled = true;
-
     },
     editSubjectInput(id) {
       let subjectInput = document.getElementById(id);
@@ -95,7 +104,20 @@ export default {
       subjectInput.classList.add("input-enable");
       subjectInput.disabled = false;
     },
+    addSubject(){
+      let newSubject = {
+        name: this.subject_data.name,
+        state: 1
+      }
+      this.createSubject(newSubject);
+      this.subject_data.id = null;
+      this.subject_data.name = "";
+    }
   },
+  created(){
+    this.syncSubjects();
+    this.checkSession();
+  }
 };
 </script>
 
@@ -167,16 +189,13 @@ h1 {
     cursor: pointer;
   }
 }
-
 .form-input input::placeholder {
   color: white;
   transition: 0.3s;
 }
-
 .form-input input:focus::placeholder {
   opacity: 0;
 }
-
 .add-subject-form {
   margin-top: 4rem;
   padding: 2rem;
@@ -196,7 +215,7 @@ h1 {
 .subject-card {
   margin: 1.5rem;
   font-size: 1.6rem;
-  padding: .8rem 1.5rem;
+  padding: 0.8rem 1.5rem;
 
   background-color: rgba(255, 255, 255, 0.1);
   -webkit-backdrop-filter: blur(2.5rem);
@@ -209,7 +228,7 @@ h1 {
   .card-buttons {
     display: flex;
     justify-content: space-evenly;
-    margin: 1rem .5rem .5rem;
+    margin: 1rem 0.5rem 0.5rem;
     .btn {
       padding: 0.5rem 2rem;
       font-size: 1.4rem;
