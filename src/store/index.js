@@ -111,6 +111,21 @@ export default createStore({
           console.log(error);
         });
     },
+    async editSubject({ commit, state }, subject) {
+      await axios({
+        method: "put",
+        url: state.API_URL + "/materia",
+        data: subject,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          commit("changeSubjectName", subject);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     logout({ commit }) {
       commit("setToken", null);
       localStorage.removeItem("token");
