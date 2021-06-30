@@ -76,7 +76,7 @@ export default {
     ...mapState(["subjects"]),
   },
   methods: {
-    ...mapActions(["syncSubjects", "createSubject", "removeSubject","checkSession"]),
+    ...mapActions(["syncSubjects", "createSubject", "removeSubject","checkSession","editSubject"]),
     saveNewSubjectName(id) {
       let newSubjectName = document.getElementById(id).value;
       let subjectInput = document.getElementById(id);
@@ -87,7 +87,7 @@ export default {
         id: id,
         name: newSubjectName,
       };
-      this.changeSubjectName(subject);
+      this.editSubject(subject);
       editButton.classList.remove("invisible");
       saveButton.classList.add("invisible");
       subjectInput.classList.remove("input-enable");
