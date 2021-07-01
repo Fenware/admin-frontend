@@ -1,20 +1,12 @@
 <template>
-  <div class=""></div>
+  <div class="home">
+  </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+// @ is an alias to /src
 
 export default {
-  name: "Home",
-  methods: {
-    ...mapActions(["syncToken"]),
-  },
-  created() {
-    console.log(this.$route.name);
-    this.syncToken();
-  },
-};
+  name: 'Home',
+}
 </script>
-
-<style lang="scss" scoped></style>

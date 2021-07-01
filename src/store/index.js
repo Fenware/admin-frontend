@@ -27,14 +27,14 @@ export default createStore({
       state.subjects.push(subject);
     },
     changeSubjectName(state, subject) {
-      state.subjects.forEach((item, index) => {
+      state.subjects.forEach((item) => {
         if (item.id == subject.id) {
           item.name = subject.name;
         }
       });
     },
     deleteSubject(state, subject) {
-      state.subjects.forEach((item, index) => {
+      state.subjects.forEach((item) => {
         if (item.id == subject.id) {
           item.state = 0;
         }
@@ -103,7 +103,7 @@ export default createStore({
         url: state.API_URL + "/materia",
         data: subject,
         headers: state.headers,
-      })
+      })// eslint-disable-next-line
         .then((res) => {
           commit("deleteSubject", subject);
         })
@@ -131,6 +131,7 @@ export default createStore({
       localStorage.removeItem("token");
       router.push("login");
     },
+    // eslint-disable-next-line
     async checkSession({ commit, state }) {
       await axios({
         method: "post",
