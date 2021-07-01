@@ -103,7 +103,7 @@ export default createStore({
         url: state.API_URL + "/materia",
         data: subject,
         headers: state.headers,
-      })// eslint-disable-next-line
+      }) // eslint-disable-next-line
         .then((res) => {
           commit("deleteSubject", subject);
         })
