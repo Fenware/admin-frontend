@@ -53,7 +53,7 @@ export default createStore({
           let token = res.data.result.token;
           commit("setToken", token);
           localStorage.setItem("token", token);
-          router.push("home");
+          router.push("/inicio");
         })
         .catch((error) => {
           console.log(error);
