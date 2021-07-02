@@ -2,17 +2,29 @@
   <div class="" v-if="currentRouteName() == 'Login'">
     <router-view />
   </div>
-  <div class="page" v-else>
-    <!-- <Navbar />
-    <Main />
-    <Sidebar /> -->
+  <div
+    class="flex items-center min-h-screen max-h-screen max-w-screen"
+    v-else
+  >
+    <div class=" flex justify-between h-85vh w-90per mx-auto | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl | rounded-3xl shadow-md ">
+      <NavbarComponent />
+      <MainComponent />
+      <SidebarComponent />
+    </div>
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
+import NavbarComponent from "@/components/NavbarComponent";
+import MainComponent from "@/components/MainComponent";
+import SidebarComponent from "@/components/SidebarComponent";
 
 export default {
-  components: {},
+  components: {
+    NavbarComponent,
+    MainComponent,
+    SidebarComponent,
+  },
   methods: {
     ...mapActions(["syncToken"]),
     currentRouteName() {
@@ -27,12 +39,25 @@ export default {
 
 <style>
 body {
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap');
-  font-family: 'Nunito', sans-serif;
+  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap");
+  font-family: "Nunito", sans-serif;
   /* background: linear-gradient(to right top ,#175AD4,#65DF9D); */
   background-image: url("./assets/background.svg");
+  background-image: no-repeat;
+  background-image: fixed;
+  background-image: center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
-  background-position: center;
-  min-height: 100vh;
+
+  height: 100vh;
+  width: 100vw;
+}
+.h-85vh{
+  height: 90vh;
+}
+.w-90per{
+  width: 95%;
 }
 </style>
