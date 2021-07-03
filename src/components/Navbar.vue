@@ -11,13 +11,15 @@
           </router-link>
         </li>
         <li class="cursor-pointer">
+          <router-link :to="{ name: 'Orientations' }" class="cursor-pointer">
+            <i :class="'fa-layer-group ' + icon_class"></i>
+          </router-link>
+        </li>
+        <li class="cursor-pointer">
           <i :class="'fa-user ' + icon_class"></i>
         </li>
         <li class="cursor-pointer">
           <i :class="'fa-users ' + icon_class"></i>
-        </li>
-        <li class="cursor-pointer">
-          <i :class="'fa-layer-group ' + icon_class"></i>
         </li>
       </div>
       <li class="cursor-pointer">
