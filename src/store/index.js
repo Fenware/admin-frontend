@@ -27,14 +27,14 @@ export default createStore({
       state.subjects.push(subject);
     },
     changeSubjectName(state, subject) {
-      state.subjects.forEach((item, index) => {
+      state.subjects.forEach((item) => {
         if (item.id == subject.id) {
           item.name = subject.name;
         }
       });
     },
     deleteSubject(state, subject) {
-      state.subjects.forEach((item, index) => {
+      state.subjects.forEach((item) => {
         if (item.id == subject.id) {
           item.state = 0;
         }
@@ -53,7 +53,7 @@ export default createStore({
           let token = res.data.result.token;
           commit("setToken", token);
           localStorage.setItem("token", token);
-          router.push("home");
+          router.push("/inicio");
         })
         .catch((error) => {
           console.log(error);
@@ -103,7 +103,7 @@ export default createStore({
         url: state.API_URL + "/materia",
         data: subject,
         headers: state.headers,
-      })
+      }) // eslint-disable-next-line
         .then((res) => {
           commit("deleteSubject", subject);
         })
@@ -131,7 +131,7 @@ export default createStore({
       localStorage.removeItem("token");
       router.push("login");
     },
-    async checkSession({ commit, state }) {
+    async checkSession({ state }) {
       await axios({
         method: "post",
         url: state.API_URL + "/token",

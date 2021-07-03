@@ -1,20 +1,27 @@
 <template>
-  <nav class="navbar bg-glass">
-    <ul class="navbar-nav">
-      <li class="nav-item" @click="this.$router.push('/home')">
-        <img class="nav-icon" src="@/assets/icons/home.svg" />
-      </li>
-      <li class="nav-item" @click="this.$router.push('/materias')">
-        <img class="nav-icon" src="@/assets/icons/add-materia.svg" />
-      </li>
-      <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-user.svg" />
-      </li>
-      <li class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/add-group.svg" />
-      </li>
-      <li @click="logout()" class="nav-item">
-        <img class="nav-icon" src="@/assets/icons/logout.svg" />
+  <nav
+    class="w-1/6 md:w-16 lg:w-16 h-full rounded-3xl | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl"
+  >
+    <ul class="pt-4 h-full text-center flex flex-col justify-between">
+      <div>
+        <span class="block pt-2 pb-4 text-4xl text-white text-center">O</span>
+        <li>
+          <router-link :to="{ name: 'Subjects' }" class="cursor-pointer">
+            <i :class="'fa-book ' + icon_class"></i>
+          </router-link>
+        </li>
+        <li class="cursor-pointer">
+          <i :class="'fa-user ' + icon_class"></i>
+        </li>
+        <li class="cursor-pointer">
+          <i :class="'fa-users ' + icon_class"></i>
+        </li>
+        <li class="cursor-pointer">
+          <i :class="'fa-layer-group ' + icon_class"></i>
+        </li>
+      </div>
+      <li class="cursor-pointer">
+        <i @click="logout()" :class="'fa-sign-out-alt  mb-4 ' + icon_class"></i>
       </li>
     </ul>
   </nav>
@@ -24,76 +31,19 @@
 import { mapActions } from "vuex";
 export default {
   name: "Navbar",
+  data: function() {
+    return {
+      icon_class:
+        "fas mt-6 text-3xl text-white transition-colors transition-transform filter hover:text-gray-200 transform hover:scale-110 drop-shadow-lg",
+    };
+  },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(["syncToken", "logout"]),
+  },
+  created() {
+    this.syncToken();
   },
 };
 </script>
 
-<style lang="scss">
-.navbar {
-  /* justify-content: center; */
-
-  /* align-items: center; */
-  padding: 4rem 0 1rem;
-}
-
-.navbar-nav {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.nav-item {
-  list-style: none;
-  margin: 1rem auto;
-
-  border-radius: 1.5rem;
-  padding: 1.2rem;
-
-  transition: all 0.08s ease-in-out;
-
-  .nav-icon {
-    max-width: 4rem;
-    transition: all 0.08s ease-in-out;
-  }
-  &:first-child {
-    margin-top: 0;
-  }
-  &:last-child {
-    margin-top: auto;
-    margin-bottom: 0;
-    padding-bottom: 0.8rem;
-  }
-  &:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(2.5rem);
-    backdrop-filter: blur(2.5rem);
-  }
-}
-/* .navbar{
-  height: 100%;  
-}
-
-.navbar-nav{
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.nav-icon{
-  max-width: 5rem;
-}
-
-.nav-item{
-  width: 100%;
-}
-
-.nav-item:last-child{
-  margin-top: auto;
-} */
-</style>
+<style lang="css" scoped></style>

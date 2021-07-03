@@ -1,26 +1,31 @@
 <template>
-  <div class="container bg-glass">
-    <form @submit.prevent="login(user)" class="login">
-      <h1>Login</h1>
-      <span class="form-input">
+  <div class="flex h-screen justify-center items-center">
+    <form
+      @submit.prevent="login(user)"
+      class=" bg-gray-50 p-4 md:p-10 lg:p-10 xl:p-10 rounded-2xl bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-md"
+    >
+      <h1 class="text-center text-white text-4xl mb-12">Ingresar</h1>
+      <div class="">
         <input
+          class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
           v-model="user.user"
           type="text"
           placeholder="Nombre de usuario o Email "
           required
         />
-      </span>
-      <span class="form-input">
         <input
+          class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-opacity-0 focus:ring-4 ring-white ring-opacity-20"
           v-model="user.password"
           type="password"
           placeholder="Contraseña"
           required
         />
-      </span>
-      <input type="submit" class="form-button bg-glass" value="Ingresar" />
-      <div class="box1 bg-glass"></div>
-      <div class="box2 bg-glass"></div>
+      </div>
+      <input
+        class="block mx-auto mt-10 py-2 px-10 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl cursor-pointer bg-gray-50 bg-opacity-25 hover:bg-opacity-40 outline-none focus:ring-4 ring-white ring-opacity-20"
+        type="submit"
+        value="Ingresar"
+      />
     </form>
   </div>
 </template>
@@ -30,7 +35,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   name: "Login",
-  data: function () {
+  data: function() {
     return {
       user: {
         user: "administrador@admin.com",
@@ -42,137 +47,10 @@ export default {
   computed: {
     ...mapState(["API_URL"]),
   },
-  mounted() {
-    const box1 = document.querySelector(".box1");
-    const box2 = document.querySelector(".box2");
-
-    document.addEventListener("mousemove", (e) => {
-      boxMove(e, box1, 3);
-      boxMove(e, box2, -2);
-    });
-
-    function boxMove(e, box, speed) {
-      let x = (window.innerWidth - e.pageX * speed) / 100;
-      let y = (window.innerHeight - e.pageY * speed) / 100;
-
-      box.style.transform = `translateX(${x}px) translateY(${y}px)`;
-    }
-  },
   methods: {
     ...mapActions(["login"]),
   },
 };
 </script>
 
-<style lang="scss" scoped>
-/* .main{
-    height: 100%;
-    width: 100%;
-    background: #4e54c8;
-    background: -webkit-linear-gradient(to right, #4e54c8, #8f94fb);
-    background: linear-gradient(to right, #4e54c8, #8f94fb);
-} */
-
-.container {
-  padding: 1.8rem;
-}
-.login {
-  height: 40rem;
-  width: 40rem;
-  span {
-    margin: 4rem auto 4rem;
-  }
-}
-.login::before {
-  position: absolute;
-  z-index: -1;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  border-radius: 2rem;
-}
-.login .box1 {
-  position: absolute;
-  z-index: 1;
-  left: -5rem;
-  top: -5rem;
-  width: 10rem;
-  height: 10rem;
-}
-.login .box2 {
-  position: absolute;
-  z-index: 1;
-  right: -3rem;
-  bottom: -3rem;
-  width: 12rem;
-  height: 12rem;
-}
-.box1,
-.box2 {
-  border-radius: 50% !important;
-}
-.login h1 {
-  margin: 2rem 0;
-  font-size: 4rem;
-  color: #fff;
-  text-align: center;
-}
-.form-input {
-  display: block;
-  width: 33rem;
-  height: 5rem;
-  margin-bottom: 2rem;
-}
-.form-input input {
-  width: 100%;
-  height: 100%;
-  padding: 1.2rem 2rem;
-  font-size: 16px;
-  color: #fff;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  border: 0;
-  border-radius: 1.3rem;
-  box-sizing: border-box;
-  outline: none;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  box-shadow: 4px 4px 60px rgba(0, 0, 0, 0.2);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s;
-}
-input:hover,
-input[type="text"]:focus,
-input[type="password"]:focus {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
-}
-input:active,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="submit"]:focus {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 4px 4px 60px 8px rgba(255, 255, 255, 0.2);
-  outline: none;
-}
-.form-input input::placeholder {
-  color: white;
-  transition: 0.3s;
-}
-.form-input input:focus::placeholder {
-  opacity: 0;
-}
-.form-button {
-  display: block;
-  margin: 7rem auto;
-  padding: 1.6rem 5rem;
-  font-size: 1.6rem;
-  color: #fff;
-  border: 0;
-  border-radius: 1rem;
-  outline: none;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
-}
-</style>
+<style></style>

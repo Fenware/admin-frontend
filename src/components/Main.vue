@@ -1,17 +1,15 @@
 <template>
-  <main class="bg-glass">
-    <div class="" v-if="currentRouteName != 'Login'">
+  <main class="mx-auto px-3" v-if="isLoginView()">
       <router-view />
-    </div>
   </main>
 </template>
 
 <script>
 export default {
-  name: "Main",
-  computed: {
-    currentRouteName() {
-      return this.$route.name;
+  name: "MainComponent",
+  methods: {
+    isLoginView() {
+      return this.$route.name != "Login";
     },
   },
 };
