@@ -2,7 +2,7 @@
   <div
     class="flex overflow-auto flex-wrap md:max-w-2xl lg:max-w-3xl mt-20 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl"
   >
-    <div v-for="subject in subjects" :key="subject.id">
+    <div v-for="subject in subjectsFiltered" :key="subject.id">
 
       <div :id="subject.id + 'no_edit_mode'" class=" block m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full" v-if="subject.state == 1">
         <span class=" bg-transparent outline-none" type="text" >{{subject.name}} </span>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 export default {
   name: "SubjectCardComponent",
   data: function() {
@@ -60,6 +60,7 @@ export default {
   },
   computed: {
     ...mapState(["subjects"]),
+    ...mapGetters(['subjectsFiltered'])
   },
   methods: {
     ...mapActions(["createSubject", "removeSubject", "editSubject"]),
