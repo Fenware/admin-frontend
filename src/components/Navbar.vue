@@ -5,8 +5,10 @@
     <ul class="pt-4 h-full text-center flex flex-col justify-between">
       <div>
         <span class="block pt-2 pb-4 text-4xl text-white text-center">O</span>
-        <li class="cursor-pointer">
-          <i @click="this.$router.push('/materias')" :class="'fa-book ' + icon_class"></i>
+        <li>
+          <router-link :to="{ name: 'Subjects' }" class="cursor-pointer">
+            <i :class="'fa-book ' + icon_class"></i>
+          </router-link>
         </li>
         <li class="cursor-pointer">
           <i :class="'fa-user ' + icon_class"></i>
