@@ -5,13 +5,14 @@ import axios from "axios";
 export default createStore({
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
+    subjects: [],
+    orientations: [],
     token: null,
     headers: {
       Authorization: "",
       "Content-Type": "application/json",
     },
-    subjects: [],
-    text_filter:''
+    text_filter: "",
   },
   mutations: {
     setToken(state, payload) {
@@ -41,13 +42,22 @@ export default createStore({
         }
       });
     },
-    setText(state,payload){
-      state.text_filter=payload;
-    }
+    setText(state, payload) {
+      state.text_filter = payload;
+    },
   },
   actions: {
-    searcher({commit}, payload){
-      commit('setText', payload.toLowerCase());
+    searcher({ commit }, payload) {
+      commit("setText", payload.toLowerCase());
+    },
+    syncToken({ commit }) {
+      if (localStorage.getItem("token")) {
+        commit("setToken", localStorage.getItem("token"));
+        commit("setHeaderToken", "Bearer " + localStorage.getItem("token"));
+      } else {
+        commit("setToken", null);
+        router.push("login");
+      }
     },
     async login({ commit, state }, payload) {
       await axios({
@@ -65,15 +75,6 @@ export default createStore({
         .catch((error) => {
           console.log(error);
         });
-    },
-    syncToken({ commit }) {
-      if (localStorage.getItem("token")) {
-        commit("setToken", localStorage.getItem("token"));
-        commit("setHeaderToken", "Bearer " + localStorage.getItem("token"));
-      } else {
-        commit("setToken", null);
-        router.push("login");
-      }
     },
     async syncSubjects({ commit, state }) {
       await axios({
@@ -155,17 +156,32 @@ export default createStore({
           console.log(error);
         });
     },
+    // eslint-disable-next-line
+    async syncOrientations({ commit, state }) {
+      await axios({
+        method: "get",
+        url: state.API_URL + "/orientacion",
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          /* commit("setSubjects", res.data); */
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
-  getters:{
-    subjectsFiltered(state){
+  getters: {
+    subjectsFiltered(state) {
       let subjectsFiltered = [];
-      state.subjects.forEach(subject => {
+      state.subjects.forEach((subject) => {
         let name = subject.name.toLowerCase();
-        if(name.indexOf(state.text_filter) >= 0){
+        if (name.indexOf(state.text_filter) >= 0) {
           subjectsFiltered.push(subject);
         }
       });
       return subjectsFiltered;
-    }
-  }
+    },
+  },
 });
