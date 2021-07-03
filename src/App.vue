@@ -2,37 +2,37 @@
   <div class="" v-if="currentRouteName() == 'Login'">
     <router-view />
   </div>
-  <div
-    class="flex items-center min-h-screen max-h-screen max-w-screen"
-    v-else
-  >
-    <div class=" flex justify-between h-85vh w-90per mx-auto | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl | rounded-3xl shadow-md ">
-      <NavbarComponent />
-      <MainComponent />
-      <SidebarComponent />
+  <div class="flex items-center min-h-screen max-h-screen max-w-screen" v-else>
+    <div
+      class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl | rounded-3xl shadow-md "
+    >
+      <Navbar />
+      <Main />
+      <Sidebar />
     </div>
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
-import NavbarComponent from "@/components/NavbarComponent";
-import MainComponent from "@/components/MainComponent";
-import SidebarComponent from "@/components/SidebarComponent";
+import Navbar from "@/components/Navbar";
+import Main from "@/components/Main";
+import Sidebar from "@/components/Sidebar";
 
 export default {
   components: {
-    NavbarComponent,
-    MainComponent,
-    SidebarComponent,
+    Navbar,
+    Main,
+    Sidebar,
   },
   methods: {
-    ...mapActions(["syncToken"]),
+    ...mapActions(["syncToken", "checkSession"]),
     currentRouteName() {
       return this.$route.name;
     },
   },
   created() {
     this.syncToken();
+    this.checkSession();
   },
 };
 </script>
@@ -54,10 +54,10 @@ body {
   height: 100vh;
   width: 100vw;
 }
-.h-85vh{
+.h-85vh {
   height: 90vh;
 }
-.w-90per{
+.w-90per {
   width: 95%;
 }
 </style>
