@@ -6,6 +6,8 @@
       <input
         type="text"
         placeholder="Buscar materia"
+        v-model="text_filter"
+        v-on:keyup="searcher(text_filter)"
         class="w-96 mx-2 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
       />
       <div
@@ -25,44 +27,45 @@
         </button>
       </div>
     </div>
-    <SubjectsContainer/>
+    <SubjectsContainer />
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import SubjectsContainer from '@/components/SubjectsContainer';
+import SubjectsContainer from "@/components/SubjectsContainer";
 
 export default {
   name: "Subjects",
-  data: function(){
-    return{
-      subject_data:{
+  data: function() {
+    return {
+      subject_data: {
         id: null,
-        name:"",
-        state: 1
-      }
-    }
+        name: "",
+        state: 1,
+      },
+      text_filter: ''
+    };
   },
-  components:{
-    SubjectsContainer
+  components: {
+    SubjectsContainer,
   },
-  methods:{
-    ...mapActions(["syncSubjects", "checkSession", "createSubject"]),
-    addSubject(){
+  methods: {
+    ...mapActions(["syncSubjects", "checkSession", "createSubject", "searcher"]),
+    addSubject() {
       let newSubject = {
         name: this.subject_data.name,
-        state: 1
-      }
+        state: 1,
+      };
       this.createSubject(newSubject);
       this.subject_data.id = null;
       this.subject_data.name = "";
-    }
+    },
   },
-  created(){
+  created() {
     this.checkSession();
     this.syncSubjects();
-  }
+  },
 };
 </script>
 
