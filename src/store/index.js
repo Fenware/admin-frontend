@@ -131,8 +131,7 @@ export default createStore({
       localStorage.removeItem("token");
       router.push("login");
     },
-    // eslint-disable-next-line
-    async checkSession({ commit, state }) {
+    async checkSession({ state }) {
       await axios({
         method: "post",
         url: state.API_URL + "/token",
