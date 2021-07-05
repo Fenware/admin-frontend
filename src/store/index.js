@@ -7,6 +7,7 @@ export default createStore({
     API_URL: process.env.VUE_APP_ROOT_API,
     subjects: [],
     orientations: [],
+    orientations_subjects: [],
     token: null,
     headers: {
       Authorization: "",
@@ -44,6 +45,13 @@ export default createStore({
     },
     setText(state, payload) {
       state.text_filter = payload;
+    },
+    setOrientations(state, payload) {
+      console.log(payload);
+      state.orientations = payload;
+    },
+    addOrientation(state, orientation) {
+      state.orientations.push(orientation);
     },
   },
   actions: {
@@ -156,11 +164,54 @@ export default createStore({
           console.log(error);
         });
     },
-    // eslint-disable-next-line
     async syncOrientations({ commit, state }) {
       await axios({
         method: "get",
         url: state.API_URL + "/orientacion",
+        headers: state.headers,
+      })
+        .then((res) => {
+          commit("setOrientations", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // eslint-disable-next-line
+    async getOrientationSubjects({ state }, id) {
+      var data_orientation = { "id": 1 };
+      /* await axios
+        .get(state.API_URL + "/orientacion-materia", {
+          params: data_orientation,
+        },state.headers)
+        .then((res) => {
+          console.log(res);
+        }); */
+      
+      await axios({
+        method: "get",
+        url: state.API_URL + "/orientacion-materia",
+        params: data_orientation,
+        data: data_orientation,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async createOrientation({ state }) {
+      var prueba = {
+        name: "Desarrollo y Soporte",
+        year: 1,
+        subjects: [1, 2, 3],
+      };
+      await axios({
+        method: "post",
+        url: state.API_URL + "/orientacion",
+        data: prueba,
         headers: state.headers,
       })
         .then((res) => {
