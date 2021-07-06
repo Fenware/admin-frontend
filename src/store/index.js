@@ -48,14 +48,12 @@ export default createStore({
       state.text_filter = payload;
     },
     setOrientations(state, payload) {
-      console.log(payload);
       state.orientations = payload;
     },
     addOrientation(state, orientation) {
       state.orientations.push(orientation);
     },
     setUsersPending(state, payload) {
-      console.log(payload);
       state.users_pending = payload;
     },
     removeUserPending(state, id) {
