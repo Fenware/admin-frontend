@@ -55,7 +55,15 @@ export default createStore({
       state.orientations.push(orientation);
     },
     setUsersPending(state, payload) {
+      console.log(payload);
       state.users_pending = payload;
+    },
+    removeUserPending(state, id) {
+      state.users_pending.forEach((user, index) => {
+        if(user.id == id){
+          state.users_pending.splice(index, 1);
+        }
+      });
     },
   },
   actions: {
@@ -240,16 +248,33 @@ export default createStore({
           console.log(error);
         });
     },
-    async acceptUserPending({ state }, id) {
+    async acceptUserPending({ commit, state }, id) {
       await axios({
         method: "post",
-        url: state.API_URL + "/user-pendinte",
+        url: state.API_URL + "/user-pendiente",
         data: { id: id },
         headers: state.headers,
       })
         .then((res) => {
           console.log(res);
-          /* commit("setSubjects", res.data); */
+          commit("removeUserPending", id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async declineUserPending({ commit, state }, id) {
+      await axios({
+        method: "delete",
+        url: state.API_URL + "/user-pendiente",
+        data: { id: id },
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          if(res.data == 1){
+            commit("removeUserPending", id);
+          }
         })
         .catch((error) => {
           console.log(error);
