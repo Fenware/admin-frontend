@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <h1 class="text-white text-center text-3xl pt-1">Chathink</h1>
+    <h1 class="text-white text-center text-3xl pt-1">Administrador Chathink</h1>
 
     <UsersPending/>
   </div>
