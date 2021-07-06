@@ -8,6 +8,7 @@ export default createStore({
     subjects: [],
     orientations: [],
     orientations_subjects: [],
+    users_pending: [],
     token: null,
     headers: {
       Authorization: "",
@@ -52,6 +53,9 @@ export default createStore({
     },
     addOrientation(state, orientation) {
       state.orientations.push(orientation);
+    },
+    setUsersPending(state, payload) {
+      state.users_pending = payload;
     },
   },
   actions: {
@@ -179,7 +183,7 @@ export default createStore({
     },
     // eslint-disable-next-line
     async getOrientationSubjects({ state }, id) {
-      var data_orientation = { "id": 1 };
+      var data_orientation = { id: 1 };
       /* await axios
         .get(state.API_URL + "/orientacion-materia", {
           params: data_orientation,
@@ -187,7 +191,7 @@ export default createStore({
         .then((res) => {
           console.log(res);
         }); */
-      
+
       await axios({
         method: "get",
         url: state.API_URL + "/orientacion-materia",
@@ -212,6 +216,35 @@ export default createStore({
         method: "post",
         url: state.API_URL + "/orientacion",
         data: prueba,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          /* commit("setSubjects", res.data); */
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // eslint-disable-next-line
+    async syncUsersPending({ commit, state }) {
+      await axios({
+        method: "get",
+        url: state.API_URL + "/user-pendiente",
+        headers: state.headers,
+      })
+        .then((res) => {
+          commit("setUsersPending", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async acceptUserPending({ state }, id) {
+      await axios({
+        method: "post",
+        url: state.API_URL + "/user-pendinte",
+        data: { id: id },
         headers: state.headers,
       })
         .then((res) => {
