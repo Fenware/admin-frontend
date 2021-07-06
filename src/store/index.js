@@ -256,8 +256,11 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          console.log(res);
-          commit("removeUserPending", id);
+          if(res.data == 1){
+            commit("removeUserPending", id);
+          }else{
+            console.log('Error: acceptUserPending');
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -274,6 +277,8 @@ export default createStore({
           console.log(res);
           if(res.data == 1){
             commit("removeUserPending", id);
+          }else{
+            console.log('Error: declineUserPending');
           }
         })
         .catch((error) => {
