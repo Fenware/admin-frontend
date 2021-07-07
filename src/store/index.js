@@ -27,7 +27,6 @@ export default createStore({
       state.subjects = subjects;
     },
     addSubject(state, subject) {
-      console.log(subject);
       state.subjects.push(subject);
     },
     changeSubjectName(state, subject) {
@@ -37,9 +36,9 @@ export default createStore({
         }
       });
     },
-    deleteSubject(state, subject) {
+    deleteSubject(state, subjectId) {
       state.subjects.forEach((item) => {
-        if (item.id == subject.id) {
+        if (item.id == subjectId) {
           item.state = 0;
         }
       });
@@ -58,7 +57,7 @@ export default createStore({
     },
     removeUserPending(state, id) {
       state.users_pending.forEach((user, index) => {
-        if(user.id == id){
+        if (user.id == id) {
           state.users_pending.splice(index, 1);
         }
       });
@@ -115,23 +114,34 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          subject.id = parseInt(res.data);
-          console.log(subject);
-          commit("addSubject", subject);
+          if (res.status === 200) {
+            subject.id = parseInt(res.data);
+            commit("addSubject", subject);
+          }else{
+            console.log("Error: createSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async removeSubject({ commit, state }, subject) {
+    async removeSubject({ commit, state }, subjectId) {
+      let data = {
+        id: parseInt(subjectId),
+      };
       await axios({
         method: "delete",
         url: state.API_URL + "/materia",
-        data: subject,
+        data: data,
         headers: state.headers,
       }) // eslint-disable-next-line
         .then((res) => {
-          commit("deleteSubject", subject);
+          if (res.data == 1) {
+            console.log(res);
+            commit("deleteSubject", subjectId);
+          } else {
+            console.log("Error: removeSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -145,8 +155,11 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          console.log(res);
-          commit("changeSubjectName", subject);
+          if (res.data == 1) {
+            commit("changeSubjectName", subject);
+          } else {
+            console.log("Error: editSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -254,10 +267,10 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          if(res.data == 1){
+          if (res.data == 1) {
             commit("removeUserPending", id);
-          }else{
-            console.log('Error: acceptUserPending');
+          } else {
+            console.log("Error: acceptUserPending");
           }
         })
         .catch((error) => {
@@ -273,10 +286,10 @@ export default createStore({
       })
         .then((res) => {
           console.log(res);
-          if(res.data == 1){
+          if (res.data == 1) {
             commit("removeUserPending", id);
-          }else{
-            console.log('Error: declineUserPending');
+          } else {
+            console.log("Error: declineUserPending");
           }
         })
         .catch((error) => {
