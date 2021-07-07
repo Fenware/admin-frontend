@@ -19,7 +19,7 @@
         ></i>
         <i
           :id="subject.id + 'btn_delete'"
-          @click="removeSubject(subject)"
+          @click="removeSubject(subject.id)"
           class="fas fa-trash-alt text-red-400 hover:text-red-500 mx-1 text-md drop-shadow-lg "
         ></i>
       </div>
@@ -80,8 +80,8 @@ export default {
       let boxNoEditMode = document.getElementById(id + "no_edit_mode");
 
       let subject = {
-        id: parseInt(id),
-        name: subjectInput.value,
+        "id": parseInt(id),
+        "name": subjectInput.value,
       };
 
       this.editSubject(subject);
