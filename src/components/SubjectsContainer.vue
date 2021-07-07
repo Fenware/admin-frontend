@@ -80,7 +80,7 @@ export default {
       let boxNoEditMode = document.getElementById(id + "no_edit_mode");
 
       let subject = {
-        id: id,
+        id: parseInt(id),
         name: subjectInput.value,
       };
 
