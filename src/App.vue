@@ -30,10 +30,6 @@ export default {
       return this.$route.name;
     },
   },
-  created() {
-    this.syncToken();
-    this.checkSession();
-  },
 };
 </script>
 
