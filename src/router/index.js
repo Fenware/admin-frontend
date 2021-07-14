@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Subjects from "../views/Subjects.vue";
 import Orientations from "../views/Orientations.vue";
+import Groups from "../views/Groups.vue";
 
 const routes = [
   { path: "/", redirect: "/inicio" },
@@ -29,6 +30,12 @@ const routes = [
     path: "/orientaciones",
     name: "Orientations",
     component: Orientations,
+    meta: { requireAuth: true },
+  },
+  {
+    path: "/grupos",
+    name: "Groups",
+    component: Groups,
     meta: { requireAuth: true },
   },
 ];
