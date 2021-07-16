@@ -109,12 +109,13 @@ export default createStore({
     },
     setOrientation(state, orientation) {
       state.orientation = orientation;
-      console.log(state.orientation);
     },
     setOrientationSubject(state, payload) {
       state.orientations_subjects.push(payload);
-      console.log(state.orientations_subjects);
     },
+    clearOrientationSubjects(state){
+      state.orientations_subjects = [];
+    }
   },
   actions: {
     searcher({ commit }, payload) {
@@ -241,7 +242,7 @@ export default createStore({
           console.log(error);
         });
     },
-    async syncOrientations({ commit, state }) {
+    async syncOrientations({ commit, dispatch, state }) {
       await axios({
         method: "get",
         url: state.API_URL + "/orientacion",
@@ -249,6 +250,7 @@ export default createStore({
       })
         .then((res) => {
           commit("setOrientations", res.data);
+          dispatch("syncOrientationSubjects");
         })
         .catch((error) => {
           console.log(error);
@@ -381,6 +383,12 @@ export default createStore({
         .catch((error) => {
           console.log(error);
         });
+    },
+    syncOrientationSubjects({ dispatch, commit,state }) {
+      commit('clearOrientationSubjects');
+      state.orientations.forEach((orientation) => {
+        dispatch("getOrientationSubjects", orientation.id);
+      });
     },
   },
   getters: {

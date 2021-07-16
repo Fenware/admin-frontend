@@ -48,7 +48,9 @@
     <div
       class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-lg"
     >
-      <OrientationsContainer v-if="!create_orientation_mode && !modify_orientation_mode" />
+      <OrientationsContainer
+        v-if="!create_orientation_mode && !modify_orientation_mode"
+      />
       <CreateOrientationContainer v-if="create_orientation_mode" />
       <ModifyOrientationContainer v-if="modify_orientation_mode" />
     </div>
@@ -71,13 +73,18 @@ export default {
   components: {
     OrientationsContainer,
     CreateOrientationContainer,
-    ModifyOrientationContainer
+    ModifyOrientationContainer,
   },
   computed: {
-    ...mapState(['subjects', 'orientations', 'create_orientation_mode', 'modify_orientation_mode']),
+    ...mapState([
+      "subjects",
+      "orientations",
+      "create_orientation_mode",
+      "modify_orientation_mode",
+    ]),
   },
   methods: {
-    ...mapMutations(['toogleModifyOrientationMode']),
+    ...mapMutations(["toogleModifyOrientationMode"]),
     ...mapActions([
       "checkSession",
       "syncOrientations",
@@ -88,6 +95,7 @@ export default {
     this.checkSession();
     this.syncOrientations();
     this.syncSubjects();
+    /* this.syncOrientationSubjects(); */
   },
 };
 </script>
