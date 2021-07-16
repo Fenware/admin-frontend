@@ -17,9 +17,14 @@
           v-for="(subject, index) in orientationSubjctsFiltered"
           :key="subject.id_subject + index"
         >
-          <p class="px-2 mx-1 bg-white bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full" v-if="parseInt(subject.id_orientation) == parseInt(orientation.id)">{{ subject.name }}</p>
+          <p
+            class="px-2 mx-1 bg-white bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full"
+            v-if="parseInt(subject.id_orientation) == parseInt(orientation.id)"
+          >
+            {{ subject.name }}
+          </p>
         </div>
-      </div>
+      </div> 
       <button
         @click="modifyOrientation()"
         class="py-1 px-5 mr-2 | transition-colors duration-200 bg-blue-700  bg-opacity-50 hover:bg-opacity-70 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-full"
@@ -43,14 +48,10 @@ export default {
   }, */
   computed: {
     ...mapState(["API_URL", "headers"]),
-    ...mapGetters(['orientationSubjctsFiltered']),
-  },
-  created() {
-    /* this.orientation_subjects = this.getOrientationSubjects(parseInt(this.orientation.id)); */
-    this.getOrientationSubjects(parseInt(this.orientation.id));
+    ...mapGetters(["orientationSubjctsFiltered"]),
   },
   methods: {
-    ...mapMutations(["toogleModifyOrientationMode"]),
+    ...mapMutations(["toogleModifyOrientationMode", "setOrientation"]),
     ...mapActions(["getOrientationSubjects"]),
 
     generateSubjectsArray(orientation_subjects_data) {
@@ -66,6 +67,11 @@ export default {
       this.toogleModifyOrientationMode();
       this.setOrientation(this.orientation);
     },
+  },
+  created() {
+    /* this.orientation_subjects = this.getOrientationSubjects(parseInt(this.orientation.id)); */
+    /* this.getOrientationSubjects(parseInt(this.orientation.id)); */
+    /* this.syncOrientationSubjects(); */
   },
 };
 </script>
