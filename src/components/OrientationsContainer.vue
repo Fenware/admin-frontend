@@ -1,28 +1,24 @@
 <template>
   <div
-    class="m-3 py-3 w-full bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl"
-    v-for="orientation in orientations"
-    :key="orientation.id"
+    class="  m-3 py-3 w-full bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl"
+    v-for="(orientation, index) in orientations"
+    :key="orientation.id + index"
   >
-    <div class="flex px-2 justify-between">
-      <span
-        class="py-1 px-2 w-full bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-lg"
-        >{{ orientation.name }}</span
-      >
-      <span
-        class="flex-none py-1 px-5 ml-3 | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-full"
-        >Año: {{ orientation.year }}</span
-      >
+    <div class="">
+      <OrientationCard :orientation="orientation" />
     </div>
-    <!-- <span v-for='subject in getOrientationSubjects(parseInt(orientation.id))' :key="subject.id"> {{subject}} </span> -->
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import OrientationCard from "@/components/OrientationCard";
 
 export default {
   name: "OrientationsContainer",
+  components: {
+    OrientationCard,
+  },
   data: function() {
     return {
       edit_mode: false,
@@ -30,10 +26,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["subjects", "orientations"]),
+    ...mapState(["API_URL", "headers", "user", "subjects", "orientations"]),
   },
   methods: {
-    ...mapActions(["createOrientation", "getOrientationSubjects"]),
+    ...mapActions(["createOrientation"]),
   },
 };
 </script>
