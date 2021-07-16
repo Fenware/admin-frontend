@@ -20,10 +20,12 @@
           </router-link>
         </li>
         <li class="cursor-pointer">
-          <i :class="'fa-user ' + icon_class"></i>
+          <router-link :to="{ name: 'Groups' }" class="cursor-pointer">
+            <i :class="'fa-users ' + icon_class"></i>
+          </router-link>
         </li>
         <li class="cursor-pointer">
-          <i :class="'fa-users ' + icon_class"></i>
+          <i :class="'fa-user ' + icon_class"></i>
         </li>
       </div>
       <div>
