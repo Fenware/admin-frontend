@@ -6,6 +6,7 @@ export default createStore({
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
     subjects: [],
+    orientation: {},
     orientations: [],
     orientations_subjects: [],
     users_pending: [],
@@ -15,6 +16,10 @@ export default createStore({
       "Content-Type": "application/json",
     },
     text_filter: "",
+    subjects_selected: [],
+    subjects_deleted: [],
+    create_orientation_mode: false,
+    modify_orientation_mode: false,
   },
   mutations: {
     setToken(state, payload) {
@@ -52,6 +57,9 @@ export default createStore({
     addOrientation(state, orientation) {
       state.orientations.push(orientation);
     },
+    addOrientationSubject(state, subject) {
+      state.orientations_subjects.push(subject);
+    },
     setUsersPending(state, payload) {
       state.users_pending = payload;
     },
@@ -61,6 +69,51 @@ export default createStore({
           state.users_pending.splice(index, 1);
         }
       });
+    },
+    onlySelectOrientationSubject(state, id) {
+      state.subjects_selected.push(id);
+    },
+    onlyDeleteOrientationSubject(state, id) {
+      state.subjects_selected.forEach((subject_id, index) => {
+        if (subject_id == id) {
+          state.subjects_selected.splice(index, 1);
+        }
+      });
+    },
+    selectOrientationSubject(state, id) {
+      state.subjects_selected.push(id);
+      state.subjects_deleted.forEach((subject_id, index) => {
+        if (subject_id == id) {
+          state.subjects_deleted.splice(index, 1);
+        }
+      });
+      console.log(state.subjects_selected);
+      console.log(state.subjects_deleted);
+    },
+    deleteOrientationSubject(state, id) {
+      state.subjects_selected.forEach((subject_id, index) => {
+        console.log(subject_id);
+        if (subject_id == id) {
+          state.subjects_selected.splice(index, 1);
+        }
+      });
+      state.subjects_deleted.push(id);
+      console.log(state.subjects_selected);
+      console.log(state.subjects_deleted);
+    },
+    toogleCreateOrientationMode(state) {
+      state.create_orientation_mode = !state.create_orientation_mode;
+    },
+    toogleModifyOrientationMode(state) {
+      state.modify_orientation_mode = !state.modify_orientation_mode;
+    },
+    setOrientation(state, orientation) {
+      state.orientation = orientation;
+      console.log(state.orientation);
+    },
+    setOrientationSubject(state, payload) {
+      state.orientations_subjects.push(payload);
+      console.log(state.orientations_subjects);
     },
   },
   actions: {
@@ -114,10 +167,11 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          if (res.status === 200) {
-            subject.id = parseInt(res.data);
+          let id = parseInt(res.data);
+          if (res.data != "error") {
+            subject.id = id;
             commit("addSubject", subject);
-          }else{
+          } else {
             console.log("Error: createSubject");
           }
         })
@@ -155,7 +209,7 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          if (res.data == 1) {
+          if (res.data != 0) {
             commit("changeSubjectName", subject);
           } else {
             console.log("Error: editSubject");
@@ -200,52 +254,32 @@ export default createStore({
           console.log(error);
         });
     },
-    // eslint-disable-next-line
-    async getOrientationSubjects({ state }, id) {
-      var data_orientation = { id: 1 };
-      /* await axios
-        .get(state.API_URL + "/orientacion-materia", {
-          params: data_orientation,
-        },state.headers)
-        .then((res) => {
-          console.log(res);
-        }); */
+    async createOrientation({ commit, state }, orientation) {
+      var subjects = [];
+      state.subjects_selected.forEach((item) => {
+        subjects.push(item);
+      });
 
-      await axios({
-        method: "get",
-        url: state.API_URL + "/orientacion-materia",
-        params: data_orientation,
-        data: data_orientation,
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async createOrientation({ state }) {
-      var prueba = {
-        name: "Desarrollo y Soporte",
-        year: 1,
-        subjects: [1, 2, 3],
+      var data = {
+        name: orientation.name,
+        year: parseInt(orientation.year),
+        subjects: subjects,
       };
+      console.log(data);
       await axios({
         method: "post",
         url: state.API_URL + "/orientacion",
-        data: prueba,
+        data: data,
         headers: state.headers,
       })
         .then((res) => {
           console.log(res);
-          /* commit("setSubjects", res.data); */
+          commit("toogleCreateOrientationMode");
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    // eslint-disable-next-line
     async syncUsersPending({ commit, state }) {
       await axios({
         method: "get",
@@ -296,6 +330,58 @@ export default createStore({
           console.log(error);
         });
     },
+    showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        iconColor: "white",
+        customClass: {
+          popup: "colored-toast",
+        },
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Signed in error",
+      });
+    },
+    async getOrientationSubjects({ state, commit }, id) {
+      let data = `id=${id}`;
+      await axios({
+        method: "get",
+        url: state.API_URL + `/orientacion-materia?${data}`,
+        headers: state.headers,
+      })
+        .then((res) => {
+          let orientation_subjects_res = [];
+
+          res.data.forEach((subject_data) => {
+            orientation_subjects_res.push(subject_data);
+          });
+
+          orientation_subjects_res.forEach((orientation_subject) => {
+            state.subjects.forEach((subject_data) => {
+              if (orientation_subject.id_subject == parseInt(subject_data.id)) {
+                let subject = {
+                  id_orientation: parseInt(orientation_subject.id_orientation),
+                  id_subject: parseInt(orientation_subject.id_subject),
+                  name: subject_data.name,
+                };
+                commit("setOrientationSubject", subject);
+              }
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   getters: {
     subjectsFiltered(state) {
@@ -307,6 +393,19 @@ export default createStore({
         }
       });
       return subjectsFiltered;
+    },
+    orientationsFiltered(state) {
+      let subjectsFiltered = [];
+      state.subjects.forEach((subject) => {
+        let name = subject.name.toLowerCase();
+        if (name.indexOf(state.text_filter) >= 0) {
+          subjectsFiltered.push(subject);
+        }
+      });
+      return subjectsFiltered;
+    },
+    orientationSubjctsFiltered(state) {
+      return state.orientations_subjects;
     },
   },
 });
