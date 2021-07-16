@@ -1,19 +1,24 @@
 <template>
   <div class="w-full">
-    <h1 class="text-white text-center text-3xl pt-1">Administrador Chathink</h1>
+    <h1 @click="showAlert()" class="text-white text-center text-3xl pt-1">
+      Administrador Chathink
+    </h1>
 
-    <UsersPending/>
+    <UsersPending />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import UsersPending from '@/components/UsersPending';
-
+import UsersPending from "@/components/UsersPending";
+import {mapActions} from "vuex";
 export default {
-  name: 'Home',
-  components:{
-    UsersPending
-  }
-}
+  name: "Home",
+  components: {
+    UsersPending,
+  },
+  methods: {
+    ...mapActions(['showAlert'])
+  },
+};
 </script>
