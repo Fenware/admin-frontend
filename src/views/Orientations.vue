@@ -46,7 +46,7 @@
     </div>
 
     <div
-      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-lg"
+      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
     >
       <OrientationsContainer
         v-if="!create_orientation_mode && !modify_orientation_mode"
@@ -95,7 +95,6 @@ export default {
     this.checkSession();
     this.syncOrientations();
     this.syncSubjects();
-    /* this.syncOrientationSubjects(); */
   },
 };
 </script>
