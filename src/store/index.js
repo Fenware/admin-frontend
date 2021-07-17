@@ -57,9 +57,6 @@ export default createStore({
     addOrientation(state, orientation) {
       state.orientations.push(orientation);
     },
-    addOrientationSubject(state, subject) {
-      state.orientations_subjects.push(subject);
-    },
     setUsersPending(state, payload) {
       state.users_pending = payload;
     },
@@ -78,9 +75,6 @@ export default createStore({
     },
     onlySelectOrientationSubject(state, id) {
       state.subjects_selected.push(id);
-      console.log(state.subjects_selected);
-      console.log('Original : ' + state.original_subjects_selected);
-    
     },
     onlyDeleteOrientationSubject(state, id) {
       state.subjects_selected.forEach((subject_id, index) => {
@@ -88,29 +82,7 @@ export default createStore({
           state.subjects_selected.splice(index, 1);
         }
       });
-      console.log(state.subjects_selected);
-      console.log('Original : ' + state.original_subjects_selected);
     },
-    /* selectOrientationSubject(state, id) {
-      state.subjects_selected.push(id);
-      state.subjects_deleted.forEach((subject_id, index) => {
-        if (subject_id == id) {
-          state.subjects_deleted.splice(index, 1);
-        }
-      });
-      console.log(state.subjects_selected);
-      console.log(state.subjects_deleted);
-    },
-    deleteOrientationSubject(state, id) {
-      state.subjects_selected.forEach((subject_id, index) => {
-        if (subject_id == id) {
-          state.subjects_selected.splice(index, 1);
-        }
-      });
-      state.subjects_deleted.push(id);
-      console.log(state.subjects_selected);
-      console.log(state.subjects_deleted);
-    }, */
     toogleCreateOrientationMode(state) {
       state.create_orientation_mode = !state.create_orientation_mode;
     },
@@ -119,6 +91,13 @@ export default createStore({
     },
     setOrientation(state, orientation) {
       state.orientation = orientation;
+    },
+    removeOrientation(state, id) {
+      state.orientations.forEach((orientation, index) => {
+        if (parseInt(orientation.id) == id) {
+          state.orientations.splice(index, 1);
+        }
+      });
     },
     setOrientationSubject(state, payload) {
       state.orientations_subjects.push(payload);
@@ -266,11 +245,8 @@ export default createStore({
           console.log(error);
         });
     },
-    async createOrientation({ commit, state }, orientation) {
-      var subjects = [];
-      state.subjects_selected.forEach((item) => {
-        subjects.push(item);
-      });
+    async createOrientation({ commit, dispatch, state }, orientation) {
+      var subjects = state.subjects_selected;
 
       var data = {
         name: orientation.name,
@@ -286,18 +262,19 @@ export default createStore({
       })
         .then((res) => {
           console.log(res);
+          commit("addOrientation", data);
+          dispatch("syncOrientationSubjects");
           commit("toogleCreateOrientationMode");
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async editOrientationSubjects({ commit, state }, orientation_data) {
+    async editOrientationSubjects({ state }, orientation_data) {
       var data = {
-        "id": parseInt(orientation_data.id),
-        "subjects": orientation_data.subjects,
+        id: parseInt(orientation_data.id),
+        subjects: orientation_data.subjects,
       };
-      console.log(data);
       await axios({
         method: "post",
         url: state.API_URL + "/orientacion-materia",
@@ -306,16 +283,16 @@ export default createStore({
       })
         .then((res) => {
           console.log(res);
-          commit("toogleModifyOrientationMode");
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async editOrientation({ commit, state }, orientation_data) {
+    async modifyOrientation({ commit, state }, orientation_data) {
       var data = {
-        "id": parseInt(orientation_data.id),
-        "subjects": orientation_data.subjects,
+        id: parseInt(orientation_data.id),
+        name: orientation_data.name,
+        year: parseInt(orientation_data.year),
       };
       console.log(data);
       await axios({
@@ -327,6 +304,24 @@ export default createStore({
         .then((res) => {
           console.log(res);
           commit("toogleModifyOrientationMode");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async deleteOrientation({ commit, state }, id) {
+      var data = {
+        id: parseInt(id),
+      };
+      console.log(data);
+      await axios({
+        method: "delete",
+        url: state.API_URL + "/orientacion",
+        data: data,
+        headers: state.headers,
+      })
+        .then(() => {
+          commit("removeOrientation", id);
         })
         .catch((error) => {
           console.log(error);
