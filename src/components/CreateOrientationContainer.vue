@@ -50,7 +50,7 @@
       v-on:keyup="searcher(text_filter)"
       class=" block my-3 mx-auto py-2 px-2 w-96 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
     />
-    <OrientationSubjectsContainer />
+    <OrientationSubjectsContainer :edit_mode="false" />
   </div>
 </template>
 
@@ -63,7 +63,7 @@ export default {
   data: function() {
     return {
       orientation_data: {
-        name: 'Videojuegos',
+        name: '',
         year: '1',
         subjects: this.orientations_subjects,
       },
@@ -74,7 +74,7 @@ export default {
     OrientationSubjectsContainer,
   },
   computed: {
-    ...mapState(['orientations_subjects','create_orientation_mode']),
+    ...mapState(['orientations_subjects','create_orientation_mode', ]),
   },
   methods: {
     ...mapMutations(['toogleCreateOrientationMode']),
