@@ -16,8 +16,8 @@ export default createStore({
       "Content-Type": "application/json",
     },
     text_filter: "",
+    original_subjects_selected: [],
     subjects_selected: [],
-    subjects_deleted: [],
     create_orientation_mode: false,
     modify_orientation_mode: false,
   },
@@ -70,8 +70,17 @@ export default createStore({
         }
       });
     },
+    addOriginalOrientationSubjects(state, payload) {
+      state.original_subjects_selected.push(payload);
+    },
+    setModifyOrientationSubjects(state, payload) {
+      state.subjects_selected = payload;
+    },
     onlySelectOrientationSubject(state, id) {
       state.subjects_selected.push(id);
+      console.log(state.subjects_selected);
+      console.log('Original : ' + state.original_subjects_selected);
+    
     },
     onlyDeleteOrientationSubject(state, id) {
       state.subjects_selected.forEach((subject_id, index) => {
@@ -79,8 +88,10 @@ export default createStore({
           state.subjects_selected.splice(index, 1);
         }
       });
+      console.log(state.subjects_selected);
+      console.log('Original : ' + state.original_subjects_selected);
     },
-    selectOrientationSubject(state, id) {
+    /* selectOrientationSubject(state, id) {
       state.subjects_selected.push(id);
       state.subjects_deleted.forEach((subject_id, index) => {
         if (subject_id == id) {
@@ -92,7 +103,6 @@ export default createStore({
     },
     deleteOrientationSubject(state, id) {
       state.subjects_selected.forEach((subject_id, index) => {
-        console.log(subject_id);
         if (subject_id == id) {
           state.subjects_selected.splice(index, 1);
         }
@@ -100,7 +110,7 @@ export default createStore({
       state.subjects_deleted.push(id);
       console.log(state.subjects_selected);
       console.log(state.subjects_deleted);
-    },
+    }, */
     toogleCreateOrientationMode(state) {
       state.create_orientation_mode = !state.create_orientation_mode;
     },
@@ -113,9 +123,9 @@ export default createStore({
     setOrientationSubject(state, payload) {
       state.orientations_subjects.push(payload);
     },
-    clearOrientationSubjects(state){
+    clearOrientationSubjects(state) {
       state.orientations_subjects = [];
-    }
+    },
   },
   actions: {
     searcher({ commit }, payload) {
@@ -282,6 +292,46 @@ export default createStore({
           console.log(error);
         });
     },
+    async editOrientationSubjects({ commit, state }, orientation_data) {
+      var data = {
+        "id": parseInt(orientation_data.id),
+        "subjects": orientation_data.subjects,
+      };
+      console.log(data);
+      await axios({
+        method: "post",
+        url: state.API_URL + "/orientacion-materia",
+        data: data,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          commit("toogleModifyOrientationMode");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async editOrientation({ commit, state }, orientation_data) {
+      var data = {
+        "id": parseInt(orientation_data.id),
+        "subjects": orientation_data.subjects,
+      };
+      console.log(data);
+      await axios({
+        method: "put",
+        url: state.API_URL + "/orientacion",
+        data: data,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          commit("toogleModifyOrientationMode");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     async syncUsersPending({ commit, state }) {
       await axios({
         method: "get",
@@ -384,8 +434,8 @@ export default createStore({
           console.log(error);
         });
     },
-    syncOrientationSubjects({ dispatch, commit,state }) {
-      commit('clearOrientationSubjects');
+    syncOrientationSubjects({ dispatch, commit, state }) {
+      commit("clearOrientationSubjects");
       state.orientations.forEach((orientation) => {
         dispatch("getOrientationSubjects", orientation.id);
       });
