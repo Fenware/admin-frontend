@@ -5,6 +5,8 @@ import axios from "axios";
 export default createStore({
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
+    group: {},
+    groups: [],
     subjects: [],
     orientation: {},
     orientations: [],
@@ -20,6 +22,8 @@ export default createStore({
     subjects_selected: [],
     create_orientation_mode: false,
     modify_orientation_mode: false,
+    create_group_mode: false,
+    modify_group_mode: false,
   },
   mutations: {
     setToken(state, payload) {
@@ -89,6 +93,12 @@ export default createStore({
     toogleModifyOrientationMode(state) {
       state.modify_orientation_mode = !state.modify_orientation_mode;
     },
+    toogleCreateGroupMode(state) {
+      state.create_group_mode = !state.create_group_mode;
+    },
+    toogleModifyGroupMode(state) {
+      state.modify_group_mode = !state.modify_group_mode;
+    },
     setOrientation(state, orientation) {
       state.orientation = orientation;
     },
@@ -105,6 +115,39 @@ export default createStore({
     clearOrientationSubjects(state) {
       state.orientations_subjects = [];
     },
+    setGroups(state, groups) {
+      state.groups = groups;
+    },
+    setGroup(state, group) {
+      state.group = group;
+    },
+    addGroup(state, group) {
+      state.groups.push(group);
+    },
+    editGroup(state, modified_group){
+      /* state.groups.find(
+        (group) => parseInt(group.id) == parseInt(modified_group.id)
+      ).name = modified_group.name; */
+      state.groups.forEach(group => {
+        if(group.id == modified_group.id){
+          group.name = modified_group.name;
+          group.id_orientation = modified_group.orientacion;
+
+          let orientation_data = state.orientations.find(
+            (orientation) =>
+              parseInt(orientation.id) == parseInt(modified_group.orientacion)
+          );
+          group.orientation_name = orientation_data.name;
+        }
+      });
+    },
+    removeGroup(state, group_data){
+      state.groups.forEach((group, index) => {
+        if(group.id == group_data.id){
+          state.groups.splice(index, 1);
+        }
+      });
+    }
   },
   actions: {
     searcher({ commit }, payload) {
