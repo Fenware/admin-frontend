@@ -1,23 +1,23 @@
 <template>
   <div
     class=" max-h-28 m-3 py-3 w-full bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl"
-    v-for="(orientation, index) in orientations"
-    :key="orientation.id + index"
+    v-for="group in groups"
+    :key="group.id"
   >
     <div>
-      <OrientationCard :orientation="orientation" />
+      <GroupCard :group="group" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import OrientationCard from "@/components/OrientationCard";
+import GroupCard from "@/components/GroupCard";
 
 export default {
-  name: "OrientationsContainer",
+  name: "GroupsContainer",
   components: {
-    OrientationCard,
+    GroupCard,
   },
   data: function() {
     return {
@@ -25,7 +25,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["API_URL", "headers", "orientations"]),
+    ...mapState(["API_URL", "headers", "groups"]),
   },
 };
 </script>

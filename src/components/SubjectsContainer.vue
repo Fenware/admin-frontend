@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex overflow-auto flex-wrap md:max-w-2xl lg:max-w-3xl mt-20 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl"
+    class="flex overflow-auto flex-wrap mx-auto md:max-w-2xl lg:max-w-3xl mt-20 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl"
   >
-    <div v-for="subject in subjectsFiltered" :key="subject.id">
+    <div v-for="(subject, index) in subjectsFiltered" :key="index + subject.id">
       <div
         :id="subject.id + 'no_edit_mode'"
         class=" block m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full"
@@ -19,7 +19,7 @@
         ></i>
         <i
           :id="subject.id + 'btn_delete'"
-          @click="removeSubject(subject)"
+          @click="removeSubject(subject.id)"
           class="fas fa-trash-alt text-red-400 hover:text-red-500 mx-1 text-md drop-shadow-lg "
         ></i>
       </div>
@@ -80,8 +80,8 @@ export default {
       let boxNoEditMode = document.getElementById(id + "no_edit_mode");
 
       let subject = {
-        id: id,
-        name: subjectInput.value,
+        "id": parseInt(id),
+        "name": subjectInput.value,
       };
 
       this.editSubject(subject);

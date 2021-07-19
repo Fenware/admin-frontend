@@ -5,7 +5,10 @@ import axios from "axios";
 export default createStore({
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
+    group: {},
+    groups: [],
     subjects: [],
+    orientation: {},
     orientations: [],
     orientations_subjects: [],
     users_pending: [],
@@ -15,6 +18,12 @@ export default createStore({
       "Content-Type": "application/json",
     },
     text_filter: "",
+    original_subjects_selected: [],
+    subjects_selected: [],
+    create_orientation_mode: false,
+    modify_orientation_mode: false,
+    create_group_mode: false,
+    modify_group_mode: false,
   },
   mutations: {
     setToken(state, payload) {
@@ -27,7 +36,6 @@ export default createStore({
       state.subjects = subjects;
     },
     addSubject(state, subject) {
-      console.log(subject);
       state.subjects.push(subject);
     },
     changeSubjectName(state, subject) {
@@ -37,9 +45,9 @@ export default createStore({
         }
       });
     },
-    deleteSubject(state, subject) {
+    deleteSubject(state, subjectId) {
       state.subjects.forEach((item) => {
-        if (item.id == subject.id) {
+        if (item.id == subjectId) {
           item.state = 0;
         }
       });
@@ -58,11 +66,88 @@ export default createStore({
     },
     removeUserPending(state, id) {
       state.users_pending.forEach((user, index) => {
-        if(user.id == id){
+        if (user.id == id) {
           state.users_pending.splice(index, 1);
         }
       });
     },
+    addOriginalOrientationSubjects(state, payload) {
+      state.original_subjects_selected.push(payload);
+    },
+    setModifyOrientationSubjects(state, payload) {
+      state.subjects_selected = payload;
+    },
+    onlySelectOrientationSubject(state, id) {
+      state.subjects_selected.push(id);
+    },
+    onlyDeleteOrientationSubject(state, id) {
+      state.subjects_selected.forEach((subject_id, index) => {
+        if (subject_id == id) {
+          state.subjects_selected.splice(index, 1);
+        }
+      });
+    },
+    toogleCreateOrientationMode(state) {
+      state.create_orientation_mode = !state.create_orientation_mode;
+    },
+    toogleModifyOrientationMode(state) {
+      state.modify_orientation_mode = !state.modify_orientation_mode;
+    },
+    toogleCreateGroupMode(state) {
+      state.create_group_mode = !state.create_group_mode;
+    },
+    toogleModifyGroupMode(state) {
+      state.modify_group_mode = !state.modify_group_mode;
+    },
+    setOrientation(state, orientation) {
+      state.orientation = orientation;
+    },
+    removeOrientation(state, id) {
+      state.orientations.forEach((orientation, index) => {
+        if (parseInt(orientation.id) == id) {
+          state.orientations.splice(index, 1);
+        }
+      });
+    },
+    setOrientationSubject(state, payload) {
+      state.orientations_subjects.push(payload);
+    },
+    clearOrientationSubjects(state) {
+      state.orientations_subjects = [];
+    },
+    setGroups(state, groups) {
+      state.groups = groups;
+    },
+    setGroup(state, group) {
+      state.group = group;
+    },
+    addGroup(state, group) {
+      state.groups.push(group);
+    },
+    editGroup(state, modified_group){
+      /* state.groups.find(
+        (group) => parseInt(group.id) == parseInt(modified_group.id)
+      ).name = modified_group.name; */
+      state.groups.forEach(group => {
+        if(group.id == modified_group.id){
+          group.name = modified_group.name;
+          group.id_orientation = modified_group.orientacion;
+
+          let orientation_data = state.orientations.find(
+            (orientation) =>
+              parseInt(orientation.id) == parseInt(modified_group.orientacion)
+          );
+          group.orientation_name = orientation_data.name;
+        }
+      });
+    },
+    removeGroup(state, group_data){
+      state.groups.forEach((group, index) => {
+        if(group.id == group_data.id){
+          state.groups.splice(index, 1);
+        }
+      });
+    }
   },
   actions: {
     searcher({ commit }, payload) {
@@ -115,23 +200,35 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          subject.id = parseInt(res.data);
-          console.log(subject);
-          commit("addSubject", subject);
+          let id = parseInt(res.data);
+          if (res.data != "error") {
+            subject.id = id;
+            commit("addSubject", subject);
+          } else {
+            console.log("Error: createSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async removeSubject({ commit, state }, subject) {
+    async removeSubject({ commit, state }, subjectId) {
+      let data = {
+        id: parseInt(subjectId),
+      };
       await axios({
         method: "delete",
         url: state.API_URL + "/materia",
-        data: subject,
+        data: data,
         headers: state.headers,
       }) // eslint-disable-next-line
         .then((res) => {
-          commit("deleteSubject", subject);
+          if (res.data == 1) {
+            console.log(res);
+            commit("deleteSubject", subjectId);
+          } else {
+            console.log("Error: removeSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -145,8 +242,11 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          console.log(res);
-          commit("changeSubjectName", subject);
+          if (res.data != 0) {
+            commit("changeSubjectName", subject);
+          } else {
+            console.log("Error: editSubject");
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -174,7 +274,7 @@ export default createStore({
           console.log(error);
         });
     },
-    async syncOrientations({ commit, state }) {
+    async syncOrientations({ commit, dispatch, state }) {
       await axios({
         method: "get",
         url: state.API_URL + "/orientacion",
@@ -182,57 +282,94 @@ export default createStore({
       })
         .then((res) => {
           commit("setOrientations", res.data);
+          dispatch("syncOrientationSubjects");
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    // eslint-disable-next-line
-    async getOrientationSubjects({ state }, id) {
-      var data_orientation = { id: 1 };
-      /* await axios
-        .get(state.API_URL + "/orientacion-materia", {
-          params: data_orientation,
-        },state.headers)
-        .then((res) => {
-          console.log(res);
-        }); */
+    async createOrientation({ commit, dispatch, state }, orientation) {
+      var subjects = state.subjects_selected;
 
-      await axios({
-        method: "get",
-        url: state.API_URL + "/orientacion-materia",
-        params: data_orientation,
-        data: data_orientation,
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async createOrientation({ state }) {
-      var prueba = {
-        name: "Desarrollo y Soporte",
-        year: 1,
-        subjects: [1, 2, 3],
+      var data = {
+        name: orientation.name,
+        year: parseInt(orientation.year),
+        subjects: subjects,
       };
+      console.log(data);
       await axios({
         method: "post",
         url: state.API_URL + "/orientacion",
-        data: prueba,
+        data: data,
         headers: state.headers,
       })
         .then((res) => {
           console.log(res);
-          /* commit("setSubjects", res.data); */
+          commit("addOrientation", data);
+          dispatch("syncOrientationSubjects");
+          commit("toogleCreateOrientationMode");
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    // eslint-disable-next-line
+    async editOrientationSubjects({ state }, orientation_data) {
+      var data = {
+        id: parseInt(orientation_data.id),
+        subjects: orientation_data.subjects,
+      };
+      await axios({
+        method: "post",
+        url: state.API_URL + "/orientacion-materia",
+        data: data,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async modifyOrientation({ commit, state }, orientation_data) {
+      var data = {
+        id: parseInt(orientation_data.id),
+        name: orientation_data.name,
+        year: parseInt(orientation_data.year),
+      };
+      console.log(data);
+      await axios({
+        method: "put",
+        url: state.API_URL + "/orientacion",
+        data: data,
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          commit("toogleModifyOrientationMode");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async deleteOrientation({ commit, state }, id) {
+      var data = {
+        id: parseInt(id),
+      };
+      console.log(data);
+      await axios({
+        method: "delete",
+        url: state.API_URL + "/orientacion",
+        data: data,
+        headers: state.headers,
+      })
+        .then(() => {
+          commit("removeOrientation", id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     async syncUsersPending({ commit, state }) {
       await axios({
         method: "get",
@@ -254,10 +391,10 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
-          if(res.data == 1){
+          if (res.data == 1) {
             commit("removeUserPending", id);
-          }else{
-            console.log('Error: acceptUserPending');
+          } else {
+            console.log("Error: acceptUserPending");
           }
         })
         .catch((error) => {
@@ -273,15 +410,73 @@ export default createStore({
       })
         .then((res) => {
           console.log(res);
-          if(res.data == 1){
+          if (res.data == 1) {
             commit("removeUserPending", id);
-          }else{
-            console.log('Error: declineUserPending');
+          } else {
+            console.log("Error: declineUserPending");
           }
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        iconColor: "white",
+        customClass: {
+          popup: "colored-toast",
+        },
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Signed in error",
+      });
+    },
+    async getOrientationSubjects({ state, commit }, id) {
+      let data = `id=${id}`;
+      await axios({
+        method: "get",
+        url: state.API_URL + `/orientacion-materia?${data}`,
+        headers: state.headers,
+      })
+        .then((res) => {
+          let orientation_subjects_res = [];
+
+          res.data.forEach((subject_data) => {
+            orientation_subjects_res.push(subject_data);
+          });
+
+          orientation_subjects_res.forEach((orientation_subject) => {
+            state.subjects.forEach((subject_data) => {
+              if (orientation_subject.id_subject == parseInt(subject_data.id)) {
+                let subject = {
+                  id_orientation: parseInt(orientation_subject.id_orientation),
+                  id_subject: parseInt(orientation_subject.id_subject),
+                  name: subject_data.name,
+                };
+                commit("setOrientationSubject", subject);
+              }
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    syncOrientationSubjects({ dispatch, commit, state }) {
+      commit("clearOrientationSubjects");
+      state.orientations.forEach((orientation) => {
+        dispatch("getOrientationSubjects", orientation.id);
+      });
     },
   },
   getters: {
@@ -294,6 +489,19 @@ export default createStore({
         }
       });
       return subjectsFiltered;
+    },
+    orientationsFiltered(state) {
+      let subjectsFiltered = [];
+      state.subjects.forEach((subject) => {
+        let name = subject.name.toLowerCase();
+        if (name.indexOf(state.text_filter) >= 0) {
+          subjectsFiltered.push(subject);
+        }
+      });
+      return subjectsFiltered;
+    },
+    orientationSubjctsFiltered(state) {
+      return state.orientations_subjects;
     },
   },
 });
