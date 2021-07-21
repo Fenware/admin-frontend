@@ -8,7 +8,7 @@
         :id="subject.id"
         :class="
           subjectIsSelected(parseInt(subject.id))
-            ? ' scale-110 bg-blue-700 bg-opacity-50 block m-2 px-5 py-1 bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full cursor-pointer transform-gpu transition-all duration-200'
+            ? ' scale-110 bg-blue-700 bg-opacity-50 block m-2 px-5 py-1 hover:bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full cursor-pointer transform-gpu transition-all duration-200'
             : ' block m-2 px-5 py-1 bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full cursor-pointer transform-gpu transition-all duration-200'
         "
         v-if="subject.state == 1"
