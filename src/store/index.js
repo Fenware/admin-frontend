@@ -87,6 +87,9 @@ export default createStore({
         }
       });
     },
+    clearSubjectsSelected(state){
+      state.subjects_selected = [];
+    },
     toogleCreateOrientationMode(state) {
       state.create_orientation_mode = !state.create_orientation_mode;
     },
@@ -308,6 +311,7 @@ export default createStore({
           commit("addOrientation", data);
           dispatch("syncOrientationSubjects");
           commit("toogleCreateOrientationMode");
+          commit('clearSubjectsSelected');
         })
         .catch((error) => {
           console.log(error);
