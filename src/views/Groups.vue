@@ -87,7 +87,7 @@ export default {
     ...mapMutations([
       "toogleModifyGroupMode",
       "toogleCreateGroupMode",
-      "addGroup",
+      "setGroups",
     ]),
     ...mapActions(["checkSession", "syncOrientations"]),
     async getGroups() {
@@ -98,14 +98,16 @@ export default {
       })
         .then((res) => {
           if (Array.isArray(res.data)) {
+            let groups_array = [];
             res.data.forEach((group) => {
               let orientation_data = this.orientations.find(
                 (orientation) =>
                   parseInt(orientation.id) == group.id_orientation
               );
               group.orientation_name = orientation_data.name; 
-              this.addGroup(group);
+              groups_array.push(group);
             });
+            this.setGroups(groups_array);
           } else {
             console.log("Error: getGroups -> " + res.data);
           }
