@@ -103,7 +103,7 @@ export default {
                 (orientation) =>
                   parseInt(orientation.id) == group.id_orientation
               );
-              group.orientation_name = orientation_data.name;
+              group.orientation_name = orientation_data.name; 
               this.addGroup(group);
             });
           } else {
