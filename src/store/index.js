@@ -308,6 +308,7 @@ export default createStore({
       })
         .then((res) => {
           console.log(res);
+          data.id = res.data;
           commit("addOrientation", data);
           dispatch("syncOrientationSubjects");
           commit("toogleCreateOrientationMode");
