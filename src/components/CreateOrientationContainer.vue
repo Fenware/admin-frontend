@@ -70,14 +70,17 @@ export default {
       text_filter: '',
     };
   },
+  created(){
+    this.clearSubjectsSelected();
+  },
   components: {
     OrientationSubjectsContainer,
   },
   computed: {
-    ...mapState(['orientations_subjects','create_orientation_mode', ]),
+    ...mapState(['orientations_subjects','create_orientation_mode']),
   },
   methods: {
-    ...mapMutations(['toogleCreateOrientationMode']),
+    ...mapMutations(['toogleCreateOrientationMode','clearSubjectsSelected']),
     ...mapActions(['searcher', 'createOrientation']),
     addOrientation(orientation_data) {
       this.createOrientation(orientation_data);
