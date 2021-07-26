@@ -79,8 +79,6 @@ export default {
   },
   computed: {
     ...mapState([
-      "orientations_subjects",
-      "create_orientation_mode",
       "orientation",
       "original_subjects_selected",
       "subjects_selected",
@@ -138,7 +136,6 @@ export default {
 
       // Si el admin añadió materias envio la peticion
       if (subjectsAdded.length > 0) {
-        console.log("KAKA");
         this.editOrientationSubjects(this.orientation_data);
         this.modifyOrientation(this.orientation_data);
       } else {
