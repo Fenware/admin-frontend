@@ -86,21 +86,20 @@ export default {
     ]),
   },
   methods: {
-    ...mapMutations(["toogleModifyOrientationMode", "setOrientationSubject"]),
+    ...mapMutations([
+      "toogleModifyOrientationMode",
+      "setOrientationSubject",
+      "removeOrientationSubject",
+    ]),
     ...mapActions([
       "searcher",
       "modifyOrientation",
-      'editOrientationSubjects',
+      "editOrientationSubjects",
       "getOrientationSubjects",
     ]),
     editOrientation() {
       var subjectsAdded = [];
       var subjectsRemoved = [];
-      let subject_data = {
-        id_subject: null,
-        id_orientation: this.orientation.id,
-        name: "",
-      };
 
       // Comparo materias, si hay materias demás en el array de materias seleccionadas
       // entonces la añado a la orientacion
@@ -112,11 +111,12 @@ export default {
           let subject_searched = this.subjects.find(
             (sub) => parseInt(sub.id) == subject
           );
-          console.log(subject_searched);
           // Inserto nombre e id de la materia en el objeto
-          subject_data.name = subject_searched.name;
-          subject_data.id_subject = parseInt(subject_searched.id);
-          console.log(subject_data);
+          let subject_data = {
+            id_subject: parseInt(subject_searched.id),
+            id_orientation: this.orientation.id,
+            name: subject_searched.name,
+          };
 
           // Ingreso la materia con todos los datos al array de orientation_subjects
           this.setOrientationSubject(subject_data);
@@ -126,22 +126,20 @@ export default {
       this.original_subjects_selected.forEach((subject) => {
         if (!this.subjects_selected.includes(subject)) {
           subjectsRemoved.push(subject);
+          this.removeOrientationSubject(subject);
         }
       });
 
-      this.orientation_data.subjects = subjectsAdded;
+      this.orientation_data.subjectsAdded = subjectsAdded;
+      this.orientation_data.subjectsRemoved = subjectsRemoved;
       this.orientation_data.id = this.orientation.id;
       this.orientation_data.name = this.orientation.name;
       this.orientation_data.year = this.orientation.year;
 
-      // Si el admin añadió materias envio la peticion
-      if (subjectsAdded.length > 0) {
-        this.editOrientationSubjects(this.orientation_data);
-        this.modifyOrientation(this.orientation_data);
-      } else {
-        // Por si solo modifico el nombre
-        this.modifyOrientation(this.orientation_data);
-      }
+      // Admin añadió o quitó materias, envio la peticion
+      this.editOrientationSubjects(this.orientation_data);
+      // Admin modfico el nombre, tambien envio peticion
+      this.modifyOrientation(this.orientation_data);
     },
   },
 };
