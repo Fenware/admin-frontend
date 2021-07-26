@@ -17,10 +17,10 @@
           type="text"
           v-model="subject_data.name"
           placeholder="Agregar materia"
-          v-on:keyup.enter="addSubject()"
+          v-on:keyup.enter="subject_data.name.trim() != '' ? addSubject() : false"
           class="w-48 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
         />
-        <button @click="addSubject()">
+        <button @click="subject_data.name.trim() != ''  ? addSubject() : false">
           <i
             class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
           ></i>
