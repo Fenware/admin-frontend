@@ -87,7 +87,7 @@ export default createStore({
         }
       });
     },
-    clearSubjectsSelected(state){
+    clearSubjectsSelected(state) {
       state.subjects_selected = [];
     },
     toogleCreateOrientationMode(state) {
@@ -112,8 +112,15 @@ export default createStore({
         }
       });
     },
-    setOrientationSubject(state, payload) {
-      state.orientations_subjects.push(payload);
+    setOrientationSubject(state, subject) {
+      state.orientations_subjects.push(subject);
+    },
+    removeOrientationSubject(state, id) {
+      state.orientations_subjects.forEach((subject, index) => {
+        if (subject.id_subject == parseInt(id)) {
+          state.orientations_subjects.splice(index, 1);
+        }
+      });
     },
     clearOrientationSubjects(state) {
       state.orientations_subjects = [];
@@ -127,12 +134,12 @@ export default createStore({
     addGroup(state, group) {
       state.groups.push(group);
     },
-    editGroup(state, modified_group){
+    editGroup(state, modified_group) {
       /* state.groups.find(
         (group) => parseInt(group.id) == parseInt(modified_group.id)
       ).name = modified_group.name; */
-      state.groups.forEach(group => {
-        if(group.id == modified_group.id){
+      state.groups.forEach((group) => {
+        if (group.id == modified_group.id) {
           group.name = modified_group.name;
           group.id_orientation = modified_group.orientacion;
 
@@ -144,13 +151,13 @@ export default createStore({
         }
       });
     },
-    removeGroup(state, group_data){
+    removeGroup(state, group_data) {
       state.groups.forEach((group, index) => {
-        if(group.id == group_data.id){
+        if (group.id == group_data.id) {
           state.groups.splice(index, 1);
         }
       });
-    }
+    },
   },
   actions: {
     searcher({ commit }, payload) {
@@ -312,29 +319,50 @@ export default createStore({
           commit("addOrientation", data);
           dispatch("syncOrientationSubjects");
           commit("toogleCreateOrientationMode");
-          commit('clearSubjectsSelected');
+          commit("clearSubjectsSelected");
         })
         .catch((error) => {
           console.log(error);
         });
     },
     async editOrientationSubjects({ state }, orientation_data) {
-      var data = {
+      let data_subjects_added = {
         id: parseInt(orientation_data.id),
-        subjects: orientation_data.subjects,
+        subjects: orientation_data.subjectsAdded,
       };
-      await axios({
-        method: "post",
-        url: state.API_URL + "/orientacion-materia",
-        data: data,
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
+      let data_subjects_removed = {
+        id: parseInt(orientation_data.id),
+        subjects: orientation_data.subjectsRemoved,
+      };
+      if (orientation_data.subjectsAdded.length > 0) {
+        await axios({
+          method: "post",
+          url: state.API_URL + "/orientacion-materia",
+          data: data_subjects_added,
+          headers: state.headers,
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      if (orientation_data.subjectsRemoved.length > 0) {
+        await axios({
+          method: "delete",
+          url: state.API_URL + "/orientacion-materia",
+          data: data_subjects_removed,
+          headers: state.headers,
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
     async modifyOrientation({ commit, state }, orientation_data) {
       var data = {
