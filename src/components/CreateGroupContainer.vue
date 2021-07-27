@@ -2,6 +2,7 @@
   <div class="flex justify-evenly mx-2 w-full items-center">
     <input
       v-model="group_data.name"
+      id="group_name"
       class=" w-72 my-2 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
       type="text"
       placeholder="Nombre del grupo"
@@ -23,14 +24,30 @@
       >
     </select>
 
-    <div
-      @click="createGroup(group_data)"
-      class="ml-4 pr-5 | bg-green-400 bg-opacity-30 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-40 shadow-2xl | rounded-2xl transition-transform transform hover:scale-105 select-none cursor-pointer"
-    >
-      <i
-        class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl "
-      ></i>
-      Crear
+    <div>
+      <button
+        @click="
+          group_data.name.trim() != '' && group_data.name.length <= 3
+            ? createGroup(group_data)
+            : focusNameInput()
+        "
+        class="ml-4 pr-3 | bg-green-500 bg-opacity-80 backdrop-filter backdrop-blur-xl transition duration-300  hover:bg-opacity-90 shadow-2xl | rounded-2xl select-none cursor-pointer"
+      >
+        <i
+          class="fas fa-plus text-white text-md py-3 px-2 | filter drop-shadow-xl "
+        ></i>
+        Crear
+      </button>
+
+      <button
+        @click="toogleCreateGroupMode()"
+        class="ml-4 pr-3 | bg-red-500 bg-opacity-80 backdrop-filter backdrop-blur-xl transition duration-300  hover:bg-opacity-90 shadow-2xl | rounded-2xl select-none cursor-pointer"
+      >
+        <i
+          class="fas fa-times text-white text-md py-3 px-2 | filter drop-shadow-xl "
+        ></i>
+        Cancelar
+      </button>
     </div>
   </div>
 </template>
@@ -56,28 +73,39 @@ export default {
   methods: {
     ...mapMutations(["toogleCreateGroupMode", "addGroup"]),
     ...mapActions(["searcher"]),
+    focusNameInput() {
+      document.getElementById("group_name").focus();
+      if (this.group_data.name.length > 3) {
+        alert('El nombre del grupo tiene un maximo de 3 caracteres. Ej:"3BE"');
+      }
+    },
     async createGroup() {
-      let data = {
-        name: this.group_data.name,
-        orientacion: parseInt(this.group_data.orientation),
-      };
-      await axios({
-        method: "post",
-        url: this.API_URL + "/group",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (!isNaN(parseInt(res.data))) {
-            this.getGroupById(res.data);
-            this.toogleCreateGroupMode();
-          } else {
-            console.log("Error: createGroup -> " + res.data);
-          }
+      if (this.group_data.orientation != "Seleccionar orientacion") {
+        let data = {
+          name: this.group_data.name,
+          orientacion: parseInt(this.group_data.orientation),
+        };
+        await axios({
+          method: "post",
+          url: this.API_URL + "/group",
+          data: data,
+          headers: this.headers,
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((res) => {
+            console.log(res);
+            if (!isNaN(parseInt(res.data))) {
+              this.getGroupById(res.data);
+              this.toogleCreateGroupMode();
+            } else {
+              console.log("Error: createGroup -> " + res.data);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        alert("Tienes que seleccionar una orientacion");
+      }
     },
     async getGroupById(id) {
       let data = `id=${id}`;
@@ -94,7 +122,7 @@ export default {
               (orientation) => parseInt(orientation.id) == group.id_orientation
             );
             group.orientation_name = orientation_data.name;
-            
+
             this.addGroup(group);
           } else {
             console.log("Error: getGroups -> " + res.data);
