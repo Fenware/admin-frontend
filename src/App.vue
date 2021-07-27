@@ -56,4 +56,16 @@ body {
 .w-90per {
   width: 95%;
 }
+::-webkit-scrollbar {
+  width: 5px;
+  height: 6px;
+}
+ 
+::-webkit-scrollbar-track {
+  background: #ddd;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #666; 
+}
 </style>

@@ -31,15 +31,15 @@
       >
         <input
           :id="subject.id"
-          :value="subject.name"
-          v-on:keyup.enter="saveNewSubjectName(subject.id)"
+          v-model="subject.name"
+          v-on:keyup.enter="subject.name.trim() != '' ? saveNewSubjectName(subject.id) : false"
           class="text-center bg-white bg-opacity-10 hover:bg-opacity-20 transition duration-300 backdrop-filter backdrop-blur-xl shadow-2xl rounded-lg outline-none"
           type="text"
         />
-        <div class="text-center pt-3 pb-1">
+        <div class="text-center pt-1 pb-0.5">
           <span
-            @click="saveNewSubjectName(subject.id)"
-            class="cursor-pointer mr-1  pl-1 pr-2 py-1 bg-green-700 rounded-full duration-300 transition hover:bg-green-600 "
+            @click="subject.name.trim() != '' ? saveNewSubjectName(subject.id) : false"
+            class="cursor-pointer mr-1 text-sm pl-1 pr-2 py-0.5 bg-green-700 rounded-full duration-300 transition hover:bg-green-600 "
           >
             <i
               :id="subject.id + 'btn_edit'"
@@ -49,7 +49,7 @@
           </span>
           <span
             @click="cancelEdit(subject.id)"
-            class="cursor-pointer pl-1 pr-2 py-1 bg-red-700 rounded-full duration-300 transition hover:bg-red-600  "
+            class="cursor-pointer text-sm pl-1 pr-2 py-0.5 bg-red-700 rounded-full duration-300 transition hover:bg-red-600  "
           >
             <i
               :id="subject.id + 'btn_delete'"
@@ -75,6 +75,7 @@ export default {
   methods: {
     ...mapActions(["createSubject", "removeSubject", "editSubject"]),
     saveNewSubjectName(id) {
+      console.log('s');
       let subjectInput = document.getElementById(id);
       let boxEditMode = document.getElementById(id + "edit_mode");
       let boxNoEditMode = document.getElementById(id + "no_edit_mode");

@@ -2,6 +2,7 @@
   <div class="flex justify-evenly mx-2 w-full items-center">
     <input
       v-model="group.name"
+      id="group_name"
       class=" w-72 my-2 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
       type="text"
       placeholder="Nombre del grupo"
@@ -23,14 +24,29 @@
       >
     </select>
 
-    <div
-      @click="modifyGroup()"
-      class="ml-4 pr-5 | bg-yellow-400 bg-opacity-40 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-50 shadow-2xl | rounded-2xl transition-transform transform hover:scale-105 select-none cursor-pointer"
-    >
-      <i
-        class="fas fa-pen text-white text-md py-3 px-3 | filter drop-shadow-xl "
-      ></i>
-      Modificar
+    <div class="flex">
+      <div
+        @click="
+          group.name.trim() != '' && group.name.length <= 3
+            ? modifyGroup()
+            : focusNameInput()
+        "
+        class="ml-4 pr-5 | bg-yellow-400 bg-opacity-80 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-90 shadow-2xl | rounded-2xl select-none cursor-pointer"
+      >
+        <i
+          class="fas fa-pen text-white text-md py-2 px-3 | filter drop-shadow-xl "
+        ></i>
+        Modificar
+      </div>
+      <div
+        @click="toogleModifyGroupMode()"
+        class="ml-4 pr-5 | bg-red-600 bg-opacity-80 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-90 shadow-2xl | rounded-2xl select-none cursor-pointer"
+      >
+        <i
+          class="fas fa-times text-white text-md py-2 px-3 | filter drop-shadow-xl "
+        ></i>
+        Cancelar
+      </div>
     </div>
   </div>
 </template>
@@ -45,34 +61,43 @@ export default {
     ...mapState(["API_URL", "headers", "orientations", "group"]),
   },
   methods: {
-    ...mapMutations(["toogleModifyGroupMode",'editGroup']),
+    ...mapMutations(["toogleModifyGroupMode", "editGroup"]),
     ...mapActions(["searcher"]),
-    async modifyGroup() {
-      let data = {
-        id: parseInt(this.group.id),
-        name: this.group.name,
-        orientacion: parseInt(this.group.id_orientation),
-      };
-      await axios({
-        method: "put",
-        url: this.API_URL + "/group",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          console.log(res);
-          if (!isNaN(parseInt(res.data))) {
-            this.editGroup(data);
-            this.toogleModifyGroupMode();
-          } else {
-            console.log("Error: modifyGroup -> " + res.data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    focusNameInput() {
+      document.getElementById("group_name").focus();
+      if (this.group.name.length > 3) {
+        alert('El nombre del grupo tiene un maximo de 3 caracteres. Ej:"3BE"');
+      }
     },
-
+    async modifyGroup() {
+      if (this.group.id_orientation != "Seleccionar orientacion") {
+        let data = {
+          id: parseInt(this.group.id),
+          name: this.group.name,
+          orientacion: parseInt(this.group.id_orientation),
+        };
+        await axios({
+          method: "put",
+          url: this.API_URL + "/group",
+          data: data,
+          headers: this.headers,
+        })
+          .then((res) => {
+            console.log(res);
+            if (!isNaN(parseInt(res.data))) {
+              this.editGroup(data);
+              this.toogleModifyGroupMode();
+            } else {
+              console.log("Error: modifyGroup -> " + res.data);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }else{
+        alert("Tienes que seleccionar una orientacion");
+      }
+    },
   },
 };
 </script>

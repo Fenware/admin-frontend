@@ -3,6 +3,7 @@
     <div class="flex justify-evenly items-center">
       <input
         v-model="orientation_data.name"
+        id="name_field"
         class=" w-72 my-2 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
         type="text"
         placeholder="Nombre de la orientacion"
@@ -33,7 +34,11 @@
       />
       <label for="3ero">3ero</label>
       <div
-        @click="addOrientation(orientation_data)"
+        @click="
+          orientation_data.name.trim() != ''
+            ? addOrientation(orientation_data)
+            : focusNameInput()
+        "
         class="ml-4 pr-5 | bg-green-400 bg-opacity-30 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-40 shadow-2xl | rounded-2xl transition-transform transform hover:scale-105 select-none cursor-pointer"
       >
         <i
@@ -59,28 +64,39 @@ import { mapActions, mapState, mapMutations } from "vuex";
 import OrientationSubjectsContainer from "@/components/OrientationSubjectsContainer";
 
 export default {
-  name: 'CreateOrientationContainer',
+  name: "CreateOrientationContainer",
   data: function() {
     return {
       orientation_data: {
-        name: '',
-        year: '1',
+        name: "",
+        year: "1",
         subjects: this.orientations_subjects,
       },
-      text_filter: '',
+      text_filter: "",
     };
+  },
+  created() {
+    this.clearSubjectsSelected();
   },
   components: {
     OrientationSubjectsContainer,
   },
   computed: {
-    ...mapState(['orientations_subjects','create_orientation_mode', ]),
+    ...mapState(["orientations_subjects", "subjects_selected"]),
   },
   methods: {
-    ...mapMutations(['toogleCreateOrientationMode']),
-    ...mapActions(['searcher', 'createOrientation']),
+    ...mapMutations(["toogleCreateOrientationMode", "clearSubjectsSelected"]),
+    ...mapActions(["searcher", "createOrientation"]),
     addOrientation(orientation_data) {
-      this.createOrientation(orientation_data);
+      console.log(this.subjects_selected);
+      if(this.subjects_selected.length > 0){
+        this.createOrientation(orientation_data);
+      }else{
+        alert('Debes seleccionar al menos una materia');
+      }
+    },
+    focusNameInput() {
+      document.getElementById("name_field").focus();
     },
   },
 };

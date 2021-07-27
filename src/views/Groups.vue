@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white w-full h-full">
+  <div class="text-white w-full ">
     <h2 class="text-center text-3xl mt-1">
       Grupos
     </h2>
@@ -21,34 +21,12 @@
         ></i>
         Agregar grupo
       </button>
-
-      <button
-        v-show="create_group_mode"
-        @click="toogleCreateGroupMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar
-      </button>
-
-      <button
-        v-show="modify_group_mode"
-        @click="toogleModifyGroupMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar
-      </button>
     </div>
 
     <CreateGroupContainer class="mt-2" v-if="create_group_mode" />
     <ModifyGroupContainer v-if="modify_group_mode" />
     <div
-      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
+      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-5 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
     >
       <GroupsContainer />
     </div>
@@ -87,7 +65,7 @@ export default {
     ...mapMutations([
       "toogleModifyGroupMode",
       "toogleCreateGroupMode",
-      "addGroup",
+      "setGroups",
     ]),
     ...mapActions(["checkSession", "syncOrientations"]),
     async getGroups() {
@@ -98,14 +76,16 @@ export default {
       })
         .then((res) => {
           if (Array.isArray(res.data)) {
+            let groups_array = [];
             res.data.forEach((group) => {
               let orientation_data = this.orientations.find(
                 (orientation) =>
                   parseInt(orientation.id) == group.id_orientation
               );
               group.orientation_name = orientation_data.name;
-              this.addGroup(group);
+              groups_array.push(group);
             });
+            this.setGroups(groups_array);
           } else {
             console.log("Error: getGroups -> " + res.data);
           }

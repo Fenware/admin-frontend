@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     ...mapMutations(["toogleModifyOrientationMode", "setOrientation"]),
-    ...mapActions(["getOrientationSubjects",'deleteOrientation']),
+    ...mapActions(['deleteOrientation']),
     modifyOrientation() {
       this.toogleModifyOrientationMode();
       this.setOrientation(this.orientation);
