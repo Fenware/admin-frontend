@@ -21,28 +21,6 @@
         ></i>
         Agregar grupo
       </button>
-
-      <button
-        v-show="create_group_mode"
-        @click="toogleCreateGroupMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar
-      </button>
-
-      <button
-        v-show="modify_group_mode"
-        @click="toogleModifyGroupMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar
-      </button>
     </div>
 
     <CreateGroupContainer class="mt-2" v-if="create_group_mode" />
@@ -104,7 +82,7 @@ export default {
                 (orientation) =>
                   parseInt(orientation.id) == group.id_orientation
               );
-              group.orientation_name = orientation_data.name; 
+              group.orientation_name = orientation_data.name;
               groups_array.push(group);
             });
             this.setGroups(groups_array);
