@@ -38,8 +38,8 @@ export default {
   data: function() {
     return {
       user: {
-        user: "administrador@admin.com",
-        password: "mnoseadmin1234",
+        user: "",
+        password: "",
         type: "admin",
       },
     };
