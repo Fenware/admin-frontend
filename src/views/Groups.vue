@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white w-full h-full">
+  <div class="text-white w-full ">
     <h2 class="text-center text-3xl mt-1">
       Grupos
     </h2>
@@ -48,7 +48,7 @@
     <CreateGroupContainer class="mt-2" v-if="create_group_mode" />
     <ModifyGroupContainer v-if="modify_group_mode" />
     <div
-      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
+      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-5 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
     >
       <GroupsContainer />
     </div>
