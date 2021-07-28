@@ -1,0 +1,9 @@
+FROM node:14.17.1 as builder
+WORKDIR /usr/src/app
+COPY ./ ./
+RUN npm install && npm run build
+
+FROM httpd:2.4-alpine
+WORKDIR /usr/local/apache2/htdocs/
+COPY --from=builder /usr/src/app/dist .
+EXPOSE 80
