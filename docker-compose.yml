@@ -3,7 +3,7 @@ services:
     vue-ui-admin:
         build:
             context: ./
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.dev
         ports:
         - "8081:8080"
         container_name: vue-ui-admin
