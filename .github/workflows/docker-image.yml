@@ -8,12 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+
+  Docker-Build:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
       - name: Docker Login
@@ -23,7 +21,7 @@ jobs:
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     
-      - name: Docker build lucaspintos909/admin-frontend
+      - name: Docker build
         run: |
           docker build -t lucaspintos909/admin-frontend:latest -f Dockerbuild .
           
