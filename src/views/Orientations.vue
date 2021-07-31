@@ -84,15 +84,13 @@ export default {
     ]),
   },
   methods: {
-    ...mapMutations(["toogleModifyOrientationMode","toogleCreateOrientationMode"]),
-    ...mapActions([
-      "checkSession",
-      "syncOrientations",
-      "syncSubjects",
+    ...mapMutations([
+      "toogleModifyOrientationMode",
+      "toogleCreateOrientationMode",
     ]),
+    ...mapActions(["syncOrientations", "syncSubjects"]),
   },
   created() {
-    this.checkSession();
     this.syncOrientations();
     this.syncSubjects();
   },

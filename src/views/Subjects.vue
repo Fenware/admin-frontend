@@ -51,7 +51,7 @@ export default {
     SubjectsContainer,
   },
   methods: {
-    ...mapActions(["syncSubjects", "checkSession", "createSubject", "searcher"]),
+    ...mapActions(["syncSubjects", "createSubject", "searcher"]),
     addSubject() {
       let newSubject = {
         name: this.subject_data.name,
@@ -63,7 +63,6 @@ export default {
     },
   },
   created() {
-    this.checkSession();
     this.syncSubjects();
   },
 };

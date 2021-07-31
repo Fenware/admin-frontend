@@ -11,14 +11,14 @@
 <script>
 // @ is an alias to /src
 import UsersPending from "@/components/UsersPending";
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
 export default {
   name: "Home",
   components: {
     UsersPending,
   },
   methods: {
-    ...mapActions(['showAlert'])
+    ...mapActions(["showAlert"]),
   },
 };
 </script>

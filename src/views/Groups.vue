@@ -67,7 +67,7 @@ export default {
       "toogleCreateGroupMode",
       "setGroups",
     ]),
-    ...mapActions(["checkSession", "syncOrientations"]),
+    ...mapActions(["syncOrientations"]),
     async getGroups() {
       await axios({
         method: "get",
@@ -96,7 +96,6 @@ export default {
     },
   },
   created() {
-    this.checkSession();
     this.syncOrientations();
     this.getGroups();
   },
