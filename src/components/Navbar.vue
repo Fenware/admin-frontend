@@ -52,12 +52,9 @@ export default {
         "fas mt-6 text-3xl text-white transition-colors transition-transform duration-500 ease-in-out  filter hover:text-gray-200 transform hover:scale-110 drop-shadow-lg",
     };
   },
-  methods: {
-    ...mapActions(["syncToken", "logout"]),
-  },
-  created() {
-    this.syncToken();
-  },
+  methods:{
+    ...mapActions(['logout'])
+  }
 };
 </script>
 
