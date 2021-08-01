@@ -13,7 +13,6 @@
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
 import Navbar from "@/components/Navbar";
 import Main from "@/components/Main";
 /* import Sidebar from "@/components/Sidebar"; */
@@ -25,7 +24,6 @@ export default {
     /* Sidebar, */
   },
   methods: {
-    ...mapActions(["syncToken"]),
     currentRouteName() {
       return this.$route.name;
     },
