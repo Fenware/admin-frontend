@@ -168,22 +168,54 @@ export default createStore({
         commit("setToken", localStorage.getItem("token"));
         commit("setHeaderToken", "Bearer " + localStorage.getItem("token"));
       } else {
-        commit("setToken", null);
-        router.push("login");
+        /* router.push("login"); */
+        console.log();
       }
     },
-    async login({ commit, state }, payload) {
+    async login({ commit, state, dispatch }, payload) {
       await axios({
         method: "post",
         url: state.API_URL + "/auth",
         data: payload,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
         .then((res) => {
-          let token = res.data.result.token;
-          commit("setToken", token);
-          localStorage.setItem("token", token);
-          router.push("/inicio");
+          if (typeof res.data.result.token == "string") {
+            let token = res.data.result.token;
+            commit("setToken", token);
+            localStorage.setItem("token", token);
+            dispatch('syncToken');
+            router.push("/inicio");
+          } else {
+            console.log("Error: login");
+            alert(res.data.result.error_msg);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    logout({ commit }) {
+      commit("setToken", null);
+      commit("setHeaderToken", "");
+      localStorage.removeItem("token");
+      router.push("login");
+    },
+    async checkSession({ state,  dispatch }) {
+
+      await axios({
+        method: "post",
+        url: state.API_URL + "/token",
+        data: {},
+        headers: state.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data != "OK") {
+            dispatch('logout');
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -262,28 +294,7 @@ export default createStore({
           console.log(error);
         });
     },
-    logout({ commit }) {
-      commit("setToken", null);
-      localStorage.removeItem("token");
-      router.push("login");
-    },
-    async checkSession({ state }) {
-      await axios({
-        method: "post",
-        url: state.API_URL + "/token",
-        data: {},
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-          if (res.data != "OK") {
-            router.push("login");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+
     async syncOrientations({ commit, dispatch, state }) {
       await axios({
         method: "get",
@@ -420,7 +431,9 @@ export default createStore({
       await axios({
         method: "post",
         url: state.API_URL + "/user-pendiente",
-        data: { id: id },
+        data: {
+          id: id,
+        },
         headers: state.headers,
       })
         .then((res) => {
@@ -438,7 +451,9 @@ export default createStore({
       await axios({
         method: "delete",
         url: state.API_URL + "/user-pendiente",
-        data: { id: id },
+        data: {
+          id: id,
+        },
         headers: state.headers,
       })
         .then((res) => {
