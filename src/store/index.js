@@ -11,7 +11,6 @@ export default createStore({
     orientation: {},
     orientations: [],
     orientations_subjects: [],
-    users_pending: [],
     token: null,
     headers: {
       Authorization: "",
@@ -63,13 +62,6 @@ export default createStore({
     },
     setUsersPending(state, payload) {
       state.users_pending = payload;
-    },
-    removeUserPending(state, id) {
-      state.users_pending.forEach((user, index) => {
-        if (user.id == id) {
-          state.users_pending.splice(index, 1);
-        }
-      });
     },
     addOriginalOrientationSubjects(state, payload) {
       state.original_subjects_selected.push(payload);
@@ -204,7 +196,6 @@ export default createStore({
       router.push("login");
     },
     async checkSession({ state,  dispatch }) {
-
       await axios({
         method: "post",
         url: state.API_URL + "/token",
@@ -414,60 +405,7 @@ export default createStore({
           console.log(error);
         });
     },
-    async syncUsersPending({ commit, state }) {
-      await axios({
-        method: "get",
-        url: state.API_URL + "/user-pendiente",
-        headers: state.headers,
-      })
-        .then((res) => {
-          commit("setUsersPending", res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async acceptUserPending({ commit, state }, id) {
-      await axios({
-        method: "post",
-        url: state.API_URL + "/user-pendiente",
-        data: {
-          id: id,
-        },
-        headers: state.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            commit("removeUserPending", id);
-          } else {
-            console.log("Error: acceptUserPending");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async declineUserPending({ commit, state }, id) {
-      await axios({
-        method: "delete",
-        url: state.API_URL + "/user-pendiente",
-        data: {
-          id: id,
-        },
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-          if (res.data == 1) {
-            commit("removeUserPending", id);
-          } else {
-            console.log("Error: declineUserPending");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    
     showAlert() {
       const Toast = this.$swal.mixin({
         toast: true,
