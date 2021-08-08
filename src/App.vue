@@ -33,8 +33,7 @@ export default {
 
 <style>
 body {
-  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap");
-  font-family: "Nunito", sans-serif !important;
+  font-family: 'Georama', sans-serif !important;
   /* background: linear-gradient(to right top ,#175AD4,#65DF9D); */
   background-image: url("./assets/background.svg");
   background-image: no-repeat;

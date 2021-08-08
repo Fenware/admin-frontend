@@ -76,8 +76,7 @@ export default {
     ModifyOrientationContainer,
   },
   computed: {
-    ...mapState([
-      "subjects",
+    ...mapState([ 
       "orientations",
       "create_orientation_mode",
       "modify_orientation_mode",
