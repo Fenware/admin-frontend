@@ -12,22 +12,43 @@
       <div class="flex items-center">
         <div class="mr-7">
           <i class="fas fa-sort-alpha-down mr-1"></i>
-          
+
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_word = ''"
-            :class="'text-sm px-2 py-0.5 ' +  (filter_word == '' ? ' rounded-full bg-white bg-opacity-20' : '')"
+            @click="filter_by = 'all'"
+            :class="
+              'text-sm px-2 py-0.5 ' +
+                (filter_by == 'all'
+                  ? ' rounded-full bg-white bg-opacity-20'
+                  : '')
+            "
           >
             Todos
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button @click="filter_word = 'teacher'" :class="'text-sm px-2 py-0.5 ' +  (filter_word == 'teacher' ? ' rounded-full bg-white bg-opacity-20' : '')">
+          <button
+            @click="filter_by = 'teacher'"
+            :class="
+              'text-sm px-2 py-0.5 ' +
+                (filter_by == 'teacher'
+                  ? ' rounded-full bg-white bg-opacity-20'
+                  : '')
+            "
+          >
             Docentes
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button @click="filter_word = 'student'" :class="'text-sm px-2 py-0.5 ' +  (filter_word == 'student' ? ' rounded-full bg-white bg-opacity-20' : '')">
+          <button
+            @click="filter_by = 'student'"
+            :class="
+              'text-sm px-2 py-0.5 ' +
+                (filter_by == 'student'
+                  ? ' rounded-full bg-white bg-opacity-20'
+                  : '')
+            "
+          >
             Estudiante
           </button>
         </div>
@@ -38,24 +59,29 @@
         ></i>
       </div>
     </div>
-
+    <div class="flex justify-center my-2">
+      <input
+        type="text"
+        v-show="users_pending.length > 0"
+        :placeholder="users_pending.length == 0 ? 'No hay usuarios para buscar' : 'Buscar por nombre o cédula'"
+        v-model="filter_data"
+        class="w-96 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
+      />
+    </div>
     <div
       class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-96 overflow-auto"
     >
+      
       <div
-        v-for="user in filterUser(filter_word)"
+        v-for="user in filterUser()"
         :key="user.id"
         class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-lg rounded-2xl"
       >
         <div class="">
-            <p class="mb-2 text-xs tracking-widest font-extrabold">{{
-              user.type == "student"
-                ? "ESTUDIANTE"
-                : "DOCENTE"
-            }}</p>
-          <p>
-            <span class="font-bold">CI:</span> {{ user.ci }}
+          <p class="mb-2 text-xs tracking-widest font-extrabold">
+            {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
           </p>
+          <p><span class="font-bold">CI:</span> {{ user.ci }}</p>
 
           <p>
             <span class="font-bold">Nombre:</span> {{ user.name }}
@@ -87,11 +113,27 @@
     </div>
     <div
       class="flex justify-center items-center"
-      v-if="users_pending.length == 0"
+      v-show="filterUser().length == 0 && filter_by == 'all' && filter_data.trim() == ''"
     >
       <span class="py-4 text-xl text-white">
         No hay usuarios pendientes <i class="fas fa-check-circle"></i>
       </span>
+    </div>
+    <div
+        class="flex justify-center items-center"
+        v-show="filterUser().length == 0 && filter_data.trim() != ''"
+    >
+        <span class="py-4 text-xl text-white">
+          No hay coincidencias 
+        </span>
+    </div>
+    <div
+        class="flex justify-center items-center"
+        v-show="filterUser().length == 0 && (filter_by == 'student' || filter_by == 'teacher') && filter_data.trim() == ''"
+    >
+        <span class="py-4 text-xl text-white">
+          No hay {{ filter_by == "student" ? "estudiantes" : "docentes" }} pendientes <i class="fas fa-check-circle"></i>
+        </span>
     </div>
   </div>
 </template>
@@ -105,7 +147,9 @@ export default {
   data: function() {
     return {
       users_pending: [],
-      filter_word: "",
+      // "all" para que me muestre todos los usuarios por defecto
+      filter_by: "all",
+      filter_data: "",
     };
   },
   computed: {
@@ -193,14 +237,28 @@ export default {
         }
       });
     },
-    filterUser(user_type) {
-      if (user_type != "") {
-        // Filtro los usuarios por el typo que llega por parametro
-        return this.users_pending.filter((user) => user.type == user_type);
-      } else {
-        return this.users_pending;
+    filterUser() {
+      // Filtrando siempre por tipo de usuario
+      let users_filtered = this.filter_by == "all" ? this.users_pending : this.users_pending.filter((user) => user.type == this.filter_by);
+
+      // Si el filtro es un numero ( osea una cedula )
+      if (!isNaN(parseInt(this.filter_data))) {
+        // Filtra los usuarios por coincidencias de cedula
+        users_filtered = users_filtered.filter((user) => user.ci.indexOf(this.filter_data.toString()) >= 0);
+
+        // Si no es un numero y lo ingresado no son espacios
+      }else if(isNaN(parseInt(this.filter_data)) && this.filter_data.trim() != ""){
+
+        users_filtered = users_filtered.filter((user) => {
+          // Concateno nombres y apellidos
+          let nombre = user.name + ' ' + user.middle_name + ' ' + user.surname + ' ' + user.second_surname;
+
+          // Filtro usuario si hay coincidencias de lo ingresado con el nombre
+          return nombre.indexOf(this.filter_data.toString()) >= 0;
+        });
       }
-    }
+      return users_filtered;
+    },
   },
 };
 </script>
