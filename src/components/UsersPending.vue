@@ -60,25 +60,28 @@
       </div>
     </div>
     <div class="flex justify-center my-2">
+      <!-- Mostrando el input solo si hay usuarios pendientes para buscar -->
       <input
         type="text"
-        v-show="users_pending.length > 0"
+        v-show="filterUser().length > 0"
         :placeholder="users_pending.length == 0 ? 'No hay usuarios para buscar' : 'Buscar por nombre o cédula'"
-        v-model="filter_data"
-        class="w-96 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
+        v-model="search_word"
+        class="w-96 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-2xl  outline-none placeholder-white"
       />
     </div>
     <div
       class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-96 overflow-auto"
     >
       
+        <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
       <div
         v-for="user in filterUser()"
         :key="user.id"
         class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-lg rounded-2xl"
       >
-        <div class="">
+        <div>
           <p class="mb-2 text-xs tracking-widest font-extrabold">
+            <!-- Poniendo si es estudiante o docente segun el tipo -->
             {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
           </p>
           <p><span class="font-bold">CI:</span> {{ user.ci }}</p>
@@ -113,7 +116,7 @@
     </div>
     <div
       class="flex justify-center items-center"
-      v-show="filterUser().length == 0 && filter_by == 'all' && filter_data.trim() == ''"
+      v-show="filterUser().length == 0 && filter_by == 'all' && search_word.trim() == ''"
     >
       <span class="py-4 text-xl text-white">
         No hay usuarios pendientes <i class="fas fa-check-circle"></i>
@@ -121,7 +124,7 @@
     </div>
     <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && filter_data.trim() != ''"
+        v-show="filterUser().length == 0 && search_word.trim() != ''"
     >
         <span class="py-4 text-xl text-white">
           No hay coincidencias 
@@ -129,7 +132,7 @@
     </div>
     <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && (filter_by == 'student' || filter_by == 'teacher') && filter_data.trim() == ''"
+        v-show="filterUser().length == 0 && (filter_by == 'student' || filter_by == 'teacher') && search_word.trim() == ''"
     >
         <span class="py-4 text-xl text-white">
           No hay {{ filter_by == "student" ? "estudiantes" : "docentes" }} pendientes <i class="fas fa-check-circle"></i>
@@ -147,9 +150,10 @@ export default {
   data: function() {
     return {
       users_pending: [],
-      // "all" para que me muestre todos los usuarios por defecto
+      // "all" para que no me filtre los usuarios por defecto
       filter_by: "all",
-      filter_data: "",
+      // Variable para buscar usuario
+      search_word: "",
     };
   },
   computed: {
@@ -242,19 +246,19 @@ export default {
       let users_filtered = this.filter_by == "all" ? this.users_pending : this.users_pending.filter((user) => user.type == this.filter_by);
 
       // Si el filtro es un numero ( osea una cedula )
-      if (!isNaN(parseInt(this.filter_data))) {
+      if (!isNaN(parseInt(this.search_word))) {
         // Filtra los usuarios por coincidencias de cedula
-        users_filtered = users_filtered.filter((user) => user.ci.indexOf(this.filter_data.toString()) >= 0);
+        users_filtered = users_filtered.filter((user) => user.ci.indexOf(this.search_word.toString()) >= 0);
 
         // Si no es un numero y lo ingresado no son espacios
-      }else if(isNaN(parseInt(this.filter_data)) && this.filter_data.trim() != ""){
+      }else if(isNaN(parseInt(this.search_word)) && this.search_word.trim() != ""){
 
         users_filtered = users_filtered.filter((user) => {
           // Concateno nombres y apellidos
           let nombre = user.name + ' ' + user.middle_name + ' ' + user.surname + ' ' + user.second_surname;
 
           // Filtro usuario si hay coincidencias de lo ingresado con el nombre
-          return nombre.indexOf(this.filter_data.toString()) >= 0;
+          return nombre.indexOf(this.search_word.toString()) >= 0;
         });
       }
       return users_filtered;
