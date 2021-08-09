@@ -49,7 +49,7 @@
                   : '')
             "
           >
-            Estudiante
+            Estudiantes
           </button>
         </div>
         <i
@@ -94,7 +94,7 @@
 
         <div class="flex flex-wrap justify-center sm:justify-end">
           <button
-            @click="acceptUserPending(parseInt(user.id))"
+            @click="acceptUserPending(user)"
             class="cursor-pointer mr-1 pl-1 pr-2 py-1 my-1 bg-green-700 rounded-xl duration-300 transition-colors ease-in-out hover:bg-green-600 "
           >
             <i
@@ -103,7 +103,7 @@
             Aceptar
           </button>
           <button
-            @click="declineUserPending(parseInt(user.id))"
+            @click="declineUserPending(user)"
             class="cursor-pointer pl-1 pr-2 py-1 my-1 bg-red-700 rounded-xl duration-300 transition hover:bg-red-600 "
           >
             <i
@@ -182,27 +182,30 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res.data);
           this.users_pending = res.data;
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async declineUserPending(id) {
+    async declineUserPending(user) {
       await axios({
         method: "delete",
         url: this.API_URL + "/user-pendiente",
         data: {
           // Id del usuario a rechazar
-          id: id,
+          id: parseInt(user.id),
         },
         headers: this.headers,
       })
         .then((res) => {
           if (res.data == 1) {
             // Quito al usuario de la lista
-            this.removeUserPending(id);
+            this.removeUserPending(parseInt(user.id));
+            this.$swal({
+              icon: "info",
+              title: `Has rechazado al ${user.type == 'student' ? 'estudiante' : 'docente'} ${user.name} ${user.surname} correctamente`,
+            });
           } else {
             console.log("Error: declineUserPending");
           }
@@ -211,20 +214,25 @@ export default {
           console.log(error);
         });
     },
-    async acceptUserPending(id) {
+    async acceptUserPending(user) {
       await axios({
         method: "post",
         url: this.API_URL + "/user-pendiente",
         data: {
           // Id del usuario a aceptar
-          id: id,
+          id: parseInt(user.id),
         },
         headers: this.headers,
       })
         .then((res) => {
           if (res.data == 1) {
             // Quito al usuario de la lista
-            this.removeUserPending(id);
+            this.removeUserPending(parseInt(user.id));
+            this.$swal({
+              icon: "success",
+              title: `Has aceptado al ${user.type == 'student' ? 'estudiante' : 'docente'} ${user.name} ${user.surname}!`,
+            });
+            
           } else {
             console.log("Error: acceptUserPending");
           }
