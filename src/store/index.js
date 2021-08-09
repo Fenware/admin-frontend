@@ -405,28 +405,6 @@ export default createStore({
           console.log(error);
         });
     },
-    
-    showAlert() {
-      const Toast = this.$swal.mixin({
-        toast: true,
-        position: "bottom-end",
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        iconColor: "white",
-        customClass: {
-          popup: "colored-toast",
-        },
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-      Toast.fire({
-        icon: "success",
-        title: "Signed in error",
-      });
-    },
     async getOrientationSubjects({ state, commit }, id) {
       let data = `id=${id}`;
       await axios({
