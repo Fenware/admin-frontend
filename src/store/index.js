@@ -5,17 +5,17 @@ import axios from "axios";
 export default createStore({
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
+    token: null,
+    headers: {
+      Authorization: "",
+      "Content-Type": "application/json",
+    },
     group: {},
     groups: [],
     subjects: [],
     orientation: {},
     orientations: [],
     orientations_subjects: [],
-    token: null,
-    headers: {
-      Authorization: "",
-      "Content-Type": "application/json",
-    },
     text_filter: "",
     original_subjects_selected: [],
     subjects_selected: [],
@@ -293,6 +293,7 @@ export default createStore({
         headers: state.headers,
       })
         .then((res) => {
+          console.log(res.data);
           commit("setOrientations", res.data);
           dispatch("syncOrientationSubjects");
         })
