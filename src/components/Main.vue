@@ -1,6 +1,10 @@
 <template>
   <main class="mx-auto w-full overflow-y-auto px-3" v-if="isLoginView()">
-      <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </main>
 </template>
 
@@ -15,4 +19,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>
