@@ -1,17 +1,19 @@
 <template>
   <div class="text-white w-full h-full">
-    <h2 class="text-center text-3xl mt-1">Materias</h2>
+    <h2 class="font-semibold text-center text-3xl pt-1">Materias</h2>
 
-    <div class="flex justify-between mt-10">
+    <div
+      class="flex justify-center gap-1 md:justify-between flex-wrap mt-10 mx-10"
+    >
       <input
         type="text"
         placeholder="Buscar materia"
         v-model="text_filter"
         v-on:keyup="searcher(text_filter)"
-        class="w-96 mx-2 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
+        class="my-2 py-2 px-2 text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
       />
       <div
-        class="ml-4 | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl"
+        class="my-2 max-w-max bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-lg | rounded-xl"
       >
         <input
           type="text"
@@ -20,29 +22,52 @@
           v-on:keyup.enter="
             subject_data.name.trim() != '' ? addSubject() : false
           "
-          class="w-48 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
+          class="w-48 py-2 px-2 min-h-full text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
         />
         <button @click="subject_data.name.trim() != '' ? addSubject() : false">
           <i
-            class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
+            class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl hover:text-green-300 transition-colors"
           ></i>
         </button>
       </div>
     </div>
 
     <div
-      class="flex overflow-auto flex-wrap mx-auto md:max-w-2xl lg:max-w-3xl mt-20 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-5 mt-10 bg-white bg-opacity-10  shadow-2xl rounded-2xl"
     >
-      <div v-for="subject in subjectsFiltered" :key="subject.id">
+      <div
+        :id="subject.id + 'no_edit_mode'"
+        class=" block m-3 px-3 py-2 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
+        v-for="subject in subjectsFiltered"
+        :key="subject.id"
+      >
+        <p class=" text-center bg-transparent outline-none" type="text">
+          {{ subject.name }}
+        </p>
+
         <div
-          :id="subject.id + 'no_edit_mode'"
-          class=" block m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full"
-          v-if="subject.state == 1"
+          class="flex gap-2 justify-center mt-2"
         >
-          <span class=" bg-transparent outline-none" type="text"
-            >{{ subject.name }}
-          </span>
-          <i
+          <button
+            @click="acceptUserPending(user)"
+            class="cursor-pointer text-yellow-200 hover:text-yellow-100  font-medium w-32  pr-2 py-0.5 my-1 bg-gray-700 border-2 border-yellow-400 hover:bg-yellow-300 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
+          >
+            <i
+              class="fas fa-pencil-alt text-yellow-300 mr-1 text-md drop-shadow-lg"
+            ></i>
+            Editar
+          </button>
+          <button
+            @click="declineUserPending(user)"
+            class="cursor-pointer font-medium w-32 pl-1 pr-2 py-0.5 my-1 bg-gray-700 border-2 border-red-400 hover:border-red-300 hover:bg-red-500 hover:bg-opacity-70 rounded-xl duration-300 transition"
+          >
+            <i
+              class="fas fa-trash-alt text-red-300 mx-1 text-md drop-shadow-lg "
+            ></i>
+            Borrar
+          </button>
+        </div>
+        <!-- <i
             :id="subject.id + 'btn_edit'"
             @click="editSubjectInput(subject.id)"
             class="
@@ -52,10 +77,10 @@
             :id="subject.id + 'btn_delete'"
             @click="removeSubject(subject.id)"
             class="fas fa-trash-alt text-red-400 hover:text-red-500 mx-1 text-md drop-shadow-lg "
-          ></i>
-        </div>
+          ></i> -->
+      </div>
 
-        <div
+      <!-- <div
           :id="subject.id + 'edit_mode'"
           class="hidden m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
           v-if="subject.state == 1"
@@ -95,14 +120,13 @@
               Cancelar
             </span>
           </div>
-        </div>
-      </div>
+        </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters} from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 export default {
   name: "Subjects",
