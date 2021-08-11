@@ -17,23 +17,92 @@
           type="text"
           v-model="subject_data.name"
           placeholder="Agregar materia"
-          v-on:keyup.enter="subject_data.name.trim() != '' ? addSubject() : false"
+          v-on:keyup.enter="
+            subject_data.name.trim() != '' ? addSubject() : false
+          "
           class="w-48 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
         />
-        <button @click="subject_data.name.trim() != ''  ? addSubject() : false">
+        <button @click="subject_data.name.trim() != '' ? addSubject() : false">
           <i
             class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
           ></i>
         </button>
       </div>
     </div>
-    <SubjectsContainer />
+
+    <div
+      class="flex overflow-auto flex-wrap mx-auto md:max-w-2xl lg:max-w-3xl mt-20 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl"
+    >
+      <div v-for="subject in subjectsFiltered" :key="subject.id">
+        <div
+          :id="subject.id + 'no_edit_mode'"
+          class=" block m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-full"
+          v-if="subject.state == 1"
+        >
+          <span class=" bg-transparent outline-none" type="text"
+            >{{ subject.name }}
+          </span>
+          <i
+            :id="subject.id + 'btn_edit'"
+            @click="editSubjectInput(subject.id)"
+            class="
+        fas fa-pencil-alt text-yellow-300 hover:text-yellow-500 mx-1 text-md drop-shadow-lg "
+          ></i>
+          <i
+            :id="subject.id + 'btn_delete'"
+            @click="removeSubject(subject.id)"
+            class="fas fa-trash-alt text-red-400 hover:text-red-500 mx-1 text-md drop-shadow-lg "
+          ></i>
+        </div>
+
+        <div
+          :id="subject.id + 'edit_mode'"
+          class="hidden m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+          v-if="subject.state == 1"
+        >
+          <input
+            :id="subject.id"
+            v-model="subject.name"
+            v-on:keyup.enter="
+              subject.name.trim() != '' ? saveNewSubjectName(subject.id) : false
+            "
+            class="text-center bg-white bg-opacity-10 hover:bg-opacity-20 transition duration-300 backdrop-filter backdrop-blur-xl shadow-2xl rounded-lg outline-none"
+            type="text"
+          />
+          <div class="text-center pt-1 pb-0.5">
+            <span
+              @click="
+                subject.name.trim() != ''
+                  ? saveNewSubjectName(subject.id)
+                  : false
+              "
+              class="cursor-pointer mr-1 text-sm pl-1 pr-2 py-0.5 bg-green-700 rounded-full duration-300 transition hover:bg-green-600 "
+            >
+              <i
+                :id="subject.id + 'btn_edit'"
+                class="fas fa-save text-green-300 mx-1 text-md drop-shadow-lg"
+              ></i>
+              Guardar
+            </span>
+            <span
+              @click="cancelEdit(subject.id)"
+              class="cursor-pointer text-sm pl-1 pr-2 py-0.5 bg-red-700 rounded-full duration-300 transition hover:bg-red-600  "
+            >
+              <i
+                :id="subject.id + 'btn_delete'"
+                class="fas fa-times text-red-400 mx-1 text-md drop-shadow-lg "
+              ></i>
+              Cancelar
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import SubjectsContainer from "@/components/SubjectsContainer";
+import { mapActions, mapState, mapGetters} from "vuex";
 
 export default {
   name: "Subjects",
@@ -44,14 +113,21 @@ export default {
         name: "",
         state: 1,
       },
-      text_filter: ''
+      text_filter: "",
     };
   },
-  components: {
-    SubjectsContainer,
+  computed: {
+    ...mapState(["subjects"]),
+    ...mapGetters(["subjectsFiltered"]),
   },
   methods: {
-    ...mapActions(["syncSubjects", "createSubject", "searcher"]),
+    ...mapActions([
+      "syncSubjects",
+      "createSubject",
+      "searcher",
+      "removeSubject",
+      "editSubject",
+    ]),
     addSubject() {
       let newSubject = {
         name: this.subject_data.name,
@@ -60,6 +136,34 @@ export default {
       this.createSubject(newSubject);
       this.subject_data.id = null;
       this.subject_data.name = "";
+    },
+    saveNewSubjectName(id) {
+      let subjectInput = document.getElementById(id);
+      let boxEditMode = document.getElementById(id + "edit_mode");
+      let boxNoEditMode = document.getElementById(id + "no_edit_mode");
+
+      let subject = {
+        id: parseInt(id),
+        name: subjectInput.value,
+      };
+
+      this.editSubject(subject);
+
+      boxEditMode.classList.add("hidden");
+      boxNoEditMode.classList.remove("hidden");
+    },
+    editSubjectInput(id) {
+      let boxEditMode = document.getElementById(id + "edit_mode");
+      let boxNoEditMode = document.getElementById(id + "no_edit_mode");
+
+      boxEditMode.classList.remove("hidden");
+      boxNoEditMode.classList.add("hidden");
+    },
+    cancelEdit(id) {
+      let boxEditMode = document.getElementById(id + "edit_mode");
+      let boxNoEditMode = document.getElementById(id + "no_edit_mode");
+      boxEditMode.classList.add("hidden");
+      boxNoEditMode.classList.remove("hidden");
     },
   },
   created() {
