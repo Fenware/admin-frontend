@@ -1,26 +1,24 @@
 <template>
   <div
-    class="my-4 text-white bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+    class="my-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
   >
     <div
-      class="flex justify-between px-5 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+      class="flex justify-between px-5 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
     >
       <div class="flex items-center">
         <i class="fas fa-user-clock"></i>
-        <h2 class="p-1">Usuarios pendientes</h2>
+        <h2 class="p-1 font-extrabold">Usuarios pendientes</h2>
       </div>
       <div class="flex items-center">
         <div class="mr-7">
-          <i class="fas fa-sort-alpha-down mr-1"></i>
+          <i class="fas fa-sort-alpha-down mr-2"></i>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
             @click="filter_by = 'all'"
             :class="
-              'text-sm px-2 py-0.5 ' +
-                (filter_by == 'all'
-                  ? ' rounded-full bg-white bg-opacity-20'
-                  : '')
+              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
             "
           >
             Todos
@@ -30,10 +28,8 @@
           <button
             @click="filter_by = 'teacher'"
             :class="
-              'text-sm px-2 py-0.5 ' +
-                (filter_by == 'teacher'
-                  ? ' rounded-full bg-white bg-opacity-20'
-                  : '')
+              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
             "
           >
             Docentes
@@ -43,10 +39,8 @@
           <button
             @click="filter_by = 'student'"
             :class="
-              'text-sm px-2 py-0.5 ' +
-                (filter_by == 'student'
-                  ? ' rounded-full bg-white bg-opacity-20'
-                  : '')
+              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
             "
           >
             Estudiantes
@@ -59,84 +53,103 @@
         ></i>
       </div>
     </div>
-    <div class="flex justify-center my-2">
+    <div
+      class="flex justify-center px-5 border-l-2 border-r-2 pt-5 border-gray-700"
+    >
       <!-- Mostrando el input solo si hay usuarios pendientes para buscar -->
       <input
         type="text"
-        v-show="filterUser().length > 0"
-        :placeholder="users_pending.length == 0 ? 'No hay usuarios para buscar' : 'Buscar por nombre o cédula'"
+        placeholder="Buscar por nombre o cédula"
         v-model="search_word"
-        class="w-96 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-2xl  outline-none placeholder-white"
+        class="w-9/12 placeholder-gray-300 text-center py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
       />
     </div>
     <div
-      class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-96 overflow-auto"
+      class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
-      
-        <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
       <div
-        v-for="user in filterUser()"
-        :key="user.id"
-        class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-lg rounded-2xl"
+        class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-96 overflow-auto "
       >
-        <div>
-          <p class="mb-2 text-xs tracking-widest font-extrabold">
-            <!-- Poniendo si es estudiante o docente segun el tipo -->
-            {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
-          </p>
-          <p><span class="font-bold">CI:</span> {{ user.ci }}</p>
+        <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
+        <div
+          v-for="user in filterUser()"
+          :key="user.id"
+          class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-gray-700 border-2 border-gray-600 shadow-md rounded-2xl"
+        >
+          <div>
+            <p class="mb-2 text-xs tracking-widest font-extrabold">
+              <!-- Poniendo si es estudiante o docente segun el tipo -->
+              {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+            </p>
+            <p><span class="font-bold">CI:</span> {{ user.ci }}</p>
 
-          <p>
-            <span class="font-bold">Nombre:</span> {{ user.name }}
-            {{ user.middle_name }} {{ user.surname }} {{ user.second_surname }}
-          </p>
-        </div>
+            <p>
+              <span class="font-bold">Nombre:</span> {{ user.name }}
+              {{ user.middle_name }} {{ user.surname }}
+              {{ user.second_surname }}
+            </p>
+          </div>
 
-        <div class="flex flex-wrap justify-center sm:justify-end">
-          <button
-            @click="acceptUserPending(user)"
-            class="cursor-pointer mr-1 pl-1 pr-2 py-1 my-1 bg-green-700 rounded-xl duration-300 transition-colors ease-in-out hover:bg-green-600 "
+          <div
+            class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
-            <i
-              class="fas fa-check text-green-300 mx-1 text-md drop-shadow-lg"
-            ></i>
-            Aceptar
-          </button>
-          <button
-            @click="declineUserPending(user)"
-            class="cursor-pointer pl-1 pr-2 py-1 my-1 bg-red-700 rounded-xl duration-300 transition hover:bg-red-600 "
-          >
-            <i
-              class="fas fa-times text-red-300 mx-1 text-md drop-shadow-lg "
-            ></i>
-            Rechazar
-          </button>
+            <button
+              @click="acceptUserPending(user)"
+              class="cursor-pointer font-medium w-32   pl-1 pr-2 py-1 my-1 bg-gray-700 border-2 border-green-400 hover:bg-green-500 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
+            >
+              <i
+                class="fas fa-check text-green-300 mx-1 text-md drop-shadow-lg"
+              ></i>
+              Aceptar
+            </button>
+            <button
+              @click="declineUserPending(user)"
+              class="cursor-pointer font-medium w-32 pl-1 pr-2 py-1 my-1 bg-gray-700 border-2 border-red-400 hover:border-red-300 hover:bg-red-500 hover:bg-opacity-70 rounded-xl duration-300 transition"
+            >
+              <!-- class="cursor-pointer pl-1 pr-2 py-1 my-1 bg-red-700 bg-opacity-50 hover:bg-opacity-60 rounded-xl duration-300 transition" -->
+
+              <i
+                class="fas fa-times text-red-300 mx-1 text-md drop-shadow-lg "
+              ></i>
+              Rechazar
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      class="flex justify-center items-center"
-      v-show="filterUser().length == 0 && filter_by == 'all' && search_word.trim() == ''"
-    >
-      <span class="py-4 text-xl text-white">
-        No hay usuarios pendientes <i class="fas fa-check-circle"></i>
-      </span>
-    </div>
-    <div
+      <div
+        class="flex justify-center items-center"
+        v-show="
+          filterUser().length == 0 &&
+            filter_by == 'all' &&
+            search_word.trim() == ''
+        "
+      >
+        <span class="py-4 text-xl text-white">
+          No hay usuarios pendientes <i class="fas fa-check-circle"></i>
+        </span>
+      </div>
+      <div
         class="flex justify-center items-center"
         v-show="filterUser().length == 0 && search_word.trim() != ''"
-    >
+      >
         <span class="py-4 text-xl text-white">
-          No hay coincidencias 
+          No hay coincidencias
         </span>
-    </div>
-    <div
+      </div>
+      <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && (filter_by == 'student' || filter_by == 'teacher') && search_word.trim() == ''"
-    >
+        v-show="
+          filterUser().length == 0 &&
+            (filter_by == 'student' || filter_by == 'teacher') &&
+            search_word.trim() == ''
+        "
+      >
         <span class="py-4 text-xl text-white">
-          No hay {{ filter_by == "student" ? "estudiantes" : "docentes" }} pendientes <i class="fas fa-check-circle"></i>
+          No hay
+          {{ filter_by == "student" ? "estudiantes" : "docentes" }} pendientes
+          <i class="fas fa-check-circle"></i>
         </span>
+      </div>
     </div>
   </div>
 </template>
@@ -204,7 +217,9 @@ export default {
             this.removeUserPending(parseInt(user.id));
             this.$swal({
               icon: "info",
-              title: `Has rechazado al ${user.type == 'student' ? 'estudiante' : 'docente'} ${user.name} ${user.surname} correctamente`,
+              title: `Has rechazado al ${
+                user.type == "student" ? "estudiante" : "docente"
+              } ${user.name} ${user.surname} correctamente`,
             });
           } else {
             console.log("Error: declineUserPending");
@@ -230,9 +245,10 @@ export default {
             this.removeUserPending(parseInt(user.id));
             this.$swal({
               icon: "success",
-              title: `Has aceptado al ${user.type == 'student' ? 'estudiante' : 'docente'} ${user.name} ${user.surname}!`,
+              title: `Has aceptado al ${
+                user.type == "student" ? "estudiante" : "docente"
+              } ${user.name} ${user.surname}!`,
             });
-            
           } else {
             console.log("Error: acceptUserPending");
           }
@@ -251,19 +267,33 @@ export default {
     },
     filterUser() {
       // Filtrando siempre por tipo de usuario
-      let users_filtered = this.filter_by == "all" ? this.users_pending : this.users_pending.filter((user) => user.type == this.filter_by);
+      let users_filtered =
+        this.filter_by == "all"
+          ? this.users_pending
+          : this.users_pending.filter((user) => user.type == this.filter_by);
 
       // Si el filtro es un numero ( osea una cedula )
       if (!isNaN(parseInt(this.search_word))) {
         // Filtra los usuarios por coincidencias de cedula
-        users_filtered = users_filtered.filter((user) => user.ci.indexOf(this.search_word.toString()) >= 0);
+        users_filtered = users_filtered.filter(
+          (user) => user.ci.indexOf(this.search_word.toString()) >= 0
+        );
 
         // Si no es un numero y lo ingresado no son espacios
-      }else if(isNaN(parseInt(this.search_word)) && this.search_word.trim() != ""){
-
+      } else if (
+        isNaN(parseInt(this.search_word)) &&
+        this.search_word.trim() != ""
+      ) {
         users_filtered = users_filtered.filter((user) => {
           // Concateno nombres y apellidos
-          let nombre = user.name + ' ' + user.middle_name + ' ' + user.surname + ' ' + user.second_surname;
+          let nombre =
+            user.name +
+            " " +
+            user.middle_name +
+            " " +
+            user.surname +
+            " " +
+            user.second_surname;
 
           // Filtro usuario si hay coincidencias de lo ingresado con el nombre
           return nombre.indexOf(this.search_word.toString()) >= 0;

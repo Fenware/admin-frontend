@@ -1,6 +1,6 @@
 <template>
   <main class="mx-auto w-full overflow-y-auto px-3" v-if="isLoginView()">
-      <router-view />
+    <router-view/>
   </main>
 </template>
 
@@ -15,4 +15,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

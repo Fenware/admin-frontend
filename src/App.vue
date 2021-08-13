@@ -1,13 +1,16 @@
 <template>
   <div class="" v-if="currentRouteName() == 'Login'">
-    <router-view />
+    <router-view/>
   </div>
-  <div class="flex items-center min-h-screen max-h-screen max-w-screen" v-else>
+  <div
+    class="flex items-center min-h-screen max-h-screen max-w-screen"
+    v-if="currentRouteName() != 'Login'"
+  >
     <div
-      class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl | rounded-3xl shadow-md "
+      class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
     >
       <Navbar />
-      <Main />
+      <Main @showAlert="showAlert()" />
       <!-- <Sidebar /> -->
     </div>
   </div>
@@ -33,7 +36,7 @@ export default {
 
 <style>
 body {
-  font-family: 'Georama', sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
   /* background: linear-gradient(to right top ,#175AD4,#65DF9D); */
   background-image: url("./assets/background.svg");
   background-image: no-repeat;
@@ -57,12 +60,22 @@ body {
   width: 5px;
   height: 6px;
 }
- 
+
 ::-webkit-scrollbar-track {
-  background: #ddd;
+  background: transparent;
 }
- 
+
 ::-webkit-scrollbar-thumb {
-  background: #666; 
+  background: rgb(242, 242, 242);
+  border-radius: 1rem;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.05s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
