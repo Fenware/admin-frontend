@@ -9,21 +9,21 @@
         type="text"
         placeholder="Buscar materia"
         v-model="text_filter"
-        class="my-2 py-2 px-2 text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
+        class="w-64 my-2 py-2 px-2 text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
       />
       <div
         class="my-2 max-w-max bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-lg | rounded-xl"
       >
         <input
           type="text"
-          v-model="subject_data.name"
+          v-model="new_subject.name"
           placeholder="Agregar materia"
           v-on:keyup.enter="
-            subject_data.name.trim() != '' ? addSubject() : false
+            new_subject.name.trim() != '' ? addSubject() : false
           "
-          class="w-48 py-2 px-2 min-h-full text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
+          class="w-64 py-2 px-2 min-h-full text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
         />
-        <button @click="subject_data.name.trim() != '' ? addSubject() : false">
+        <button @click="new_subject.name.trim() != '' ? addSubject() : false">
           <i
             class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl hover:text-green-300 transition-colors"
           ></i>
@@ -35,7 +35,7 @@
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-5 mt-10 bg-white bg-opacity-10  shadow-2xl rounded-2xl"
     >
       <div
-        class=" flex flex-col justify-between m-3 px-3 pt-2 pb-0.5 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
+        class="flex flex-col justify-between m-3 px-3 pt-2 pb-0.5 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
         v-for="subject in subjectsFiltered"
         :key="subject.id"
         style="height:fit-content"
@@ -72,8 +72,9 @@
           type="text"
           :id="'subject_name_input_' + subject.id"
           v-on:keyup.enter="
-            subject.name.trim() != '' ? saveNewSubjectName(subject.id) : false
+            subject_data.name.trim() != '' ? editSubject(subject.id) : false
           "
+          v-model="new_subject_name"
           class="hidden text-center py-1 px-2 bg-gray-500 rounded-xl outline-none"
         />
 
@@ -83,13 +84,13 @@
         >
           <button
             @click="toggleEditMode(subject.id, subject.name)"
-            class="cursor-pointer text-xs text-yellow-200 hover:text-yellow-100  font-medium px-1 py-0.5 my-1 bg-gray-700 border-2 border-yellow-400 hover:bg-yellow-300 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
+            class="cursor-pointer text-xs text-yellow-200 hover:text-yellow-100  font-medium px-1 py-0.5 my-1 bg-gray-700 border-2 border-yellow-400 hover:bg-yellow-300 hover:bg-opacity-60 rounded-lg duration-200 transition-colors ease-in-out"
           >
             Cambiar nombre
           </button>
 
           <i
-            @click="removeSubject(subject.id)"
+            @click="confirmDeletion(subject.id, subject.name)"
             class="fas fa-trash-alt cursor-pointer text-red-400 hover:text-red-500 transition-colors mx-1 text-md drop-shadow-lg "
           ></i>
         </div>
@@ -99,7 +100,9 @@
           class="hidden flex gap-2 justify-center mt-2"
         >
           <button
-            @click="saveNewSubjectName(subject.id)"
+            @click="
+              new_subject_name.trim() != '' ? editSubject(subject.id) : false
+            "
             class="text-sm cursor-pointer text-green-300 hover:text-white font-medium w-32   pl-2 pr-3 py-0.5 my-1 bg-gray-700 border-2 border-green-400 hover:bg-green-500 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
           >
             <i
@@ -108,47 +111,6 @@
             Guardar
           </button>
         </div>
-        <!-- <div
-          :id="subject.id + 'edit_mode'"
-          class="hidden m-3 px-3 py-1 bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
-          v-if="subject.state == 1"
-        >
-          <input
-            :id="subject.id"
-            v-model="subject.name"
-            v-on:keyup.enter="
-              subject.name.trim() != '' ? saveNewSubjectName(subject.id) : false
-            "
-            class="text-center bg-white bg-opacity-10 hover:bg-opacity-20 transition duration-300 backdrop-filter backdrop-blur-xl shadow-2xl rounded-lg outline-none"
-            type="text"
-          />
-          <div class="text-center pt-1 pb-0.5">
-            <span
-              @click="
-                subject.name.trim() != ''
-                  ? saveNewSubjectName(subject.id)
-                  : false
-              "
-              class="cursor-pointer mr-1 text-sm pl-1 pr-2 py-0.5 bg-green-700 rounded-full duration-300 transition hover:bg-green-600 "
-            >
-              <i
-                :id="subject.id + 'btn_edit'"
-                class="fas fa-save text-green-300 mx-1 text-md drop-shadow-lg"
-              ></i>
-              Guardar
-            </span>
-            <span
-              @click="cancelEdit(subject.id)"
-              class="cursor-pointer text-sm pl-1 pr-2 py-0.5 bg-red-700 rounded-full duration-300 transition hover:bg-red-600  "
-            >
-              <i
-                :id="subject.id + 'btn_delete'"
-                class="fas fa-times text-red-400 mx-1 text-md drop-shadow-lg "
-              ></i>
-              Cancelar
-            </span>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -162,11 +124,12 @@ export default {
   data: function() {
     return {
       subjects: [],
-      subject_data: {
+      new_subject: {
         id: null,
         name: "",
         state: 1,
       },
+      new_subject_name: "",
       previous_subject_edited_id: null,
       text_filter: "",
     };
@@ -189,11 +152,11 @@ export default {
     addSubject() {
       // Creando nuevo objeto con el nombre de la materia
       let newSubject = {
-        name: this.subject_data.name,
+        name: this.new_subject.name,
       };
       this.createSubject(newSubject);
-      this.subject_data.id = null;
-      this.subject_data.name = "";
+      this.new_subject.id = null;
+      this.new_subject.name = "";
     },
     toggleEditMode(id, name) {
       /* this.sweetAlertConfirm(); */
@@ -237,30 +200,10 @@ export default {
       buttonsEditMode.classList.toggle("hidden");
       buttonsNoEditMode.classList.toggle("hidden");
 
+      //
       if (id == this.previous_subject_edited_id) {
         this.previous_subject_edited_id = null;
       }
-    },
-    saveNewSubjectName(id) {
-      let subjectInput = document.getElementById(id);
-      let boxEditMode = document.getElementById(id + "edit_mode");
-      let boxNoEditMode = document.getElementById(id + "no_edit_mode");
-
-      let subject = {
-        id: parseInt(id),
-        name: subjectInput.value,
-      };
-
-      this.editSubject(subject);
-
-      boxEditMode.classList.add("hidden");
-      boxNoEditMode.classList.remove("hidden");
-    },
-    cancelEdit(id) {
-      let boxEditMode = document.getElementById(id + "edit_mode");
-      let boxNoEditMode = document.getElementById(id + "no_edit_mode");
-      boxEditMode.classList.add("hidden");
-      boxNoEditMode.classList.remove("hidden");
     },
     async getSubjects() {
       await axios({
@@ -289,26 +232,37 @@ export default {
           console.log(res.data);
           if (!("result" in res.data)) {
             this.subjects.push(res.data);
+            this.$swal({
+              icon: "success",
+              title: `La materia ${subject.name} fue creada correctamente!`,
+            });
           }
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async removeSubject(subjectId) {
+    async removeSubject(subject_id, subject_name) {
       let data = {
-        id: parseInt(subjectId),
+        id: parseInt(subject_id),
       };
       await axios({
         method: "delete",
         url: this.API_URL + "/materia",
         data: data,
         headers: this.headers,
-      }) // eslint-disable-next-line
+      })
         .then((res) => {
           if (res.data == 1) {
-            console.log(res);
-            //commit("deleteSubject", subjectId);
+            this.subjects.forEach((subject, index, subjects_array) => {
+              if (parseInt(subject_id) == parseInt(subject.id)) {
+                subjects_array.splice(index, 1);
+              }
+            });
+            this.$swal({
+              icon: "warning",
+              title: `La materia ${subject_name} fue borrada!`,
+            });
           } else {
             console.log("Error: removeSubject");
           }
@@ -317,30 +271,44 @@ export default {
           console.log(error);
         });
     },
-    async editSubject(subject) {
+    async editSubject(subject_id) {
+      let data = {
+        id: parseInt(subject_id),
+        name: this.new_subject_name,
+      };
       await axios({
         method: "put",
         url: this.API_URL + "/materia",
-        data: subject,
+        data: data,
         headers: this.headers,
       })
         .then((res) => {
-          /* if (res.data != 0) {
-            //commit("changeSubjectName", subject);
+          if (res.data == 1) {
+            this.subjects.forEach((subject) => {
+              if (parseInt(subject_id) == parseInt(subject.id)) {
+                subject.name = this.new_subject_name;
+              }
+            });
+            this.$swal({
+              icon: "success",
+              title: `Materia renombrada correctamente!`,
+            });
+            this.toggleSubjectCard(subject_id);
           } else {
             console.log("Error: editSubject");
-          } */
+          }
           console.log(res);
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    sweetAlertConfirm() {
+    confirmDeletion(subject_id, subject_name) {
       let alert = this.$swal.mixin({
         toast: false,
         position: "center",
         showConfirmButton: true,
+        showDenyButton: true,
         timer: 50000,
         timerProgressBar: true,
         iconColor: "white",
@@ -351,14 +319,14 @@ export default {
       });
       alert
         .fire({
-          html: "<span class='text-black'>Confirme ?</span>",
-          showCancelButton: true,
-          confirmButtonText: `Save`,
-          denyButtonText: `Don't save`,
+          html: `<span class="text-white">Estas seguro de borrar la materia <b>${subject_name}</b> ?</span>`,
+          showCancelButton: false,
+          confirmButtonText: `Borrar`,
+          denyButtonText: `Cancelar`,
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$swal.fire("Saved!", "", "success");
+            this.removeSubject(subject_id, subject_name);
           }
         });
     },
