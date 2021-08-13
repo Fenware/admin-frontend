@@ -32,7 +32,7 @@
     </div>
 
     <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-5 mt-10 bg-white bg-opacity-10  shadow-2xl rounded-2xl"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-5 mt-10 max-h-80 overflow-auto bg-gray-600 backdrop-filter backdrop-blur-xl bg-opacity-10 border-2 border-gray-700 shadow-2xl rounded-2xl"
     >
       <div
         class="flex flex-col justify-between m-3 px-3 pt-2 pb-0.5 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
@@ -72,7 +72,7 @@
           type="text"
           :id="'subject_name_input_' + subject.id"
           v-on:keyup.enter="
-            subject_data.name.trim() != '' ? editSubject(subject.id) : false
+            new_subject_name.trim() != '' ? editSubject(subject.id) : false
           "
           v-model="new_subject_name"
           class="hidden text-center py-1 px-2 bg-gray-500 rounded-xl outline-none"
