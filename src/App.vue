@@ -1,25 +1,19 @@
 <template>
   <div class="" v-if="currentRouteName() == 'Login'">
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+    <router-view/>
   </div>
-  <transition name="init" mode="out-in">
+  <div
+    class="flex items-center min-h-screen max-h-screen max-w-screen"
+    v-if="currentRouteName() != 'Login'"
+  >
     <div
-      class="flex items-center min-h-screen max-h-screen max-w-screen"
-      v-if="currentRouteName() != 'Login'"
+      class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
     >
-      <div
-        class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
-      >
-        <Navbar />
-        <Main @showAlert="showAlert()" />
-        <!-- <Sidebar /> -->
-      </div>
+      <Navbar />
+      <Main @showAlert="showAlert()" />
+      <!-- <Sidebar /> -->
     </div>
-  </transition>
+  </div>
 </template>
 <script>
 import Navbar from "@/components/Navbar";
