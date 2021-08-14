@@ -1,47 +1,36 @@
 <template>
   <div class="text-white w-full h-full">
-    <h2 class="text-center text-3xl mt-1">
+    <h2 class="text-center text-3xl pt-1 font-semibold">
       Orientaciones
     </h2>
 
-    <div class="flex justify-between mt-10">
+    <ListOrientation
+      v-show="mode == 'list'"
+      :orientations="orientations"
+      @changeMode="changeMode"
+    />
+
+    <CreateOrientation
+      v-show="mode == 'create'"
+      :orientations="orientations"
+      @changeMode="changeMode"
+    />
+
+    <!-- <div class="flex justify-between mt-10 mx-10">
       <input
         type="text"
         placeholder="Buscar orientacion"
         v-model="orientation_filter"
-        class="w-96 mx-2 py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-2xl  outline-none placeholder-white"
+        class="w-96 mx-2 py-2 px-2 bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-white"
       />
       <button
-        v-show="!create_orientation_mode && !modify_orientation_mode"
         @click="toogleCreateOrientationMode()"
-        class="ml-4 pr-2 | bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 shadow-2xl | rounded-2xl"
+        class="ml-4 pl-2 text-sm  bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 shadow-2xl | rounded-xl"
       >
+        Agregar orientacion
         <i
           class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
         ></i>
-        Agregar orientacion
-      </button>
-
-      <button
-        v-show="create_orientation_mode"
-        @click="toogleCreateOrientationMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar orientacion
-      </button>
-
-      <button
-        v-show="modify_orientation_mode"
-        @click="toogleModifyOrientationMode()"
-        class="ml-4 pr-2 | bg-red-400 bg-opacity-50 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-60 shadow-2xl | rounded-2xl"
-      >
-        <i
-          class="fas fa-times text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-        Cancelar
       </button>
     </div>
 
@@ -53,31 +42,42 @@
       />
       <CreateOrientationContainer v-if="create_orientation_mode" />
       <ModifyOrientationContainer v-if="modify_orientation_mode" />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations } from "vuex";
-import OrientationsContainer from "@/components/OrientationsContainer";
+import axios from "axios";
+import { mapState, mapMutations } from "vuex";
+import ListOrientation from "@/components/orientations/ListOrientation";
+import CreateOrientation from "@/components/orientations/ListOrientation";
+
+/* import OrientationsContainer from "@/components/OrientationsContainer";
 import CreateOrientationContainer from "@/components/CreateOrientationContainer";
-import ModifyOrientationContainer from "@/components/ModifyOrientationContainer";
+import ModifyOrientationContainer from "@/components/ModifyOrientationContainer"; */
 
 export default {
   name: "Orientations",
   data: function() {
     return {
-      orientation_filter: "",
+      orientations: [],
+      mode: "list",
     };
   },
+  created() {
+    this.getOrientations();
+  },
   components: {
-    OrientationsContainer,
+    ListOrientation,
+    CreateOrientation,
+    /* OrientationsContainer,
     CreateOrientationContainer,
-    ModifyOrientationContainer,
+    ModifyOrientationContainer, */
   },
   computed: {
-    ...mapState([ 
-      "orientations",
+    ...mapState([
+      "API_URL",
+      "headers",
       "create_orientation_mode",
       "modify_orientation_mode",
     ]),
@@ -87,11 +87,27 @@ export default {
       "toogleModifyOrientationMode",
       "toogleCreateOrientationMode",
     ]),
-    ...mapActions(["syncOrientations", "syncSubjects"]),
-  },
-  created() {
-    this.syncOrientations();
-    this.syncSubjects();
+    changeMode(mode) {
+      this.mode = mode;
+    },
+    async getOrientations() {
+      await axios({
+        method: "get",
+        url: this.API_URL + "/orientacion",
+        headers: this.headers,
+      })
+        .then((res) => {
+          console.log(res.data);
+          if (Array.isArray(res.data)) {
+            this.orientations = res.data;
+          }
+          /* commit("setOrientations", res.data);
+          dispatch("syncOrientationSubjects"); */
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
