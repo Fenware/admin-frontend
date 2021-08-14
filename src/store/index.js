@@ -10,8 +10,6 @@ export default createStore({
       Authorization: "",
       "Content-Type": "application/json",
     },
-    group: {},
-    groups: [],
     orientation: {},
     orientations: [],
     orientations_subjects: [],
@@ -38,9 +36,6 @@ export default createStore({
     },
     addOrientation(state, orientation) {
       state.orientations.push(orientation);
-    },
-    setUsersPending(state, payload) {
-      state.users_pending = payload;
     },
     addOriginalOrientationSubjects(state, payload) {
       state.original_subjects_selected.push(payload);
@@ -191,21 +186,6 @@ export default createStore({
           console.log(error);
         });
     },
-    async syncOrientations({ commit, dispatch, state }) {
-      await axios({
-        method: "get",
-        url: state.API_URL + "/orientacion",
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res.data);
-          commit("setOrientations", res.data);
-          dispatch("syncOrientationSubjects");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     async createOrientation({ commit, dispatch, state }, orientation) {
       var subjects = state.subjects_selected;
 
@@ -350,16 +330,6 @@ export default createStore({
     },
   },
   getters: {
-    subjectsFiltered(state) {
-      let subjectsFiltered = [];
-      state.subjects.forEach((subject) => {
-        let name = subject.name.toLowerCase();
-        if (name.indexOf(state.text_filter) >= 0) {
-          subjectsFiltered.push(subject);
-        }
-      });
-      return subjectsFiltered;
-    },
     orientationsFiltered(state) {
       let subjectsFiltered = [];
       state.subjects.forEach((subject) => {
