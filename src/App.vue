@@ -7,10 +7,10 @@
     v-if="currentRouteName() != 'Login'"
   >
     <div
-      class=" flex lg:justify-between h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
+      class=" flex flex-col sm:flex-row sm:justify-between0 h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
     >
       <Navbar />
-      <Main @showAlert="showAlert()" />
+      <Main class="mt-5" @showAlert="showAlert()" />
       <!-- <Sidebar /> -->
     </div>
   </div>
