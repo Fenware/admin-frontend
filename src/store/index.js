@@ -12,7 +12,6 @@ export default createStore({
     },
     group: {},
     groups: [],
-    subjects: [],
     orientation: {},
     orientations: [],
     orientations_subjects: [],
@@ -30,26 +29,6 @@ export default createStore({
     },
     setHeaderToken(state, payload) {
       state.headers.Authorization = payload;
-    },
-    setSubjects(state, subjects) {
-      state.subjects = subjects;
-    },
-    addSubject(state, subject) {
-      state.subjects.push(subject);
-    },
-    changeSubjectName(state, subject) {
-      state.subjects.forEach((item) => {
-        if (item.id == subject.id) {
-          item.name = subject.name;
-        }
-      });
-    },
-    deleteSubject(state, subjectId) {
-      state.subjects.forEach((item) => {
-        if (item.id == subjectId) {
-          item.state = 0;
-        }
-      });
     },
     setText(state, payload) {
       state.text_filter = payload;
@@ -212,80 +191,6 @@ export default createStore({
           console.log(error);
         });
     },
-    async syncSubjects({ commit, state }) {
-      await axios({
-        method: "get",
-        url: state.API_URL + "/materia",
-        headers: state.headers,
-      })
-        .then((res) => {
-          commit("setSubjects", res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async createSubject({ commit, state }, subject) {
-      await axios({
-        method: "post",
-        url: state.API_URL + "/materia",
-        data: subject,
-        headers: state.headers,
-      })
-        .then((res) => {
-          let id = parseInt(res.data);
-          if (res.data != "error") {
-            subject.id = id;
-            commit("addSubject", subject);
-          } else {
-            console.log("Error: createSubject");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async removeSubject({ commit, state }, subjectId) {
-      let data = {
-        id: parseInt(subjectId),
-      };
-      await axios({
-        method: "delete",
-        url: state.API_URL + "/materia",
-        data: data,
-        headers: state.headers,
-      }) // eslint-disable-next-line
-        .then((res) => {
-          if (res.data == 1) {
-            console.log(res);
-            commit("deleteSubject", subjectId);
-          } else {
-            console.log("Error: removeSubject");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async editSubject({ commit, state }, subject) {
-      await axios({
-        method: "put",
-        url: state.API_URL + "/materia",
-        data: subject,
-        headers: state.headers,
-      })
-        .then((res) => {
-          if (res.data != 0) {
-            commit("changeSubjectName", subject);
-          } else {
-            console.log("Error: editSubject");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
     async syncOrientations({ commit, dispatch, state }) {
       await axios({
         method: "get",
