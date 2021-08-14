@@ -10,7 +10,7 @@
       class=" flex flex-col sm:flex-row sm:justify-between0 h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
     >
       <Navbar />
-      <Main class="mt-5" @showAlert="showAlert()" />
+      <Main class="mt-5 sm:mt-0" @showAlert="showAlert()" />
       <!-- <Sidebar /> -->
     </div>
   </div>
