@@ -57,6 +57,7 @@
           </button>
         </div>
         <button
+          @click="changeModeToCreate()"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Agregar
@@ -166,17 +167,20 @@
 <script>
 export default {
   name: "ListOrientations",
-  data: function (){
-    return{
+  data: function() {
+    return {
       search_word: "",
       filter_by: "all",
-    }
+    };
   },
   props: {
-    orientations: Array
+    orientations: Array,
   },
-  methods:{
-  }
+  methods: {
+    changeModeToCreate() {
+      this.$emit("changeMode", "create");
+    },
+  },
 };
 </script>
 
