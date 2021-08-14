@@ -3,18 +3,14 @@
     <h2 class="text-center text-3xl pt-1 font-semibold">
       Orientaciones
     </h2>
-
+    
     <ListOrientation
       v-show="mode == 'list'"
       :orientations="orientations"
       @changeMode="changeMode"
     />
 
-    <CreateOrientation
-      v-show="mode == 'create'"
-      :orientations="orientations"
-      @changeMode="changeMode"
-    />
+    <CreateOrientation v-show="mode == 'create'" @changeMode="changeMode" />
 
     <!-- <div class="flex justify-between mt-10 mx-10">
       <input
@@ -50,7 +46,7 @@
 import axios from "axios";
 import { mapState, mapMutations } from "vuex";
 import ListOrientation from "@/components/orientations/ListOrientation";
-import CreateOrientation from "@/components/orientations/ListOrientation";
+import CreateOrientation from "@/components/orientations/CreateOrientation";
 
 /* import OrientationsContainer from "@/components/OrientationsContainer";
 import CreateOrientationContainer from "@/components/CreateOrientationContainer";
