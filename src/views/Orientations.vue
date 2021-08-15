@@ -21,7 +21,7 @@
       v-if="mode == 'edit'"
       :orientation="orientation"
       @changeMode="changeMode"
-      @changeOrientationYear="changeOrientationYear"
+      @changeOrientation="changeOrientation"
     />
 
     <!-- <div class="flex justify-between mt-10 mx-10">
@@ -105,8 +105,13 @@ export default {
         this.orientation = orientation;
       }
     },
-    changeOrientationYear(year){
-      this.orientation.year = year; 
+    changeOrientation(modified_orientation){
+      this.orientations.forEach(orientation => {
+        if(orientation.id == modified_orientation.id){
+          orientation.name = modified_orientation.name
+          orientation.year = modified_orientation.year
+        }
+      });
     },
     async getOrientations() {
       await axios({
