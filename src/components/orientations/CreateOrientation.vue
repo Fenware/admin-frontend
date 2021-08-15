@@ -204,11 +204,15 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res);
           // Si no existe el objeto result en res.data entonces no hubieron errores
           if(!("result" in res.data)){
-            this.$emit("addOrientation", orientation);
+            this.$emit("addOrientation", res.data);
             this.changeModeToList();
+
+            this.$swal({
+              icon: "success",
+              title: `La orientación ${orientation.name} fue creada correctamente!`,
+            });
           }
         })
         .catch((error) => {
