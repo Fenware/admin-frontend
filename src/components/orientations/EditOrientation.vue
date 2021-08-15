@@ -39,7 +39,7 @@
           <input
             type="text"
             placeholder="Ingrese nombre de la orientación"
-            :value="orientation.name"
+            v-model="modified_orientation.name"
             class="w-60 transition sm:w-80 text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
           />
         </div>
@@ -50,10 +50,12 @@
               >Bachillerato</label
             >
             <button
-              @click="this.$emit('changeOrientationYear', 1)"
+              @click="this.modified_orientation.year = 1"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (orientation.year == 1 ? '  bg-white bg-opacity-20 ' : '')
+                  (modified_orientation.year == 1
+                    ? '  bg-white bg-opacity-20 '
+                    : '')
               "
             >
               1ero
@@ -61,10 +63,12 @@
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
             <button
-              @click="this.$emit('changeOrientationYear', 2)"
+              @click="this.modified_orientation.year = 2"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (orientation.year == 2 ? ' bg-white bg-opacity-20 ' : '')
+                  (modified_orientation.year == 2
+                    ? ' bg-white bg-opacity-20 '
+                    : '')
               "
             >
               2do
@@ -72,10 +76,12 @@
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
             <button
-              @click="this.$emit('changeOrientationYear', 3)"
+              @click="this.modified_orientation.year = 3"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (orientation.year == 3 ? ' bg-white bg-opacity-20 ' : '')
+                  (modified_orientation.year == 3
+                    ? ' bg-white bg-opacity-20 '
+                    : '')
               "
             >
               3ero
@@ -128,6 +134,7 @@ export default {
   data: function() {
     return {
       subjects: [],
+      modified_orientation: {},
       // Materias que ya estan seleccionadas al obtenerla
       preselected_subjects: [],
       added_subjects: [],
@@ -144,6 +151,7 @@ export default {
   },
   created() {
     this.getSubjects();
+    this.modified_orientation = this.orientation;
   },
   methods: {
     changeModeToList() {
@@ -206,15 +214,14 @@ export default {
       let coincidencesInOrientationSubjects = this.preselected_subjects.filter(
         (orientation_subject) => orientation_subject.id == id
       );
-      
-      // Si hay coincidencias y ya no fue removida 
+
+      // Si hay coincidencias y ya no fue removida
       if (
         coincidencesInOrientationSubjects.length > 0 &&
         !this.removed_subjects.includes(parseInt(id))
       ) {
-
         this.deselectSubjectDiv(id);
-        
+
         // Añado el id al array de materias eliminadas
         this.removed_subjects.push(parseInt(id));
 
@@ -229,13 +236,11 @@ export default {
           }
         });
 
-        // Si no esta seleccionada, o esta seleccionada (está en el array de preseleccionadas) pero fue removida 
+        // Si no esta seleccionada, o esta seleccionada (está en el array de preseleccionadas) pero fue removida
       } else {
-
         // Si la materia fue removida
         if (this.removed_subjects.includes(parseInt(id))) {
-
-          // Busco el id de la materia en el array de eliminadas y lo quito 
+          // Busco el id de la materia en el array de eliminadas y lo quito
           this.removed_subjects.forEach((subject_id, index) => {
             if (subject_id == parseInt(id)) {
               this.removed_subjects.splice(index, 1);
@@ -250,28 +255,78 @@ export default {
         this.selectSubjectDiv(id);
       }
     },
-    saveChanges(){
+    saveChanges() {
+      if (this.added_subjects.length > 0) {
+        this.addSubjectsOrientation();
+      }
+      if (this.removed_subjects.length > 0) {
+        this.removeSubjectsOrientation();
+      }
+      if (
+        this.orientation.name != this.modified_orientation.name ||
+        this.orientation.year != this.modified_orientation.year
+      ) {
+        this.editOrientation();
+      }
 
+      this.changeModeToList();
+
+      this.$swal({
+        icon: "success",
+        title: `La orientación ${this.modified_orientation.name} fue modificada correctamente!`,
+      });
     },
     async editOrientation() {
-      let orientation = this.new_orientation;
+      let data = this.modified_orientation;
+
       await axios({
         method: "post",
         url: this.API_URL + "/orientacion",
-        data: orientation,
+        data: data,
         headers: this.headers,
       })
         .then((res) => {
           // Si no existe el objeto result en res.data entonces no hubieron errores
           if (!("result" in res.data)) {
-            this.$emit("addOrientation", res.data);
-            this.changeModeToList();
-
-            this.$swal({
-              icon: "success",
-              title: `La orientación ${orientation.name} fue creada correctamente!`,
-            });
+            this.$emit("changeOrientation", this.modified_orientation);
           }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async removeSubjectsOrientation() {
+      let data = {
+        id: parseInt(this.orientation.id),
+        subjects: this.removed_subjects,
+      };
+      console.log(data);
+      await axios({
+        method: "delete",
+        url: this.API_URL + "/orientacion-materia",
+        data: data,
+        headers: this.headers,
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async addSubjectsOrientation() {
+      let data = {
+        id: parseInt(this.orientation.id),
+        subjects: this.added_subjects,
+      };
+      await axios({
+        method: "post",
+        url: this.API_URL + "/orientacion-materia",
+        data: data,
+        headers: this.headers,
+      })
+        .then((res) => {
+          console.log(res);
         })
         .catch((error) => {
           console.log(error);
