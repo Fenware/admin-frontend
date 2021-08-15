@@ -10,7 +10,7 @@
       @changeMode="changeMode"
     />
 
-    <CreateOrientation v-show="mode == 'create'" @changeMode="changeMode" />
+    <CreateOrientation v-if="mode == 'create'" @changeMode="changeMode" @addOrientation="addOrientation" />
 
     <!-- <div class="flex justify-between mt-10 mx-10">
       <input
@@ -104,6 +104,9 @@ export default {
           console.log(error);
         });
     },
+    addOrientation(orientation){
+      this.orientations.push(orientation);
+    }
   },
 };
 </script>
