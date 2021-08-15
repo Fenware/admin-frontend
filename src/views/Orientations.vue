@@ -17,6 +17,11 @@
       @addOrientation="addOrientation"
     />
 
+    <EditOrientation
+      v-if="mode == 'edit'"
+      @changeMode="changeMode"
+    />
+
     <!-- <div class="flex justify-between mt-10 mx-10">
       <input
         type="text"
@@ -52,6 +57,7 @@ import axios from "axios";
 import { mapState, mapMutations } from "vuex";
 import ListOrientation from "@/components/orientations/ListOrientation";
 import CreateOrientation from "@/components/orientations/CreateOrientation";
+import EditOrientation from "@/components/orientations/EditOrientation";
 
 /* import OrientationsContainer from "@/components/OrientationsContainer";
 import CreateOrientationContainer from "@/components/CreateOrientationContainer";
@@ -71,6 +77,7 @@ export default {
   components: {
     ListOrientation,
     CreateOrientation,
+    EditOrientation
     /* OrientationsContainer,
     CreateOrientationContainer,
     ModifyOrientationContainer, */
