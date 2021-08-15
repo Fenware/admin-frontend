@@ -57,7 +57,7 @@
           </button>
         </div>
         <button
-          @click="changeModeToCreate()"
+          @click="this.$emit('changeMode', 'create')"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Agregar
@@ -79,7 +79,7 @@
       class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
       <div
-        class="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 max-h-96 overflow-auto "
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 max-h-96 overflow-auto "
       >
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
@@ -98,6 +98,7 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
+              @click="changeModeToEdit(orientation)"
               class=" pl-2 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
@@ -169,11 +170,12 @@ export default {
     orientations: Array,
   },
   methods: {
-    changeModeToCreate() {
-      this.$emit("changeMode", "create");
+    changeModeToEdit(orientation) {
+      // Para la vista de editar necesito pasarle las materias
+      this.$emit("changeMode", "edit", orientation);
     },
     confirmDeletion(orientation_id, orientation_name) {
-      console.log(orientation_id);
+      // Modal para confirmar si quiere eliminar la orientacion
       let alert = this.$swal.mixin({
         toast: false,
         position: "center",
@@ -195,6 +197,7 @@ export default {
           denyButtonText: `Cancelar`,
         })
         .then((result) => {
+          // Si le da al boton de eliminar llamo a la funcion
           if (result.isConfirmed) {
             this.$emit("deleteOrientation", orientation_id, orientation_name);
           }
@@ -204,5 +207,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
