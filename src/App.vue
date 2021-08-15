@@ -78,4 +78,7 @@ body {
 .fade-leave-to {
   opacity: 0;
 }
+* {
+    -webkit-tap-highlight-color: transparent;
+}
 </style>
