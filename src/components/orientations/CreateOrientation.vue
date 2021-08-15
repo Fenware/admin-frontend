@@ -205,16 +205,16 @@ export default {
       })
         .then((res) => {
           console.log(res);
-          orientation.id = res.data;
-          /* commit("addOrientation", data);
-          dispatch("syncOrientationSubjects");
-          commit("toogleCreateOrientationMode");
-          commit("clearSubjectsSelected"); */
+          // Si no existe el objeto result en res.data entonces no hubieron errores
+          if(!("result" in res.data)){
+            this.$emit("addOrientation", orientation);
+            this.changeModeToList();
+          }
         })
         .catch((error) => {
           console.log(error);
         });
-    },
+    }
   },
 };
 </script>
