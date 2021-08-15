@@ -186,33 +186,6 @@ export default createStore({
           console.log(error);
         });
     },
-    async createOrientation({ commit, dispatch, state }, orientation) {
-      var subjects = state.subjects_selected;
-
-      var data = {
-        name: orientation.name,
-        year: parseInt(orientation.year),
-        subjects: subjects,
-      };
-      console.log(data);
-      await axios({
-        method: "post",
-        url: state.API_URL + "/orientacion",
-        data: data,
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-          data.id = res.data;
-          commit("addOrientation", data);
-          dispatch("syncOrientationSubjects");
-          commit("toogleCreateOrientationMode");
-          commit("clearSubjectsSelected");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     async editOrientationSubjects({ state }, orientation_data) {
       let data_subjects_added = {
         id: parseInt(orientation_data.id),
@@ -268,24 +241,6 @@ export default createStore({
         .then((res) => {
           console.log(res);
           commit("toogleModifyOrientationMode");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async deleteOrientation({ commit, state }, id) {
-      var data = {
-        id: parseInt(id),
-      };
-      console.log(data);
-      await axios({
-        method: "delete",
-        url: state.API_URL + "/orientacion",
-        data: data,
-        headers: state.headers,
-      })
-        .then(() => {
-          commit("removeOrientation", id);
         })
         .catch((error) => {
           console.log(error);
