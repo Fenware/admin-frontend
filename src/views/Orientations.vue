@@ -23,34 +23,6 @@
       @changeMode="changeMode"
       @changeOrientation="changeOrientation"
     />
-
-    <!-- <div class="flex justify-between mt-10 mx-10">
-      <input
-        type="text"
-        placeholder="Buscar orientacion"
-        v-model="orientation_filter"
-        class="w-96 mx-2 py-2 px-2 bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-white"
-      />
-      <button
-        @click="toogleCreateOrientationMode()"
-        class="ml-4 pl-2 text-sm  bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 shadow-2xl | rounded-xl"
-      >
-        Agregar orientacion
-        <i
-          class="fas fa-plus text-white text-md py-3 px-3 | filter drop-shadow-xl transition-transform duration-300 transform hover:scale-110"
-        ></i>
-      </button>
-    </div>
-
-    <div
-      class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-10 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
-    >
-      <OrientationsContainer
-        v-if="!create_orientation_mode && !modify_orientation_mode"
-      />
-      <CreateOrientationContainer v-if="create_orientation_mode" />
-      <ModifyOrientationContainer v-if="modify_orientation_mode" />
-    </div> -->
   </div>
 </template>
 
@@ -60,10 +32,6 @@ import { mapState, mapMutations } from "vuex";
 import ListOrientation from "@/components/orientations/ListOrientation";
 import CreateOrientation from "@/components/orientations/CreateOrientation";
 import EditOrientation from "@/components/orientations/EditOrientation";
-
-/* import OrientationsContainer from "@/components/OrientationsContainer";
-import CreateOrientationContainer from "@/components/CreateOrientationContainer";
-import ModifyOrientationContainer from "@/components/ModifyOrientationContainer"; */
 
 export default {
   name: "Orientations",
@@ -81,9 +49,6 @@ export default {
     ListOrientation,
     CreateOrientation,
     EditOrientation
-    /* OrientationsContainer,
-    CreateOrientationContainer,
-    ModifyOrientationContainer, */
   },
   computed: {
     ...mapState([
@@ -126,8 +91,6 @@ export default {
           if (Array.isArray(res.data)) {
             this.orientations = res.data;
           }
-          /* commit("setOrientations", res.data);
-          dispatch("syncOrientationSubjects"); */
         })
         .catch((error) => {
           console.log(error);
