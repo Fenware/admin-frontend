@@ -112,6 +112,10 @@ export default {
           orientation.year = modified_orientation.year
         }
       });
+      this.$swal({
+        icon: "success",
+        title: `La orientación ${modified_orientation.name} fue modificada correctamente!`,
+      });
     },
     async getOrientations() {
       await axios({
@@ -120,7 +124,6 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res.data);
           if (Array.isArray(res.data)) {
             this.orientations = res.data;
           }
