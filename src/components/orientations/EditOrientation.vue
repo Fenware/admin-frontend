@@ -39,7 +39,7 @@
           <input
             type="text"
             placeholder="Ingrese nombre de la orientación"
-            v-model="new_orientation.name"
+            :value="orientation.name"
             class="w-60 transition sm:w-80 text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
           />
         </div>
@@ -50,10 +50,10 @@
               >Bachillerato</label
             >
             <button
-              @click="new_orientation.year = 1"
+              @click="this.$emit('changeOrientationYear', 1)"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (new_orientation.year == 1 ? '  bg-white bg-opacity-20 ' : '')
+                  (orientation.year == 1 ? '  bg-white bg-opacity-20 ' : '')
               "
             >
               1ero
@@ -61,10 +61,10 @@
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
             <button
-              @click="new_orientation.year = 2"
+              @click="this.$emit('changeOrientationYear', 2)"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (new_orientation.year == 2 ? ' bg-white bg-opacity-20 ' : '')
+                  (orientation.year == 2 ? ' bg-white bg-opacity-20 ' : '')
               "
             >
               2do
@@ -72,10 +72,10 @@
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
             <button
-              @click="new_orientation.year = 3"
+              @click="this.$emit('changeOrientationYear', 3)"
               :class="
                 'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                  (new_orientation.year == 3 ? ' bg-white bg-opacity-20 ' : '')
+                  (orientation.year == 3 ? ' bg-white bg-opacity-20 ' : '')
               "
             >
               3ero
@@ -128,14 +128,15 @@ export default {
   data: function() {
     return {
       subjects: [],
+      orientation_subjects: [],
+      added_subjects: [],
+      removed_subjects: [],
       search_word: "",
       filter_by: "all",
-      new_orientation: {
-        name: "",
-        year: 1,
-        subjects: [],
-      },
     };
+  },
+  props: {
+    orientation: Object,
   },
   computed: {
     ...mapState(["API_URL", "headers"]),
@@ -158,18 +159,51 @@ export default {
           // Verifico que la data recibida sea un array
           if (Array.isArray(res.data)) {
             this.subjects = res.data;
+            /* console.log(res.data); */
+            this.getOrientationSubjects();
           }
         })
         .catch((error) => {
           console.log(error);
         });
     },
+    async getOrientationSubjects() {
+      let data = `id=${this.orientation.id}`;
+      await axios({
+        method: "get",
+        url: this.API_URL + `/orientacion-materia?${data}`,
+        headers: this.headers,
+      })
+        .then((res) => {
+          // Verifico que la data recibida sea un array
+          if (Array.isArray(res.data)) {
+            this.orientation_subjects = res.data;
+            console.log(res.data);
+            this.selectOrientationSubjects();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    selectOrientationSubjects() {
+      let subjectsToSelect = this.subjects.filter((subject) => {
+        let subjects = this.orientation_subjects.filter(
+          (orientation_subject) => orientation_subject.id == subject.id
+        );
+        return subjects.length > 0;
+      });
+
+      subjectsToSelect.forEach(subject => {
+        this.selectSubject(subject.id)
+      });
+    },
     selectSubject(id) {
       let subjectDiv = document.getElementById("subject_" + id);
       /* let subjectName = document.getElementById('subject_name_' + id); */
       let subjectIcon = document.getElementById("subject_icon_" + id);
 
-      if (!this.new_orientation.subjects.includes(parseInt(id))) {
+      if (!this.added_subjects.includes(parseInt(id))) {
         // Añado las clases al div y al icono para que quede "seleccionada"
         subjectDiv.classList.add("scale-95");
         subjectDiv.classList.replace("bg-gray-700", "bg-gray-800");
@@ -180,9 +214,16 @@ export default {
           "hover:text-indigo-300"
         );
 
-        // Añado el id de la materia al array de materias seleccionadas
-        this.new_orientation.subjects.push(parseInt(id));
-      } else {
+        // Busco coincidencias en el array de materias ya seleccionadas
+        let coincidencesInOrientationSubjects = this.orientation_subjects.filter(
+          (orientation_subject) => orientation_subject.id == id
+        );
+
+        if (coincidencesInOrientationSubjects.length == 0) {
+          // Añado el id de la materia al array de materias seleccionadas
+          this.added_subjects.push(parseInt(id));
+        }
+      } /* else {
         subjectDiv.classList.remove("scale-95");
         subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
         subjectIcon.classList.replace("fa-check-square", "fa-square");
@@ -193,7 +234,7 @@ export default {
             this.new_orientation.subjects.splice(index, 1);
           }
         });
-      }
+      } */
     },
     async createOrientation() {
       let orientation = this.new_orientation;
@@ -205,7 +246,7 @@ export default {
       })
         .then((res) => {
           // Si no existe el objeto result en res.data entonces no hubieron errores
-          if(!("result" in res.data)){
+          if (!("result" in res.data)) {
             this.$emit("addOrientation", res.data);
             this.changeModeToList();
 
@@ -218,7 +259,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    }
+    },
   },
 };
 </script>
