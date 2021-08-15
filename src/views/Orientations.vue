@@ -19,7 +19,9 @@
 
     <EditOrientation
       v-if="mode == 'edit'"
+      :orientation="orientation"
       @changeMode="changeMode"
+      @changeOrientationYear="changeOrientationYear"
     />
 
     <!-- <div class="flex justify-between mt-10 mx-10">
@@ -68,6 +70,7 @@ export default {
   data: function() {
     return {
       orientations: [],
+      orientation: {},
       mode: "list",
     };
   },
@@ -95,8 +98,15 @@ export default {
       "toogleModifyOrientationMode",
       "toogleCreateOrientationMode",
     ]),
-    changeMode(mode) {
+    changeMode(mode, orientation) {
       this.mode = mode;
+      if(orientation){
+        console.log(orientation);
+        this.orientation = orientation;
+      }
+    },
+    changeOrientationYear(year){
+      this.orientation.year = year; 
     },
     async getOrientations() {
       await axios({
