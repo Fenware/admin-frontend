@@ -11,10 +11,10 @@
       </div>
       <div class="flex items-center">
         <button
-          @click="createOrientation()"
+          @click="saveChanges()"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
-          Editar orientación
+          Guardar cambios
         </button>
 
         <button
@@ -93,7 +93,7 @@
           :id="'subject_' + subject.id"
           v-for="subject in subjects"
           :key="subject.id"
-          @click="selectSubject(subject.id)"
+          @click="toggleSubject(subject.id)"
           style="height:fit-content"
         >
           <p
@@ -124,11 +124,12 @@ import axios from "axios";
 import { mapState } from "vuex";
 
 export default {
-  name: "CreateOrientation",
+  name: "EditOrientation",
   data: function() {
     return {
       subjects: [],
-      orientation_subjects: [],
+      // Materias que ya estan seleccionadas al obtenerla
+      preselected_subjects: [],
       added_subjects: [],
       removed_subjects: [],
       search_word: "",
@@ -177,7 +178,7 @@ export default {
         .then((res) => {
           // Verifico que la data recibida sea un array
           if (Array.isArray(res.data)) {
-            this.orientation_subjects = res.data;
+            this.preselected_subjects = res.data;
             console.log(res.data);
             this.selectOrientationSubjects();
           }
@@ -187,56 +188,72 @@ export default {
         });
     },
     selectOrientationSubjects() {
+      // Obtengo la informacion de las materias preseleccionadas
       let subjectsToSelect = this.subjects.filter((subject) => {
-        let subjects = this.orientation_subjects.filter(
+        let subjects = this.preselected_subjects.filter(
           (orientation_subject) => orientation_subject.id == subject.id
         );
         return subjects.length > 0;
       });
 
-      subjectsToSelect.forEach(subject => {
-        this.selectSubject(subject.id)
+      // Selecciono los div de las materias preseleccionadas
+      subjectsToSelect.forEach((subject) => {
+        this.selectSubjectDiv(subject.id);
       });
     },
-    selectSubject(id) {
-      let subjectDiv = document.getElementById("subject_" + id);
-      /* let subjectName = document.getElementById('subject_name_' + id); */
-      let subjectIcon = document.getElementById("subject_icon_" + id);
+    toggleSubject(id) {
+      // Busco coincidencias en el array de materias ya seleccionadas
+      let coincidencesInOrientationSubjects = this.preselected_subjects.filter(
+        (orientation_subject) => orientation_subject.id == id
+      );
+      
+      // Si hay coincidencias y ya no fue removida 
+      if (
+        coincidencesInOrientationSubjects.length > 0 &&
+        !this.removed_subjects.includes(parseInt(id))
+      ) {
 
-      if (!this.added_subjects.includes(parseInt(id))) {
-        // Añado las clases al div y al icono para que quede "seleccionada"
-        subjectDiv.classList.add("scale-95");
-        subjectDiv.classList.replace("bg-gray-700", "bg-gray-800");
-        subjectIcon.classList.replace("fa-square", "fa-check-square");
-        subjectIcon.classList.add("text-indigo-400");
-        subjectIcon.classList.replace(
-          "hover:text-indigo-400",
-          "hover:text-indigo-300"
-        );
+        this.deselectSubjectDiv(id);
+        
+        // Añado el id al array de materias eliminadas
+        this.removed_subjects.push(parseInt(id));
 
-        // Busco coincidencias en el array de materias ya seleccionadas
-        let coincidencesInOrientationSubjects = this.orientation_subjects.filter(
-          (orientation_subject) => orientation_subject.id == id
-        );
+        // Si esta en el array de materias añadidas
+      } else if (this.added_subjects.includes(parseInt(id))) {
+        this.deselectSubjectDiv(id);
 
-        if (coincidencesInOrientationSubjects.length == 0) {
-          // Añado el id de la materia al array de materias seleccionadas
-          this.added_subjects.push(parseInt(id));
-        }
-      } /* else {
-        subjectDiv.classList.remove("scale-95");
-        subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
-        subjectIcon.classList.replace("fa-check-square", "fa-square");
-        subjectIcon.classList.remove("text-indigo-400");
-
-        this.new_orientation.subjects.forEach((subject_id, index) => {
+        // Busco el id en el array y lo quito
+        this.added_subjects.forEach((subject_id, index) => {
           if (subject_id == parseInt(id)) {
-            this.new_orientation.subjects.splice(index, 1);
+            this.added_subjects.splice(index, 1);
           }
         });
-      } */
+
+        // Si no esta seleccionada, o esta seleccionada (está en el array de preseleccionadas) pero fue removida 
+      } else {
+
+        // Si la materia fue removida
+        if (this.removed_subjects.includes(parseInt(id))) {
+
+          // Busco el id de la materia en el array de eliminadas y lo quito 
+          this.removed_subjects.forEach((subject_id, index) => {
+            if (subject_id == parseInt(id)) {
+              this.removed_subjects.splice(index, 1);
+            }
+          });
+        }
+
+        // Si no esta preseleccionada la añado al array de seleccionadas
+        if (coincidencesInOrientationSubjects.length == 0) {
+          this.added_subjects.push(parseInt(id));
+        }
+        this.selectSubjectDiv(id);
+      }
     },
-    async createOrientation() {
+    saveChanges(){
+
+    },
+    async editOrientation() {
       let orientation = this.new_orientation;
       await axios({
         method: "post",
@@ -259,6 +276,27 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    deselectSubjectDiv(id) {
+      let subjectDiv = document.getElementById("subject_" + id);
+      let subjectIcon = document.getElementById("subject_icon_" + id);
+
+      subjectDiv.classList.remove("scale-95");
+      subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
+      subjectIcon.classList.replace("fa-check-square", "fa-square");
+      subjectIcon.classList.remove("text-indigo-400");
+    },
+    selectSubjectDiv(id) {
+      let subjectDiv = document.getElementById("subject_" + id);
+      let subjectIcon = document.getElementById("subject_icon_" + id);
+      subjectDiv.classList.add("scale-95");
+      subjectDiv.classList.replace("bg-gray-700", "bg-gray-800");
+      subjectIcon.classList.replace("fa-square", "fa-check-square");
+      subjectIcon.classList.add("text-indigo-400");
+      subjectIcon.classList.replace(
+        "hover:text-indigo-400",
+        "hover:text-indigo-300"
+      );
     },
   },
 };
