@@ -101,7 +101,6 @@ export default {
     changeMode(mode, orientation) {
       this.mode = mode;
       if(orientation){
-        console.log(orientation);
         this.orientation = orientation;
       }
     },

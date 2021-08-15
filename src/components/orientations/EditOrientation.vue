@@ -174,7 +174,6 @@ export default {
           // Verifico que la data recibida sea un array
           if (Array.isArray(res.data)) {
             this.subjects = res.data;
-            /* console.log(res.data); */
             this.getOrientationSubjects();
           }
         })
@@ -278,7 +277,6 @@ export default {
     async editOrientation() {
       let data = this.modified_orientation;
       data.id = parseInt(this.modified_orientation.id);
-      console.log(data);
       await axios({
         method: "put",
         url: this.API_URL + "/orientacion",
@@ -286,7 +284,6 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res.data);
           if (res.data == 11) {
             this.$emit("changeOrientation", this.modified_orientation);
           }
