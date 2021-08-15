@@ -12,7 +12,7 @@
       <div class="flex items-center">
         <button
           @click="saveChanges()"
-          class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
+          class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-blue-200 hover:bg-blue-300 text-blue-900"
         >
           Guardar cambios
         </button>
@@ -151,7 +151,13 @@ export default {
   },
   created() {
     this.getSubjects();
-    this.modified_orientation = this.orientation;
+
+    let orientation = {
+      id: this.orientation.id,
+      name: this.orientation.name,
+      year: this.orientation.year,
+    };
+    this.modified_orientation = orientation;
   },
   methods: {
     changeModeToList() {
@@ -187,7 +193,6 @@ export default {
           // Verifico que la data recibida sea un array
           if (Array.isArray(res.data)) {
             this.preselected_subjects = res.data;
-            console.log(res.data);
             this.selectOrientationSubjects();
           }
         })
@@ -268,26 +273,21 @@ export default {
       ) {
         this.editOrientation();
       }
-
       this.changeModeToList();
-
-      this.$swal({
-        icon: "success",
-        title: `La orientación ${this.modified_orientation.name} fue modificada correctamente!`,
-      });
     },
     async editOrientation() {
       let data = this.modified_orientation;
-
+      data.id = parseInt(this.modified_orientation.id);
+      console.log(data);
       await axios({
-        method: "post",
+        method: "put",
         url: this.API_URL + "/orientacion",
         data: data,
         headers: this.headers,
       })
         .then((res) => {
-          // Si no existe el objeto result en res.data entonces no hubieron errores
-          if (!("result" in res.data)) {
+          console.log(res.data);
+          if (res.data == 11) {
             this.$emit("changeOrientation", this.modified_orientation);
           }
         })
@@ -308,7 +308,9 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res);
+          if (res.data == 1) {
+            this.$emit("changeOrientation", this.modified_orientation);
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -326,7 +328,10 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
+          if (res.data == 1) {
+            this.$emit("changeOrientation", this.modified_orientation);
+          }
         })
         .catch((error) => {
           console.log(error);
