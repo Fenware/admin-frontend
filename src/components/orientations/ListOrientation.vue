@@ -98,12 +98,11 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
-              @click="show_modal == !show_modal"
-              class=" pl-2 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900"
+              class=" pl-2 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
               <i
-                class="fas fa-caret-down text-green-600 mx-1 text-md drop-shadow-lg"
+                class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
               ></i>
             </button>
             <button
@@ -150,55 +149,8 @@
         </span>
       </div> -->
 
-      <transition name="fade">
-        <div v-show="show_modal" class="fixed inset-0 z-30">
-          <!--       background -->
-          <div
-            v-show="show_modal"
-            @click="show_modal == !show_modal"
-            class="bg-filter bg-white opacity-25 fixed inset-0 w-full h-full z-20"
-          ></div>
-          <!--          -->
-          <div class="flex flex-col items-center justify-center h-full w-full">
-            <transition name="fade-up-down">
-              <div
-                v-show="show_modal"
-                class="modal-wrapper inline-block flex items-center z-30"
-              >
-                <div
-                  class="modal max-w-md mx-auto xl:max-w-5xl lg:max-w-5xl md:max-w-2xl bg-white max-h-screen shadow-lg flex-row rounded relative"
-                >
-                  <div
-                    class="modal-header p-5 bg-gray-900 text-gray-900 rounded-t"
-                  >
-                    <h5 class="text-white text-2xl uppercase">
-                      this is header
-                    </h5>
-                  </div>
-                  <div class="modal-body p-5 w-full h-full overflow-y-auto ">
-                    <p class="text-justify">
-                      cilis omnis nam illum maiores, porro velit deserunt neque.
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                      Esse, voluptates eveniet labore dolorum molestiae, modi
-                      saepe fugiat minima repudiandae repellendus obcaecati
-                      voluptatibus ab tenetur recusandae eius quos at maiores
-                      atque consectetur facilis! Nisi fuga
-                    </p>
-                  </div>
-                  <div class="modal-footer py-3 px-5 border0-t text-right">
-                    <button
-                      class="bg-green-500 px-5 py-2 text-white"
-                      @click="show_modal == !show_modal"
-                    >
-                      OK
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-        </div>
-      </transition>
+      <!-- Modal decente -->
+      <!-- https://tailwindcomponents.com/component/modal -->
     </div>
   </div>
 </template>
@@ -210,7 +162,7 @@ export default {
     return {
       search_word: "",
       filter_by: "all",
-      show_modal: false
+      show_modal: false,
     };
   },
   props: {
@@ -253,31 +205,4 @@ export default {
 </script>
 
 <style>
-.fade-up-down-enter-active {
-  transition: all 0.3s ease;
-}
-.fade-up-down-leave-active {
-  transition: all 0.3s ease;
-}
-.fade-up-down-enter {
-  transform: translateY(10%);
-  opacity: 0;
-}
-.fade-up-down-leave-to {
-  transform: translateY(10%);
-  opacity: 0;
-}
-
-.fade-enter-active {
-  -webkit-transition: opacity 2s;
-  transition: opacity 0.3s;
-}
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>
