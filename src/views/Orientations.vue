@@ -3,14 +3,19 @@
     <h2 class="text-center text-3xl pt-1 font-semibold">
       Orientaciones
     </h2>
-    
+
     <ListOrientation
       v-show="mode == 'list'"
       :orientations="orientations"
       @changeMode="changeMode"
+      @deleteOrientation="deleteOrientation"
     />
 
-    <CreateOrientation v-if="mode == 'create'" @changeMode="changeMode" @addOrientation="addOrientation" />
+    <CreateOrientation
+      v-if="mode == 'create'"
+      @changeMode="changeMode"
+      @addOrientation="addOrientation"
+    />
 
     <!-- <div class="flex justify-between mt-10 mx-10">
       <input
@@ -104,9 +109,46 @@ export default {
           console.log(error);
         });
     },
-    addOrientation(orientation){
+    addOrientation(orientation) {
       this.orientations.push(orientation);
-    }
+    },
+    async deleteOrientation(id, orientation_name) {
+      var data = {
+        id: parseInt(id),
+      };
+      console.log(data);
+      await axios({
+        method: "delete",
+        url: this.API_URL + "/orientacion",
+        data: data,
+        headers: this.headers,
+      })
+        .then((res) => {
+          // Si la consulta salio bien
+          if (res.data == 1) {
+            // Elimino el objeto del array
+            this.orientations.forEach((orientation, index) => {
+              if(parseInt(orientation.id) == parseInt(id)){
+                this.orientations.splice(index, 1);
+              }
+            });
+
+            // Lanzando alerta
+            this.$swal({
+              icon: "info",
+              title: `La orientación ${orientation_name} fue eliminada correctamente!`,
+            });
+          }else{
+            this.$swal({
+              icon: "error",
+              title: `La orientación ${orientation_name} no pudo ser eliminada, actualice la pagina e intente nuevamente`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
