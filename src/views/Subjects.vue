@@ -84,14 +84,14 @@
         >
           <button
             @click="toggleEditMode(subject.id, subject.name)"
-            class="cursor-pointer text-xs text-yellow-200 hover:text-yellow-100  font-medium px-1 py-0.5 my-1 bg-gray-700 border-2 border-yellow-400 hover:bg-yellow-300 hover:bg-opacity-60 rounded-lg duration-200 transition-colors ease-in-out"
+            class="px-2 mb-1 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
           >
             Cambiar nombre
           </button>
 
           <i
             @click="confirmDeletion(subject.id, subject.name)"
-            class="fas fa-trash-alt cursor-pointer text-red-400 hover:text-red-500 transition-colors mx-1 text-md drop-shadow-lg "
+            class="fas fa-trash-alt px-2 cursor-pointer text-red-400 hover:text-red-500 transition-colors mx-1 text-md drop-shadow-lg  font-semibold py-1 rounded-md border-b-2 hover:border-red-500 border-red-400 bg-red-200 hover:bg-red-300"
           ></i>
         </div>
 
