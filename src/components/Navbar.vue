@@ -24,11 +24,11 @@
             <i :class="'fa-users ' + icon_class"></i>
           </router-link>
         </li>
-        <li class="cursor-pointer">
+        <!-- <li class="cursor-pointer">
           <router-link :to="{ name: 'User' }" class="cursor-pointer">
             <i :class="'fa-user ' + icon_class"></i>
             </router-link>
-        </li>
+        </li> -->
       </div>
       <div class="flex gap-2 sm:gap-0 sm:block">
         <li class="cursor-pointer">
