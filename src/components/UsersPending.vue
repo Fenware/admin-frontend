@@ -95,21 +95,20 @@
           >
             <button
               @click="acceptUserPending(user)"
-              class="cursor-pointer font-medium w-32   pl-1 pr-2 py-1 my-1 bg-gray-700 border-2 border-green-400 hover:bg-green-500 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
+              class="px-3 mb-1 text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900"
             >
               <i
-                class="fas fa-check text-green-300 mx-1 text-md drop-shadow-lg"
+                class="fas fa-check mx-1 text-md drop-shadow-lg"
               ></i>
               Aceptar
             </button>
             <button
               @click="declineUserPending(user)"
-              class="cursor-pointer font-medium w-32 pl-1 pr-2 py-1 my-1 bg-gray-700 border-2 border-red-400 hover:border-red-300 hover:bg-red-500 hover:bg-opacity-70 rounded-xl duration-300 transition"
+              class="px-3 mb-1 text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-yellow-500 border-yellow-400 bg-yellow-200 hover:bg-yellow-300 text-yellow-900"
             >
-              <!-- class="cursor-pointer pl-1 pr-2 py-1 my-1 bg-red-700 bg-opacity-50 hover:bg-opacity-60 rounded-xl duration-300 transition" -->
 
               <i
-                class="fas fa-times text-red-300 mx-1 text-md drop-shadow-lg "
+                class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
               ></i>
               Rechazar
             </button>
