@@ -71,7 +71,7 @@
       <input
         type="text"
         placeholder="Buscar orientación por nombre"
-        v-model="search_word"
+        v-model="text_filter"
         class="w-9/12 placeholder-gray-300 text-center py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
       />
     </div>
@@ -83,7 +83,7 @@
       >
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
-          v-for="orientation in orientations"
+          v-for="orientation in orientationsFiltered"
           :key="orientation.id"
           class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-gray-700 border-2 border-gray-600 shadow-md rounded-2xl"
         >
@@ -161,13 +161,23 @@ export default {
   name: "ListOrientations",
   data: function() {
     return {
-      search_word: "",
+      text_filter: "",
       filter_by: "all",
       show_modal: false,
     };
   },
   props: {
     orientations: Array,
+  },
+  computed: {
+    orientationsFiltered() {
+      // Devuelvo las materias filtradas por coincidencias de nombre
+      return this.orientations.filter(
+        (orientation) =>
+          orientation.name.toLowerCase().indexOf(this.text_filter.toLowerCase()) >=
+          0
+      );
+    },
   },
   methods: {
     changeModeToEdit(orientation) {
