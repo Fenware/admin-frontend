@@ -32,6 +32,7 @@
     </div>
 
     <div
+      v-show="subjectsFiltered.length > 0"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-5 mt-10 max-h-80 overflow-auto bg-gray-600 backdrop-filter backdrop-blur-xl bg-opacity-10 border-2 border-gray-700 shadow-2xl rounded-2xl"
     >
       <div
@@ -58,14 +59,12 @@
           :id="'subject_header_' + subject.id"
           class="hidden flex justify-between items-center mb-1 "
         >
-          <p class="text-xs pl-2">Cambiar nombre</p>
+          <p class="text-xs pl-2 select-none">Cambiar nombre</p>
           <button
             @click="toggleSubjectCard(subject.id)"
-            class="cursor-pointer text-xs px-0.1 px-1 bg-gray-700 border-2 border-red-400 hover:border-red-300 hover:bg-red-500 hover:bg-opacity-70 rounded-xl duration-300 transition"
+            class="text-sm px-2 py-0.5 mb-1 text-red-900  transition-colors font-semibold rounded-md bg-red-200 hover:bg-red-300 shadow-lg"
           >
-            <i
-              class="fas fa-times text-red-300 mx-1 text-md drop-shadow-lg "
-            ></i>
+            <i class="fas fa-times text-sm drop-shadow-lg "></i>
           </button>
         </div>
         <input
@@ -103,15 +102,18 @@
             @click="
               new_subject_name.trim() != '' ? editSubject(subject.id) : false
             "
-            class="text-sm cursor-pointer text-green-300 hover:text-white font-medium w-32   pl-2 pr-3 py-0.5 my-1 bg-gray-700 border-2 border-green-400 hover:bg-green-500 hover:bg-opacity-60 rounded-xl duration-200 transition-colors ease-in-out"
+            class="text-sm px-8 mb-1 cursor-pointer text-green-900  transition-colors mx-1 text-md drop-shadow-lg  font-semibold py-1 rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300"
           >
-            <i
-              class="fas fa-save text-green-300 mr-1 text-md drop-shadow-lg"
-            ></i>
             Guardar
           </button>
         </div>
       </div>
+    </div>
+    <div
+      class="py-5 mx-5 mt-10 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
+      v-show="subjectsFiltered.length == 0"
+    >
+      <p class="text-center">No hay coincidencias</p>
     </div>
   </div>
 </template>
