@@ -208,10 +208,14 @@ export default {
           if(!("result" in res.data)){
             this.$emit("addOrientation", res.data);
             this.changeModeToList();
-
             this.$swal({
               icon: "success",
               title: `La orientación ${orientation.name} fue creada correctamente!`,
+            });
+          }else{
+            this.$swal({
+              icon: "error",
+              title: res.data.result.error_msg,
             });
           }
         })
