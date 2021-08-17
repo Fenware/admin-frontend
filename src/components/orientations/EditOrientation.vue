@@ -260,19 +260,26 @@ export default {
       }
     },
     saveChanges() {
-      if (this.added_subjects.length > 0) {
-        this.addSubjectsOrientation();
+      if (this.modified_orientation.name.length > 0) {
+        if (this.added_subjects.length > 0) {
+          this.addSubjectsOrientation();
+        }
+        if (this.removed_subjects.length > 0) {
+          this.removeSubjectsOrientation();
+        }
+        if (
+          this.orientation.name != this.modified_orientation.name ||
+          this.orientation.year != this.modified_orientation.year
+        ) {
+          this.editOrientation();
+        }
+        this.changeModeToList();
+      } else {
+        this.$swal({
+          icon: "error",
+          title: "Debes completar todos los campos!",
+        });
       }
-      if (this.removed_subjects.length > 0) {
-        this.removeSubjectsOrientation();
-      }
-      if (
-        this.orientation.name != this.modified_orientation.name ||
-        this.orientation.year != this.modified_orientation.year
-      ) {
-        this.editOrientation();
-      }
-      this.changeModeToList();
     },
     async editOrientation() {
       let data = this.modified_orientation;
@@ -284,7 +291,7 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          if (res.data == 11) {
+          if (res.data == 1) {
             this.$emit("changeOrientation", this.modified_orientation);
           }
         })
