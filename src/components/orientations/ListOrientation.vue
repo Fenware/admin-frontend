@@ -115,30 +115,30 @@
           </div>
         </div>
       </div>
-      <!-- <div
+      <div
         class="flex justify-center items-center"
         v-show="
-          filterUser().length == 0 &&
+          orientationsFiltered.length == 0 &&
             filter_by == 'all' &&
-            search_word.trim() == ''
+            text_filter.trim() == ''
         "
       >
         <span class="py-4 text-xl text-white">
-          No hay usuarios pendientes <i class="fas fa-check-circle"></i>
+          No hay orientaciones creadas
         </span>
       </div>
       <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && search_word.trim() != ''"
+        v-show="orientationsFiltered.length == 0 && text_filter.trim() != ''"
       >
         <span class="py-4 text-xl text-white">
           No hay coincidencias
         </span>
       </div>
-      <div
+      <!-- <div
         class="flex justify-center items-center"
         v-show="
-          filterUser().length == 0 &&
+          orientations.length == 0 &&
             (filter_by == 'student' || filter_by == 'teacher') &&
             search_word.trim() == ''
         "
@@ -175,7 +175,7 @@ export default {
       return this.orientations.filter(
         (orientation) =>
           orientation.name.toLowerCase().indexOf(this.text_filter.toLowerCase()) >=
-          0
+          0 
       );
     },
   },
