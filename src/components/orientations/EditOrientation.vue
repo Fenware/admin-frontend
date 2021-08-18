@@ -28,8 +28,7 @@
     <div
       class="p-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
-      <form
-        @submit.prevent=""
+      <div
         class="flex flex-wrap items-center justify-start sm:justify-around mb-8"
       >
         <div class="">
@@ -88,7 +87,7 @@
             </button>
           </div>
         </div>
-      </form>
+      </div>
       <label class="block text-lg text-center">Seleccionar materias</label>
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-72 overflow-auto"
