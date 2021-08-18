@@ -77,31 +77,6 @@ export default createStore({
         console.log();
       }
     },
-    async login({ commit, state, dispatch }, payload) {
-      await axios({
-        method: "post",
-        url: state.API_URL + "/auth",
-        data: payload,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (typeof res.data.result.token == "string") {
-            let token = res.data.result.token;
-            commit("setToken", token);
-            localStorage.setItem("token", token);
-            dispatch('syncToken');
-            router.push("/inicio");
-          } else {
-            console.log("Error: login");
-            alert(res.data.result.error_msg);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     logout({ commit }) {
       commit("setToken", null);
       commit("setHeaderToken", "");
