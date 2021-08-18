@@ -26,10 +26,10 @@
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_by = 'teacher'"
+            @click="filter_by = 1"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
+                (filter_by == 1 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
             1ero
@@ -37,20 +37,20 @@
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_by = 'student'"
+            @click="filter_by = 2"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
+                (filter_by == 2 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
             2do
           </button>
 
           <button
-            @click="filter_by = 'student'"
+            @click="filter_by = 3"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
+                (filter_by == 3 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
             3ero
@@ -83,7 +83,7 @@
       >
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
-          v-for="orientation in orientationsFiltered"
+          v-for="orientation in orientationsFiltered()"
           :key="orientation.id"
           class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-gray-700 border-2 border-gray-600 shadow-md rounded-2xl"
         >
@@ -118,7 +118,7 @@
       <div
         class="flex justify-center items-center"
         v-show="
-          orientationsFiltered.length == 0 &&
+          orientationsFiltered().length == 0 &&
             filter_by == 'all' &&
             text_filter.trim() == ''
         "
@@ -129,7 +129,7 @@
       </div>
       <div
         class="flex justify-center items-center"
-        v-show="orientationsFiltered.length == 0 && text_filter.trim() != ''"
+        v-show="orientationsFiltered().length == 0 && text_filter.trim() != ''"
       >
         <span class="py-4 text-xl text-white">
           No hay coincidencias
@@ -170,16 +170,26 @@ export default {
     orientations: Array,
   },
   computed: {
-    orientationsFiltered() {
-      // Devuelvo las materias filtradas por coincidencias de nombre
-      return this.orientations.filter(
-        (orientation) =>
-          orientation.name.toLowerCase().indexOf(this.text_filter.toLowerCase()) >=
-          0 
-      );
     },
-  },
   methods: {
+    orientationsFiltered() {
+      // Filtro las orientaciones por coincidencias de nombre
+      let orientations_filtered = this.orientations.filter(
+        (orientation) =>
+          orientation.name
+            .toLowerCase()
+            .indexOf(this.text_filter.toLowerCase()) >= 0
+      );
+
+      if (this.filter_by == 1) {
+        orientations_filtered = orientations_filtered.filter((orientation) =>  parseInt(orientation.year) == 1);
+      } else if (this.filter_by == 2) {
+        orientations_filtered = orientations_filtered.filter((orientation) => parseInt(orientation.year) == 2);
+      } else if (this.filter_by == 3) {
+        orientations_filtered = orientations_filtered.filter((orientation) => parseInt(orientation.year) == 3);
+      }
+      return orientations_filtered;
+    },
     changeModeToEdit(orientation) {
       // Para la vista de editar necesito pasarle las materias
       this.$emit("changeMode", "edit", orientation);
