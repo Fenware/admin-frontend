@@ -60,7 +60,7 @@
       <input
         type="text"
         placeholder="Buscar por nombre o cédula"
-        v-model="search_word"
+        v-model="text_filter"
         class="w-9/12 placeholder-gray-300 text-center py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
       />
     </div>
@@ -120,7 +120,7 @@
         v-show="
           filterUser().length == 0 &&
             filter_by == 'all' &&
-            search_word.trim() == ''
+            text_filter.trim() == ''
         "
       >
         <span class="py-4 text-xl text-white">
@@ -129,7 +129,7 @@
       </div>
       <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && search_word.trim() != ''"
+        v-show="filterUser().length == 0 && text_filter.trim() != ''"
       >
         <span class="py-4 text-xl text-white">
           No hay coincidencias
@@ -140,7 +140,7 @@
         v-show="
           filterUser().length == 0 &&
             (filter_by == 'student' || filter_by == 'teacher') &&
-            search_word.trim() == ''
+            text_filter.trim() == ''
         "
       >
         <span class="py-4 text-xl text-white">
@@ -165,7 +165,7 @@ export default {
       // "all" para que no me filtre los usuarios por defecto
       filter_by: "all",
       // Variable para buscar usuario
-      search_word: "",
+      text_filter: "",
     };
   },
   computed: {
@@ -272,16 +272,16 @@ export default {
           : this.users_pending.filter((user) => user.type == this.filter_by);
 
       // Si el filtro es un numero ( osea una cedula )
-      if (!isNaN(parseInt(this.search_word))) {
+      if (!isNaN(parseInt(this.text_filter))) {
         // Filtra los usuarios por coincidencias de cedula
         users_filtered = users_filtered.filter(
-          (user) => user.ci.indexOf(this.search_word.toString()) >= 0
+          (user) => user.ci.indexOf(this.text_filter.toString()) >= 0
         );
 
         // Si no es un numero y lo ingresado no son espacios
       } else if (
-        isNaN(parseInt(this.search_word)) &&
-        this.search_word.trim() != ""
+        isNaN(parseInt(this.text_filter)) &&
+        this.text_filter.trim() != ""
       ) {
         users_filtered = users_filtered.filter((user) => {
           // Concateno nombres y apellidos
@@ -295,7 +295,7 @@ export default {
             user.second_surname;
 
           // Filtro usuario si hay coincidencias de lo ingresado con el nombre
-          return nombre.indexOf(this.search_word.toString()) >= 0;
+          return nombre.indexOf(this.text_filter.toString()) >= 0;
         });
       }
       return users_filtered;
