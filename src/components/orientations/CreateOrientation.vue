@@ -166,7 +166,7 @@ export default {
     },
     selectSubject(id) {
       let subjectDiv = document.getElementById("subject_" + id);
-      /* let subjectName = document.getElementById('subject_name_' + id); */
+      let subjectName = document.getElementById('subject_name_' + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
 
       if (!this.new_orientation.subjects.includes(parseInt(id))) {
@@ -179,6 +179,7 @@ export default {
           "hover:text-indigo-400",
           "hover:text-indigo-300"
         );
+        subjectName.classList.toggle("text-indigo-300");
 
         // Añado el id de la materia al array de materias seleccionadas
         this.new_orientation.subjects.push(parseInt(id));
@@ -187,6 +188,7 @@ export default {
         subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
         subjectIcon.classList.replace("fa-check-square", "fa-square");
         subjectIcon.classList.remove("text-indigo-400");
+        subjectName.classList.toggle("text-indigo-300");
 
         this.new_orientation.subjects.forEach((subject_id, index) => {
           if (subject_id == parseInt(id)) {
