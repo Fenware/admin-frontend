@@ -1,10 +1,14 @@
 <template>
   <div class="text-white w-full ">
-    <h2 class="text-center text-3xl mt-1">
+    <h2 class="text-center text-3xl mt-1 font-semibold">
       Grupos
     </h2>
 
-    <div class="flex justify-between mt-10">
+    <ListGroup v-show="mode == 'list'" :groups="groups" @changeMode="changeMode"/>
+    <CreateGroup v-if="mode == 'create'" :orientations="orientations" @changeMode="changeMode"/>
+
+
+    <!-- <div class="flex justify-between mt-10">
       <input
         type="text"
         placeholder="Buscar grupo"
@@ -23,42 +27,50 @@
       </button>
     </div>
 
-    <CreateGroupContainer class="mt-2" v-if="create_group_mode" />
+    <CreateGroupContainer class="mt-2" v-if="create_group_mode" :orientations="orientations"/>
     <ModifyGroupContainer v-if="modify_group_mode" />
     <div
       class="flex overflow-auto h-2/3 mx-auto p-1 flex-wrap md:max-w-2xl lg:max-w-3xl mt-5 bg-white bg-opacity-10  shadow-2xl | rounded-lg"
     >
       <GroupsContainer />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { mapActions, mapState, mapMutations } from "vuex";
-import GroupsContainer from "@/components/GroupsContainer";
+import { mapState, mapMutations } from "vuex";
+/* import GroupsContainer from "@/components/GroupsContainer";
 import CreateGroupContainer from "@/components/CreateGroupContainer";
-import ModifyGroupContainer from "@/components/ModifyGroupContainer";
+import ModifyGroupContainer from "@/components/ModifyGroupContainer"; */
+import ListGroup from "@/components/groups/ListGroup";
+import CreateGroup from "@/components/groups/CreateGroup";
+/* import EditGroup from "@/components/groups/EditGroup"; */
 
 export default {
   name: "Orientations",
   data: function() {
     return {
-      orientation_filter: "",
+      groups_filter: "",
+      groups: [],
+      mode: "list"
     };
   },
   components: {
-    GroupsContainer,
+    ListGroup,
+    CreateGroup,
+    /* EditGroup */
+/*     GroupsContainer,
     CreateGroupContainer,
-    ModifyGroupContainer,
+    ModifyGroupContainer, */
+  },
+  created() {
+    this.getGroups();
   },
   computed: {
     ...mapState([
       "API_URL",
-      "headers",
-      "create_group_mode",
-      "modify_group_mode",
-      "orientations",
+      "headers"
     ]),
   },
   methods: {
@@ -67,7 +79,12 @@ export default {
       "toogleCreateGroupMode",
       "setGroups",
     ]),
-    ...mapActions(["syncOrientations"]),
+    changeMode(mode, orientation) {
+      this.mode = mode;
+      if(orientation){
+        this.orientation = orientation;
+      }
+    },
     async getGroups() {
       await axios({
         method: "get",
@@ -76,16 +93,18 @@ export default {
       })
         .then((res) => {
           if (Array.isArray(res.data)) {
-            let groups_array = [];
-            res.data.forEach((group) => {
+           /*  let groups_array = []; */
+           /*  res.data.forEach((group) => {
               let orientation_data = this.orientations.find(
                 (orientation) =>
                   parseInt(orientation.id) == group.id_orientation
               );
               group.orientation_name = orientation_data.name;
               groups_array.push(group);
-            });
-            this.setGroups(groups_array);
+            }); */
+            /* this.setGroups(groups_array); */
+            this.groups = res.data;
+            console.log(res.data);
           } else {
             console.log("Error: getGroups -> " + res.data);
           }
@@ -93,12 +112,9 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
+    }
   },
-  created() {
-    this.syncOrientations();
-    this.getGroups();
-  },
+
 };
 </script>
 
