@@ -49,11 +49,12 @@
             <p>
               <span class="font-bold text-xl text-indigo-400 ">{{
                 group.name
-              }}</span>
+              }} <span class="font-normal text-sm text-white"> - {{ group.orientation_name }} </span></span>
             </p>
             <p class="w-max">
-              <span class="font-semibold">Orientación:</span>
-              {{ group.orientation_name }}
+              <span class="font-semibold select-none">Código:</span>
+              <span class="px-2 py-0.5 ml-1 bg-white rounded-md bg-opacity-10">{{ group.code }}</span>
+              <i class="fas fa-copy ml-1 text-gray-400 cursor-pointer transition-colors duration-300 hover:text-gray-300"></i>
             </p>
           </div>
 
@@ -62,7 +63,7 @@
           >
             <button
               @click="changeModeToEdit(group)"
-              class=" pr-3 pl-5 text-sm font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
+              class=" pr-3 pl-5 text-xs font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
               <i
@@ -71,7 +72,7 @@
             </button>
             <button
               @click="confirmDeletion(group.id, group.name)"
-              class="flex items-center pl-3 pr-5 py-1.5 text-sm font-semibold transition-colors duration-200 rounded-md border-b-2 hover:border-red-400 border-red-300    bg-red-200 hover:bg-red-300 text-red-900"
+              class="flex items-center pl-3 pr-5 py-1.5 text-xs font-semibold transition-colors duration-200 rounded-md border-b-2 hover:border-red-400 border-red-300    bg-red-200 hover:bg-red-300 text-red-900"
             >
               <i
                 class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
