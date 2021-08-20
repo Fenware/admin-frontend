@@ -32,29 +32,35 @@
         @submit.prevent=""
         class="flex flex-wrap items-center justify-start sm:justify-around mb-8"
       >
-        <div>
-          <label class="block text-xs pl-1 mt-2 font-semibold select-none"
+        <div class="pt-5">
+          <!-- <label class="block text-xs pl-12 mt-2 font-semibold select-none"
             >Nombre</label
-          >
-          <input
-            type="text"
-            placeholder="Ingrese nombre del grupo"
-            v-model="new_group.name"
-            class="w-60 transition sm:w-80 text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
-          />
+          > -->
+          <div class="bg-white bg-opacity-10 shadow-lg rounded-xl">
+            <span id="year" class="hidden py-2 "></span>
+            <input
+              maxlength="2"
+              type="text"
+              placeholder="Nombre del grupo. Ej: BE"
+              v-model="new_group.name"
+              class=" transition text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
+            />
+          </div>
         </div>
       </form>
-      <label class="block text-lg text-center">Seleccionar orientación</label>
+      <label class="block text-lg text-center"
+        >Seleccionar una orientación</label
+      >
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-72 overflow-auto"
       >
         <div
-          class="flex justify-between items-center cursor-pointer items-center m-3 px-2 py-2
+          class="flex justify-between items-center cursor-pointer m-3 px-2 py-2
         bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl transform transition-transform"
           :id="'orientation_' + orientation.id"
           v-for="orientation in orientations"
           :key="orientation.id"
-          @click="selectOrientation(orientation.id)"
+          @click="toggleOrientation(orientation)"
           style="height:fit-content"
         >
           <div class="">
@@ -71,7 +77,7 @@
             >
               {{ orientation.name }}
             </p>
-            <p>Año: {{ orientation.year }}</p>
+            <p class="select-none">Año: {{ orientation.year }}</p>
           </div>
           <i
             :id="'orientation_icon_' + orientation.id"
@@ -97,6 +103,7 @@ export default {
         name: "",
         orientation: {},
       },
+      last_orientation_id: null,
     };
   },
   computed: {
@@ -125,12 +132,47 @@ export default {
           console.log(error);
         });
     },
-    selectOrientation(id) {
-      let orientationDiv = document.getElementById("orientation_" + id);
-      /* let orientationName = document.getElementById('orientation_name_' + id); */
-      let orientationIcon = document.getElementById("orientation_icon_" + id);
+    toggleOrientation(orientationSelected) {
+      // Deseleccionando todas las orientaciones del DOM
 
-      if (!this.new_orientation.subjects.includes(parseInt(id))) {
+      this.orientations.forEach((orientationToDeselect) => {
+        let orientationDiv = document.getElementById(
+          "orientation_" + orientationToDeselect.id
+        );
+        let orientationIcon = document.getElementById(
+          "orientation_icon_" + orientationToDeselect.id
+        );
+        let orientationName = document.getElementById(
+          "orientation_name_" + orientationToDeselect.id
+        );
+
+        orientationDiv.classList.remove("scale-95");
+        orientationDiv.classList.replace("bg-gray-800", "bg-gray-700");
+        orientationIcon.classList.replace("fa-check-square", "fa-square");
+        orientationIcon.classList.remove("text-indigo-400");
+        orientationName.classList.remove("text-indigo-400");
+      });
+
+      let orientationDiv = document.getElementById(
+        "orientation_" + orientationSelected.id
+      );
+      let orientationIcon = document.getElementById(
+        "orientation_icon_" + orientationSelected.id
+      );
+      let orientationName = document.getElementById(
+        "orientation_name_" + orientationSelected.id
+      );
+      var yearSpan = document.getElementById("year");
+
+      if (orientationSelected != this.new_group.orientation) {
+        this.new_group.orientation = orientationSelected;
+        yearSpan.innerHTML =
+          orientationSelected.year +
+          (orientationSelected.year == "1" || orientationSelected.year == "3"
+            ? "ero"
+            : "do");
+        yearSpan.classList.add("px-2");
+        yearSpan.classList.remove("hidden");
         // Añado las clases al div y al icono para que quede "seleccionada"
         orientationDiv.classList.add("scale-95");
         orientationDiv.classList.replace("bg-gray-700", "bg-gray-800");
@@ -140,49 +182,65 @@ export default {
           "hover:text-indigo-400",
           "hover:text-indigo-300"
         );
-
-        // Añado el id de la materia al array de materias seleccionadas
-        this.new_orientation.subjects.push(parseInt(id));
+        orientationName.classList.toggle("text-indigo-400");
       } else {
-        orientationDiv.classList.remove("scale-95");
-        orientationDiv.classList.replace("bg-gray-800", "bg-gray-700");
-        orientationIcon.classList.replace("fa-check-square", "fa-square");
-        orientationIcon.classList.remove("text-indigo-400");
-
-        this.new_orientation.subjects.forEach((subject_id, index) => {
-          if (subject_id == parseInt(id)) {
-            this.new_orientation.subjects.splice(index, 1);
-          }
+        yearSpan.innerHTML = "";
+        yearSpan.classList.remove("px-2");
+        yearSpan.classList.remove("hidden");
+        this.new_group.orientation = null;
+      }
+    },
+    validateData() {
+      if (this.new_group.name.length == 0) {
+        this.$swal({
+          icon: "error",
+          title: `Debes ingresar el nombre del grupo!`,
         });
+        return false;
+      } else if (this.new_group.orientation === null) {
+        this.$swal({
+          icon: "error",
+          title: `Debes seleccionar una orientación!`,
+        });
+        return false;
+      }else{
+        return true;
       }
     },
     async createGroup() {
-      let orientation = this.new_orientation;
-      await axios({
-        method: "post",
-        url: this.API_URL + "/orientacion",
-        data: orientation,
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Si no existe el objeto result en res.data entonces no hubieron errores
-          if (!("result" in res.data)) {
-            this.$emit("addOrientation", res.data);
-            this.changeModeToList();
-            this.$swal({
-              icon: "success",
-              title: `La orientación ${orientation.name} fue creada correctamente!`,
-            });
-          } else {
-            this.$swal({
-              icon: "error",
-              title: res.data.result.error_msg,
-            });
-          }
+      if (this.validateData()) {
+        let data = {
+          orientacion: parseInt(this.new_group.orientation.id),
+          name: this.new_group.name,
+        };
+        await axios({
+          method: "post",
+          url: this.API_URL + "/group",
+          data: data,
+          headers: this.headers,
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((res) => {
+            // Si no existe el objeto result en res.data entonces no hubieron errores
+            console.log(res);
+            if (!("result" in res.data)) {
+              res.data.orientation_name = this.new_group.orientation.name;
+              this.$emit("addGroup", res.data);
+              this.changeModeToList();
+              this.$swal({
+                icon: "success",
+                title: `El grupo "${this.new_group.name}" fue creado correctamente!`,
+              });
+            } else {
+              this.$swal({
+                icon: "error",
+                title: res.data.result.error_msg,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };
