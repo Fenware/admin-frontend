@@ -5,7 +5,7 @@
     </h2>
 
     <ListGroup v-show="mode == 'list'" :groups="groups" @changeMode="changeMode"/>
-    <CreateGroup v-if="mode == 'create'" :orientations="orientations" @changeMode="changeMode"/>
+    <CreateGroup v-if="mode == 'create'" :orientations="orientations" @changeMode="changeMode" @addGroup="addGroup"/>
 
 
     <!-- <div class="flex justify-between mt-10">
@@ -112,6 +112,9 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    addGroup(group){
+      this.groups.push(group);
     }
   },
 
