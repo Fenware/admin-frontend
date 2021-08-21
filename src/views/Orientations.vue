@@ -21,7 +21,7 @@
       v-if="mode == 'edit'"
       :orientation="orientation"
       @changeMode="changeMode"
-      @changeOrientation="changeOrientation"
+      @modifyOrientation="modifyOrientation"
     />
   </div>
 </template>
@@ -69,7 +69,7 @@ export default {
         this.orientation = orientation;
       }
     },
-    changeOrientation(modified_orientation){
+    modifyOrientation(modified_orientation){
       this.orientations.forEach(orientation => {
         if(orientation.id == modified_orientation.id){
           orientation.name = modified_orientation.name
