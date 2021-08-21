@@ -31,24 +31,54 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import axios from 'axios';
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   name: "Login",
   data: function() {
     return {
       user: {
-        user: "",
-        password: "",
+        user: "Administrador",
+        password: "mnoseadmin1234",
         type: "admin",
       },
     };
   },
   computed: {
-    ...mapState(["API_URL"]),
+    ...mapState(["API_URL", "headers"]),
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["syncToken"]),
+    ...mapMutations(['setToken']),
+    async login(payload) {
+      await axios({
+        method: "post",
+        url: this.API_URL + "/auth",
+        data: payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (typeof res.data.result.token == "string") {
+            let token = res.data.result.token;
+            this.setToken(token);
+            localStorage.setItem("token", token);
+            this.syncToken();
+            this.$router.push("/inicio");
+          } else {
+            console.log("Error: login");
+            this.$swal({
+              icon: "error",
+              title: `${res.data.result.error_msg}!`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
