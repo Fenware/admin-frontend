@@ -48,7 +48,7 @@
           </div>
         </div>
       </form>
-      <label class="block text-lg text-center"
+      <label class="block text-lg text-center select-none"
         >Seleccionar una orientación</label
       >
       <div
@@ -211,7 +211,7 @@ export default {
       if (this.validateData()) {
         let data = {
           orientacion: parseInt(this.new_group.orientation.id),
-          name: this.new_group.name,
+          name: this.new_group.name.toUpperCase(),
         };
         await axios({
           method: "post",
@@ -224,11 +224,13 @@ export default {
             console.log(res);
             if (!("result" in res.data)) {
               res.data.orientation_name = this.new_group.orientation.name;
+              res.data.year = this.new_group.orientation.year;
+              res.data.full_name = (res.data.year == "1" || res.data.year == "3" ? res.data.year + "ero" : res.data.year + "do") + ` ${res.data.name}`;
               this.$emit("addGroup", res.data);
               this.changeModeToList();
               this.$swal({
                 icon: "success",
-                title: `El grupo "${this.new_group.name}" fue creado correctamente!`,
+                title: `El grupo ${res.data.full_name} fue creado correctamente!`,
               });
             } else {
               this.$swal({
