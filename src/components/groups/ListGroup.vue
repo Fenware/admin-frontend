@@ -47,14 +47,24 @@
         >
           <div class="w-8/12">
             <p>
-              <span class="font-bold text-xl text-indigo-400 ">{{
-                group.name
-              }} <span class="font-normal text-sm text-white"> - {{ group.orientation_name }} </span></span>
+              <span class="font-bold text-xl text-indigo-400 ">
+                <span>
+                  {{group.full_name}}
+                </span>
+                <span class="font-normal text-sm text-white">
+                  - {{ group.orientation_name }}
+                </span></span
+              >
             </p>
             <p class="w-max">
               <span class="font-semibold select-none">Código:</span>
-              <span class="px-2 py-0.5 ml-1 bg-white rounded-md bg-opacity-10">{{ group.code }}</span>
-              <i class="fas fa-copy ml-1 text-gray-400 cursor-pointer transition-colors duration-300 hover:text-gray-300"></i>
+              <span
+                class="px-2 py-0.5 ml-1 bg-white rounded-md bg-opacity-10"
+                >{{ group.code }}</span
+              >
+              <i
+                class="fas fa-copy ml-1 text-gray-400 cursor-pointer transition-colors duration-300 hover:text-gray-300"
+              ></i>
             </p>
           </div>
 
@@ -71,7 +81,7 @@
               ></i>
             </button>
             <button
-              @click="confirmDeletion(group.id, group.name)"
+              @click="confirmDeletion(group.id, group.name, group.year)"
               class="flex items-center pl-3 pr-5 py-1.5 text-xs font-semibold transition-colors duration-200 rounded-md border-b-2 hover:border-red-400 border-red-300    bg-red-200 hover:bg-red-300 text-red-900"
             >
               <i
@@ -153,7 +163,7 @@ export default {
       // Para la vista de editar necesito pasarle las materias
       this.$emit("changeMode", "edit", orientation);
     },
-    confirmDeletion(orientation_id, orientation_name) {
+    confirmDeletion(group_id, group_name, group_year) {
       // Modal para confirmar si quiere eliminar la orientacion
       let alert = this.$swal.mixin({
         toast: false,
@@ -170,7 +180,7 @@ export default {
       });
       alert
         .fire({
-          html: `<span class="text-white">¿Eliminar la orientación <b>${orientation_name}</b>?</span>`,
+          html: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
           showCancelButton: false,
           confirmButtonText: `Eliminar`,
           denyButtonText: `Cancelar`,
@@ -178,7 +188,7 @@ export default {
         .then((result) => {
           // Si le da al boton de eliminar llamo a la funcion
           if (result.isConfirmed) {
-            this.$emit("deleteOrientation", orientation_id, orientation_name);
+            this.$emit("deleteGroup", group_id, group_name, group_year);
           }
         });
     },
