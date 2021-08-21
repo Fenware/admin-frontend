@@ -291,7 +291,7 @@ export default {
       })
         .then((res) => {
           if (res.data == 1) {
-            this.$emit("changeOrientation", this.modified_orientation);
+            this.$emit("modifyOrientation", this.modified_orientation);
           }
         })
         .catch((error) => {
@@ -343,23 +343,28 @@ export default {
     deselectSubjectDiv(id) {
       let subjectDiv = document.getElementById("subject_" + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
+      let subjectName = document.getElementById('subject_name_' + id);
 
       subjectDiv.classList.remove("scale-95");
       subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
       subjectIcon.classList.replace("fa-check-square", "fa-square");
       subjectIcon.classList.remove("text-indigo-400");
+      subjectName.classList.toggle("text-indigo-300");
     },
     selectSubjectDiv(id) {
       let subjectDiv = document.getElementById("subject_" + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
+      let subjectName = document.getElementById('subject_name_' + id);
+
       subjectDiv.classList.add("scale-95");
       subjectDiv.classList.replace("bg-gray-700", "bg-gray-800");
       subjectIcon.classList.replace("fa-square", "fa-check-square");
-      subjectIcon.classList.add("text-indigo-400");
+      subjectIcon.classList.add("text-indigo-300");
       subjectIcon.classList.replace(
         "hover:text-indigo-400",
         "hover:text-indigo-300"
       );
+      subjectName.classList.toggle("text-indigo-400");
     },
   },
 };
