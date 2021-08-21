@@ -4,7 +4,7 @@
       Grupos
     </h2>
 
-    <ListGroup v-show="mode == 'list'" :groups="groups" @changeMode="changeMode"/>
+    <ListGroup v-show="mode == 'list'" :groups="groups" @changeMode="changeMode" @deleteGroup="deleteGroup"/>
     <CreateGroup v-if="mode == 'create'" :orientations="orientations" @changeMode="changeMode" @addGroup="addGroup"/>
 
 
@@ -93,18 +93,11 @@ export default {
       })
         .then((res) => {
           if (Array.isArray(res.data)) {
-           /*  let groups_array = []; */
-           /*  res.data.forEach((group) => {
-              let orientation_data = this.orientations.find(
-                (orientation) =>
-                  parseInt(orientation.id) == group.id_orientation
-              );
-              group.orientation_name = orientation_data.name;
-              groups_array.push(group);
-            }); */
-            /* this.setGroups(groups_array); */
-            this.groups = res.data;
             console.log(res.data);
+            res.data.forEach(group => {
+              group.full_name = (group.year == "1" || group.year == "3" ? group.year + "ero" : group.year + "do") + ` ${group.name}`;
+              this.groups.push(group);
+            });
           } else {
             console.log("Error: getGroups -> " + res.data);
           }
@@ -115,7 +108,43 @@ export default {
     },
     addGroup(group){
       this.groups.push(group);
-    }
+    },
+    async deleteGroup(id, group_name, group_year) {
+      var data = {
+        id: parseInt(id),
+      };
+      await axios({
+        method: "delete",
+        url: this.API_URL + "/group",
+        data: data,
+        headers: this.headers,
+      })
+        .then((res) => {
+          // Si la consulta salio bien
+          if (res.data == 1) {
+            // Elimino el objeto del array
+            this.groups.forEach((group, index) => {
+              if(parseInt(group.id) == parseInt(id)){
+                this.groups.splice(index, 1);
+              }
+            });
+
+            // Lanzando alerta
+            this.$swal({
+              icon: "info",
+              title: `El grupo ${group_year}${group_name} fue eliminado correctamente!`,
+            });
+          }else{
+            this.$swal({
+              icon: "error",
+              title: `El grupo ${group_year}${group_name} no pudo ser eliminado, actualice la página e intente nuevamente`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 
 };
