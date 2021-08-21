@@ -4,7 +4,7 @@
       @submit.prevent="login(user)"
       class=" bg-gray-50 p-4 md:p-10 lg:p-10 xl:p-10 rounded-2xl bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-md"
     >
-      <h1 class="text-center text-white text-4xl mb-12">Ingresar</h1>
+      <h1 class="text-center text-white text-4xl mb-12">Ingreso Administrador</h1>
       <div class="">
         <input
           class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
@@ -31,24 +31,54 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import axios from 'axios';
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   name: "Login",
   data: function() {
     return {
       user: {
-        user: "",
-        password: "",
+        user: "Administrador",
+        password: "mnoseadmin1234",
         type: "admin",
       },
     };
   },
   computed: {
-    ...mapState(["API_URL"]),
+    ...mapState(["API_URL", "headers"]),
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["syncToken"]),
+    ...mapMutations(['setToken']),
+    async login(payload) {
+      await axios({
+        method: "post",
+        url: this.API_URL + "/auth",
+        data: payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (typeof res.data.result.token == "string") {
+            let token = res.data.result.token;
+            this.setToken(token);
+            localStorage.setItem("token", token);
+            this.syncToken();
+            this.$router.push("/inicio");
+          } else {
+            console.log("Error: login");
+            this.$swal({
+              icon: "error",
+              title: `${res.data.result.error_msg}!`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
