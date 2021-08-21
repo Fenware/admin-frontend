@@ -291,7 +291,7 @@ export default {
       })
         .then((res) => {
           if (res.data == 1) {
-            this.$emit("changeOrientation", this.modified_orientation);
+            this.$emit("modifyOrientation", this.modified_orientation);
           }
         })
         .catch((error) => {
