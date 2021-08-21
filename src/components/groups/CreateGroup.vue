@@ -7,7 +7,7 @@
     >
       <div class="flex items-center">
         <i class="fas fa-folder-plus pb-1"></i>
-        <h2 class="px-2 font-extrabold select-none">Crear orientación</h2>
+        <h2 class="px-2 font-extrabold select-none">Crear grupo</h2>
       </div>
       <div class="flex items-center">
         <button
@@ -63,7 +63,7 @@
           @click="toggleOrientation(orientation)"
           style="height:fit-content"
         >
-          <div class="">
+          <div>
             <p
               :id="'orientation_name_' + orientation.id"
               :class="
@@ -97,40 +97,23 @@ export default {
   name: "CreateGroup",
   data: function() {
     return {
-      orientations: [],
       search_word: "",
       new_group: {
         name: "",
         orientation: {},
       },
-      last_orientation_id: null,
     };
+  },
+  props:{
+    orientations: Array
   },
   computed: {
     ...mapState(["API_URL", "headers"]),
-  },
-  created() {
-    this.getOrientations();
   },
   methods: {
     changeModeToList() {
       // Llamo a la funcion del padre para cambiar el modo
       this.$emit("changeMode", "list");
-    },
-    async getOrientations() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/orientacion",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (Array.isArray(res.data)) {
-            this.orientations = res.data;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
     toggleOrientation(orientationSelected) {
       // Deseleccionando todas las orientaciones del DOM
