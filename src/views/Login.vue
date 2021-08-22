@@ -31,8 +31,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "Login",
@@ -45,40 +44,8 @@ export default {
       },
     };
   },
-  computed: {
-    ...mapState(["API_URL", "headers"]),
-  },
   methods: {
-    ...mapActions(["syncToken"]),
-    ...mapMutations(['setToken']),
-    async login(payload) {
-      await axios({
-        method: "post",
-        url: this.API_URL + "/auth",
-        data: payload,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (typeof res.data.result.token == "string") {
-            let token = res.data.result.token;
-            this.setToken(token);
-            localStorage.setItem("token", token);
-            this.syncToken();
-            this.$router.push("/inicio");
-          } else {
-            console.log("Error: login");
-            this.$swal({
-              icon: "error",
-              title: `${res.data.result.error_msg}!`,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    ...mapActions(["login"]),
   },
 };
 </script>
