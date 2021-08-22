@@ -3,7 +3,28 @@
     <h1 class="text-center text-3xl mt-1 font-semibold">
       Usuarios
     </h1>
-    <ListUsers :users="users" />
+    <!-- Muestro el componente para listar usuarios si la variable mode == 'list'
+         Le paso por props el array de usuarios
+         Le puedo pasar una funcion de este componente para que la use desde el componente hijo -->
+    <ListUsers
+      v-show="mode == 'list'"
+      :users="users"
+      @changeMode="changeMode"
+    />
+
+    <!-- 
+      Ejemplo de componente que use para los grupos
+      Le paso el array de orientaciones y el grupo para editarlo
+      Tambien le paso la funcion para modificar el grupo
+      Asi es como podes comunicar los componentes, si no te queda muy claro busca "comunicacion entre padre hijo vuejs" o preguntame y te explico bien
+    -->
+    <!-- <EditGroup
+      v-if="mode == 'edit'"
+      :orientations="orientations"
+      :group="group"
+      @changeMode="changeMode"
+      @modifyGroup="modifyGroup"
+    /> -->
   </div>
 </template>
 
@@ -18,6 +39,8 @@ export default {
   data: () => {
     return {
       users: [],
+      // El modo esta por defecto en listar usuario
+      mode: "list",
     };
   },
   components: {
@@ -30,6 +53,12 @@ export default {
     this.getUsers();
   },
   methods: {
+    // Esta funcion la uso para cambiar la visibilidad de los componentes (listar, editar, crear, etc)
+    changeMode(mode /* , user */) {
+      // Si necesitas pasar datos desde el hijo hacia acá podes agregarle parametros y setearselos a una variable en data ted dejo comentado el ejemplo
+      this.mode = mode;
+      /* this.user = user; */
+    },
     async getUsers() {
       await axios({
         method: "get",
@@ -37,10 +66,10 @@ export default {
         headers: this.headers,
       })
         .then((res) => {
-          if(Array.isArray(res.data)){
+          if (Array.isArray(res.data)) {
             this.users = res.data;
             console.log(this.users);
-          }else{
+          } else {
             console.log(res.data);
           }
         })
