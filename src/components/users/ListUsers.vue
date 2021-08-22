@@ -105,15 +105,6 @@
               ></i>
             </button>
 
-            <!-- <button
-              @click="false"
-              class=" pr-3 pl-5 font-semibold py-1.5 transition-colors rounded-md border-b-4 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
-            >
-              Modificar
-              <i
-                class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
-              ></i>
-            </button> -->
           </div>
         </div>
       </div>
@@ -129,6 +120,9 @@ export default {
       filter_by: "all",
       text_filter: "",
     };
+  },
+  props: {
+    users: Array,
   },
   computed: {
     usersFiltered() {
@@ -161,15 +155,12 @@ export default {
             " " +
             user.second_surname;
 
-          // Filtro usuario si hay coincidencias de lo ingresado con el nombre
+          // Filtro usuario si hay coincidencias de lo ingresado con el nombre completo
           return nombre.indexOf(this.text_filter.toString()) >= 0;
         });
       }
       return users_filtered;
     },
-  },
-  props: {
-    users: Array,
   },
 };
 </script>
