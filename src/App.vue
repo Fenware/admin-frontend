@@ -10,15 +10,15 @@
       class=" flex flex-col sm:flex-row sm:justify-between0 h-85vh w-90per mx-auto | bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur-xl | rounded-2xl shadow-md "
     >
       <Navbar />
-      <Main class="mt-5 sm:mt-0" @showAlert="showAlert()" />
+      <Main class="mt-5 sm:mt-0"/>
       <!-- <Sidebar /> -->
     </div>
   </div>
 </template>
 <script>
-import Navbar from "@/components/Navbar";
-import Main from "@/components/Main";
-/* import Sidebar from "@/components/Sidebar"; */
+import Navbar from "@/components/TheNavbar";
+import Main from "@/components/TheMain";
+/* import Sidebar from "@/components/TheSidebar"; */
 
 export default {
   components: {
