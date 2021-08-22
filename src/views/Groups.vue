@@ -28,7 +28,7 @@
 
 <script>
 import axios from "axios";
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 import ListGroup from "@/components/groups/ListGroup";
 import CreateGroup from "@/components/groups/CreateGroup";
 import EditGroup from "@/components/groups/EditGroup";
@@ -57,11 +57,6 @@ export default {
     ...mapState(["API_URL", "headers"]),
   },
   methods: {
-    ...mapMutations([
-      "toogleModifyGroupMode",
-      "toogleCreateGroupMode",
-      "setGroups",
-    ]),
     changeMode(mode, group) {
       this.mode = mode;
       if (group) {

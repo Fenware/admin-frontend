@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import Subjects from "../views/Subjects.vue";
 import Orientations from "../views/Orientations.vue";
 import Groups from "../views/Groups.vue";
+import Users from "../views/Users.vue";
 
 const routes = [
   {
@@ -47,6 +48,14 @@ const routes = [
     path: "/grupos",
     name: "Groups",
     component: Groups,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: "/usuarios",
+    name: "Users",
+    component: Users,
     meta: {
       requireAuth: true,
     },
