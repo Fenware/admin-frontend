@@ -76,11 +76,11 @@ router.beforeEach((to, from, next) => {
   store.dispatch('syncToken');
   if (routeProtected) {
     store.dispatch("checkSession");
-    if (store.state.auth.token !== null) {
+    if (store.state.token !== null) {
       next();
     }
   } else if (to.fullPath == "/login") {
-    if (store.state.auth.token !== null) {
+    if (store.state.token !== null) {
       next({ name: "Home" });
     } else {
       next();
