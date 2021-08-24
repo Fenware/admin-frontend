@@ -8,9 +8,8 @@
 
     <CreateOrientation v-if="mode == 'create'" />
 
-    <EditOrientation
-      v-if="mode == 'edit'"
-    />
+    <EditOrientation v-if="mode == 'edit'" />
+    
   </div>
 </template>
 
