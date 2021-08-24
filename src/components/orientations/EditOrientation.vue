@@ -126,6 +126,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
+import showAlert from "@/utils/alerts.js";
 
 export default {
   name: "EditOrientation",
@@ -240,6 +241,10 @@ export default {
           this.editOrientation(this.modified_orientation);
         }
         this.changeMode({ mode: "list" });
+        showAlert({
+          type: "success",
+          message: `La orientación ${this.modified_orientation.name} fue modificada correctamente!`,
+        });
       } else {
         this.$swal({
           icon: "error",
