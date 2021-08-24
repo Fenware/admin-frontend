@@ -122,7 +122,7 @@ export default {
     },
     async createGroup({ rootState, commit }, new_group) {
       let data_ok = false;
-      console.log(new_group);
+
       if (new_group.name.length == 0) {
         showAlert({
           type: "error",
@@ -166,6 +166,69 @@ export default {
               showAlert({
                 type: "success",
                 message: `El grupo ${res.data.full_name} fue creado correctamente!`,
+              });
+            } else {
+              showAlert({
+                type: "error",
+                message: res.data.result.error_msg,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    async editGroup({ rootState, commit }, edited_group) {
+      let data_ok = false;
+
+      if (edited_group.name.length == 0) {
+        showAlert({
+          type: "error",
+          message: `Debes ingresar el nombre del grupo!`,
+        });
+        data_ok = false;
+      } else if (edited_group.orientation === null) {
+        showAlert({
+          type: "error",
+          message: `Debes seleccionar una orientación!`,
+        });
+        data_ok = false;
+      } else {
+        data_ok = true;
+      }
+
+      if (data_ok) {
+        let data = {
+          id: parseInt(edited_group.id),
+          orientacion: parseInt(edited_group.orientation.id),
+          name: edited_group.name.toUpperCase(),
+        };
+        await axios({
+          method: "put",
+          url: rootState.API_URL + "/group",
+          data: data,
+          headers: rootState.headers,
+        })
+          .then((res) => {
+            if (res.data == 1) {
+              edited_group.full_name =
+                (edited_group.orientation.year == "1" ||
+                edited_group.orientation.year == "3"
+                  ? edited_group.orientation.year + "ero"
+                  : edited_group.orientation.year + "do") +
+                ` ${edited_group.name}`;
+              commit("modifyGroup", edited_group);
+              commit("changeMode", { mode: "list" });
+              
+              showAlert({
+                type: "success",
+                message: `El grupo ${edited_group.full_name} fue modificado correctamente!`,
+              });
+            } else if (res.data == 0) {
+              showAlert({
+                type: "info",
+                message: "No has modificado ningún dato!",
               });
             } else {
               showAlert({
