@@ -98,7 +98,7 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
-              @click="changeModeToEdit(orientation)"
+              @click="changeMode('edit', orientation)"
               class=" pl-2 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
@@ -157,21 +157,21 @@
 </template>
 
 <script>
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   name: "ListOrientations",
   data: function() {
     return {
       text_filter: "",
       filter_by: "all",
-      show_modal: false,
     };
   },
-  props: {
-    orientations: Array,
-  },
   computed: {
-    },
+    ...mapState({ orientations: (state) => state.orientations.orientations }),
+  },
   methods: {
+    ...mapMutations(["changeMode"]),
+    ...mapActions(["deleteOrientation"]),
     orientationsFiltered() {
       // Filtro las orientaciones por coincidencias de nombre
       let orientations_filtered = this.orientations.filter(
@@ -182,17 +182,19 @@ export default {
       );
 
       if (this.filter_by == 1) {
-        orientations_filtered = orientations_filtered.filter((orientation) =>  parseInt(orientation.year) == 1);
+        orientations_filtered = orientations_filtered.filter(
+          (orientation) => parseInt(orientation.year) == 1
+        );
       } else if (this.filter_by == 2) {
-        orientations_filtered = orientations_filtered.filter((orientation) => parseInt(orientation.year) == 2);
+        orientations_filtered = orientations_filtered.filter(
+          (orientation) => parseInt(orientation.year) == 2
+        );
       } else if (this.filter_by == 3) {
-        orientations_filtered = orientations_filtered.filter((orientation) => parseInt(orientation.year) == 3);
+        orientations_filtered = orientations_filtered.filter(
+          (orientation) => parseInt(orientation.year) == 3
+        );
       }
       return orientations_filtered;
-    },
-    changeModeToEdit(orientation) {
-      // Para la vista de editar necesito pasarle las materias
-      this.$emit("changeMode", "edit", orientation);
     },
     confirmDeletion(orientation_id, orientation_name) {
       // Modal para confirmar si quiere eliminar la orientacion
@@ -219,7 +221,10 @@ export default {
         .then((result) => {
           // Si le da al boton de eliminar llamo a la funcion
           if (result.isConfirmed) {
-            this.$emit("deleteOrientation", orientation_id, orientation_name);
+            this.deleteOrientation({
+              id: orientation_id,
+              name: orientation_name,
+            });
           }
         });
     },
