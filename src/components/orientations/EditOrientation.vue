@@ -18,7 +18,7 @@
         </button>
 
         <button
-          @click="changeModeToList()"
+          @click="changeMode({ mode: 'list' })"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
           Cancelar
@@ -125,79 +125,46 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   name: "EditOrientation",
   data: function() {
     return {
-      subjects: [],
       modified_orientation: {},
-      // Materias que ya estan seleccionadas al obtenerla
-      preselected_subjects: [],
       added_subjects: [],
       removed_subjects: [],
       search_word: "",
       filter_by: "all",
     };
   },
-  props: {
-    orientation: Object,
-  },
   computed: {
-    ...mapState(["API_URL", "headers"]),
+    ...mapState({
+      orientation: (state) => state.orientations.orientation,
+      subjects: (state) => state.orientations.subjects,
+      preselected_subjects: (state) => state.orientations.preselected_subjects,
+    }),
   },
   created() {
-    this.getSubjects();
-
     let orientation = {
       id: this.orientation.id,
       name: this.orientation.name,
       year: this.orientation.year,
     };
     this.modified_orientation = orientation;
+
+    this.getOrientationSubjects().then(() => {
+      this.selectOrientationSubjects();
+    });
   },
   methods: {
-    changeModeToList() {
-      // Llamo a la funcion del padre para cambiar el modo
-      this.$emit("changeMode", "list");
-    },
-    async getSubjects() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/materia",
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Verifico que la data recibida sea un array
-          if (Array.isArray(res.data)) {
-            this.subjects = res.data;
-            this.getOrientationSubjects();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async getOrientationSubjects() {
-      let data = `id=${this.orientation.id}`;
-      await axios({
-        method: "get",
-        url: this.API_URL + `/orientacion-materia?${data}`,
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Verifico que la data recibida sea un array
-          if (Array.isArray(res.data)) {
-            this.preselected_subjects = res.data;
-            this.selectOrientationSubjects();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    ...mapMutations(["changeMode"]),
+    ...mapActions([
+      "getOrientationSubjects",
+      "editOrientation",
+      "removeSubjectsOrientation",
+      "addSubjectsOrientation",
+    ]),
     selectOrientationSubjects() {
       // Obtengo la informacion de las materias preseleccionadas
       let subjectsToSelect = this.subjects.filter((subject) => {
@@ -261,18 +228,18 @@ export default {
     saveChanges() {
       if (this.modified_orientation.name.length > 0) {
         if (this.added_subjects.length > 0) {
-          this.addSubjectsOrientation();
+          this.addSubjectsOrientation(this.added_subjects);
         }
         if (this.removed_subjects.length > 0) {
-          this.removeSubjectsOrientation();
+          this.removeSubjectsOrientation(this.removed_subjects);
         }
         if (
           this.orientation.name != this.modified_orientation.name ||
           this.orientation.year != this.modified_orientation.year
         ) {
-          this.editOrientation();
+          this.editOrientation(this.modified_orientation);
         }
-        this.changeModeToList();
+        this.changeMode({ mode: "list" });
       } else {
         this.$swal({
           icon: "error",
@@ -280,70 +247,10 @@ export default {
         });
       }
     },
-    async editOrientation() {
-      let data = this.modified_orientation;
-      data.id = parseInt(this.modified_orientation.id);
-      await axios({
-        method: "put",
-        url: this.API_URL + "/orientacion",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            this.$emit("modifyOrientation", this.modified_orientation);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async removeSubjectsOrientation() {
-      let data = {
-        id: parseInt(this.orientation.id),
-        subjects: this.removed_subjects,
-      };
-      console.log(data);
-      await axios({
-        method: "delete",
-        url: this.API_URL + "/orientacion-materia",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            this.$emit("changeOrientation", this.modified_orientation);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async addSubjectsOrientation() {
-      let data = {
-        id: parseInt(this.orientation.id),
-        subjects: this.added_subjects,
-      };
-      await axios({
-        method: "post",
-        url: this.API_URL + "/orientacion-materia",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          console.log(res.data);
-          if (res.data == 1) {
-            this.$emit("changeOrientation", this.modified_orientation);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     deselectSubjectDiv(id) {
       let subjectDiv = document.getElementById("subject_" + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
-      let subjectName = document.getElementById('subject_name_' + id);
+      let subjectName = document.getElementById("subject_name_" + id);
 
       subjectDiv.classList.remove("scale-95");
       subjectDiv.classList.replace("bg-gray-800", "bg-gray-700");
@@ -354,7 +261,7 @@ export default {
     selectSubjectDiv(id) {
       let subjectDiv = document.getElementById("subject_" + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
-      let subjectName = document.getElementById('subject_name_' + id);
+      let subjectName = document.getElementById("subject_name_" + id);
 
       subjectDiv.classList.add("scale-95");
       subjectDiv.classList.replace("bg-gray-700", "bg-gray-800");
