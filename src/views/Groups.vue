@@ -4,22 +4,9 @@
       Grupos
     </h2>
 
-    <ListGroup
-      v-show="mode == 'list'"
-    />
-    <CreateGroup
-      v-if="mode == 'create'"
-      :orientations="orientations"
-      @changeMode="changeMode"
-      @addGroup="addGroup"
-    />
-    <EditGroup
-      v-if="mode == 'edit'"
-      :orientations="orientations"
-      :group="group"
-      @changeMode="changeMode"
-      @modifyGroup="modifyGroup"
-    />
+    <ListGroup v-show="mode == 'list'" />
+    <CreateGroup v-if="mode == 'create'" />
+    <EditGroup v-if="mode == 'edit'" />
   </div>
 </template>
 
