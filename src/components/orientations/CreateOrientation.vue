@@ -18,7 +18,7 @@
         </button>
 
         <button
-          @click="changeMode('list')"
+          @click="changeMode({mode: 'list'})"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
           Cancelar
