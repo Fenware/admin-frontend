@@ -57,7 +57,7 @@
           </button>
         </div>
         <button
-          @click="this.$emit('changeMode', 'create')"
+          @click="changeMode('create')"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Agregar
