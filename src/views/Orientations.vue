@@ -10,9 +10,6 @@
 
     <EditOrientation
       v-if="mode == 'edit'"
-      :orientation="orientation"
-      @changeMode="changeMode"
-      @modifyOrientation="modifyOrientation"
     />
   </div>
 </template>
