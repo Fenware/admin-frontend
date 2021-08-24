@@ -28,7 +28,7 @@
 
 <script>
 import axios from "axios";
-import { mapState, mapMutations } from "vuex";
+import { mapState, /* mapMutations,  */mapActions } from "vuex";
 import ListOrientation from "@/components/orientations/ListOrientation";
 import CreateOrientation from "@/components/orientations/CreateOrientation";
 import EditOrientation from "@/components/orientations/EditOrientation";
@@ -37,8 +37,6 @@ export default {
   name: "Orientations",
   data: function() {
     return {
-      orientations: [],
-      orientation: {},
       mode: "list",
     };
   },
@@ -48,32 +46,28 @@ export default {
   components: {
     ListOrientation,
     CreateOrientation,
-    EditOrientation
+    EditOrientation,
   },
   computed: {
-    ...mapState([
-      "API_URL",
-      "headers",
-      "create_orientation_mode",
-      "modify_orientation_mode",
-    ]),
+    ...mapState({
+      orientations: state => state.orientations.orientations,
+      orientation: state => state.orientations.orientation,
+    }),
   },
   methods: {
-    ...mapMutations([
-      "toogleModifyOrientationMode",
-      "toogleCreateOrientationMode",
-    ]),
+    /* ...mapMutations([]), */
+    ...mapActions(['getOrientations']),
     changeMode(mode, orientation) {
       this.mode = mode;
-      if(orientation){
+      if (orientation) {
         this.orientation = orientation;
       }
     },
-    modifyOrientation(modified_orientation){
-      this.orientations.forEach(orientation => {
-        if(orientation.id == modified_orientation.id){
-          orientation.name = modified_orientation.name
-          orientation.year = modified_orientation.year
+    modifyOrientation(modified_orientation) {
+      this.orientations.forEach((orientation) => {
+        if (orientation.id == modified_orientation.id) {
+          orientation.name = modified_orientation.name;
+          orientation.year = modified_orientation.year;
         }
       });
       this.$swal({
@@ -81,21 +75,7 @@ export default {
         title: `La orientación ${modified_orientation.name} fue modificada correctamente!`,
       });
     },
-    async getOrientations() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/orientacion",
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (Array.isArray(res.data)) {
-            this.orientations = res.data;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+
     addOrientation(orientation) {
       this.orientations.push(orientation);
     },
@@ -115,7 +95,7 @@ export default {
           if (res.data == 1) {
             // Elimino el objeto del array
             this.orientations.forEach((orientation, index) => {
-              if(parseInt(orientation.id) == parseInt(id)){
+              if (parseInt(orientation.id) == parseInt(id)) {
                 this.orientations.splice(index, 1);
               }
             });
@@ -125,7 +105,7 @@ export default {
               icon: "info",
               title: `La orientación ${orientation_name} fue eliminada correctamente!`,
             });
-          }else{
+          } else {
             this.$swal({
               icon: "error",
               title: `La orientación ${orientation_name} no pudo ser eliminada, actualice la pagina e intente nuevamente`,
