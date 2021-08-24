@@ -72,7 +72,7 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
-              @click="changeMode({mode: 'edit', group})"
+              @click="changeMode({mode: 'edit', group: group})"
               class=" pr-3 pl-5 text-xs font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
