@@ -11,14 +11,14 @@
       </div>
       <div class="flex items-center">
         <button
-          @click="createOrientation()"
+          @click="createOrientation(new_orientation)"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Crear orientación
         </button>
 
         <button
-          @click="changeModeToList()"
+          @click="changeMode('list')"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
           Cancelar
@@ -120,15 +120,12 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   name: "CreateOrientation",
   data: function() {
     return {
-      subjects: [],
-      search_word: "",
       filter_by: "all",
       new_orientation: {
         name: "",
@@ -137,36 +134,15 @@ export default {
       },
     };
   },
-  computed: {
-    ...mapState(["API_URL", "headers"]),
-  },
-  created() {
-    this.getSubjects();
+  computed:{
+    ...mapState({subjects: state => state.orientations.subjects}),
   },
   methods: {
-    changeModeToList() {
-      // Llamo a la funcion del padre para cambiar el modo
-      this.$emit("changeMode", "list");
-    },
-    async getSubjects() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/materia",
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Verifico que la data recibida sea un array
-          if (Array.isArray(res.data)) {
-            this.subjects = res.data;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    ...mapMutations(['changeMode']),
+    ...mapActions(['createOrientation']),
     selectSubject(id) {
       let subjectDiv = document.getElementById("subject_" + id);
-      let subjectName = document.getElementById('subject_name_' + id);
+      let subjectName = document.getElementById("subject_name_" + id);
       let subjectIcon = document.getElementById("subject_icon_" + id);
 
       if (!this.new_orientation.subjects.includes(parseInt(id))) {
@@ -197,34 +173,7 @@ export default {
         });
       }
     },
-    async createOrientation() {
-      let orientation = this.new_orientation;
-      await axios({
-        method: "post",
-        url: this.API_URL + "/orientacion",
-        data: orientation,
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Si no existe el objeto result en res.data entonces no hubieron errores
-          if(!("result" in res.data)){
-            this.$emit("addOrientation", res.data);
-            this.changeModeToList();
-            this.$swal({
-              icon: "success",
-              title: `La orientación ${orientation.name} fue creada correctamente!`,
-            });
-          }else{
-            this.$swal({
-              icon: "error",
-              title: res.data.result.error_msg,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    
   },
 };
 </script>
