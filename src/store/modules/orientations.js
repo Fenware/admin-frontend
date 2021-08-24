@@ -93,10 +93,10 @@ export default {
           // Si no existe el objeto result en res.data entonces no hubieron errores
           if (!("result" in res.data)) {
             commit("addOrientation", res.data);
-            commit("changeMode", "list");
+            commit("changeMode", { mode: "list" });
             showAlert({
               type: "success",
-              message:  `La orientación ${orientation.name} fue creada correctamente!`,
+              message: `La orientación ${orientation.name} fue creada correctamente!`,
             });
           } else {
             showAlert({
@@ -153,7 +153,7 @@ export default {
           // Verifico que la data recibida sea un array
           if (Array.isArray(res.data)) {
             commit("setOrientationSubjects", res.data);
-          }else{
+          } else {
             console.log(res.data);
           }
         })
@@ -179,7 +179,10 @@ export default {
           console.log(error);
         });
     },
-    async removeSubjectsOrientation({ rootState, state, commit }, removed_subjects) {
+    async removeSubjectsOrientation(
+      { rootState, state, commit },
+      removed_subjects
+    ) {
       let data = {
         id: parseInt(state.orientation.id),
         subjects: removed_subjects,
