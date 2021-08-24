@@ -4,13 +4,15 @@ import { createStore } from "vuex";
 import auth from './modules/auth';  
 import usersPending from './modules/usersPending';
 import subjects from './modules/subjects';
+import orientations from './modules/orientations';
 
 export default createStore({
   // Declarando modulos para poder usarlos
   modules:{
     auth,
     usersPending,
-    subjects
+    subjects,
+    orientations
   },
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
