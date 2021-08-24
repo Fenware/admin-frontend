@@ -11,14 +11,14 @@
       </div>
       <div class="flex items-center">
         <button
-          @click="createGroup()"
+          @click="editGroup(edited_group)"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-indigo-200 hover:bg-indigo-300 text-blue-900"
         >
           Guardar
         </button>
 
         <button
-          @click="changeModeToList()"
+          @click="changeMode({ mode: 'list' })"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
           Cancelar
@@ -90,28 +90,30 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   name: "EditGroup",
   data: function() {
     return {
       search_word: "",
-      edited_group: {
-        id: this.group.id,
-        name: this.group.name,
-        code: this.group.code,
-        orientation: null,
-      },
+      edited_group: {},
     };
   },
-  props: {
-    group: {},
-    orientations: Array,
-  },
   computed: {
-    ...mapState(["API_URL", "headers"]),
+    ...mapState({
+      orientations: (state) => state.groups.orientations,
+      group: (state) => state.groups.group,
+    }),
+  },
+  created() {
+    let group = {
+      id: this.group.id,
+      name: this.group.name,
+      code: this.group.code,
+      orientation: null,
+    };
+    this.edited_group = group;
   },
   mounted() {
     // Busco la orientacion original del array para que no se buguee el selector de orientaciones
@@ -122,10 +124,8 @@ export default {
     this.toggleOrientation(orientation);
   },
   methods: {
-    changeModeToList() {
-      // Llamo a la funcion del padre para cambiar el modo
-      this.$emit("changeMode", "list");
-    },
+    ...mapMutations(["changeMode"]),
+    ...mapActions(["editGroup"]),
     toggleOrientation(orientationSelected) {
       // Deseleccionando todas las orientaciones del DOM
       this.orientations.forEach((orientationToDeselect) => {
@@ -184,67 +184,6 @@ export default {
         yearSpan.classList.remove("px-2");
         yearSpan.classList.remove("hidden");
         this.edited_group.orientation = null;
-      }
-    },
-    validateData() {
-      if (this.edited_group.name.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar el nombre del grupo!`,
-        });
-        return false;
-      } else if (this.edited_group.orientation === null) {
-        this.$swal({
-          icon: "error",
-          title: `Debes seleccionar una orientación!`,
-        });
-        return false;
-      } else {
-        return true;
-      }
-    },
-    async createGroup() {
-      if (this.validateData()) {
-        let data = {
-          id: parseInt(this.edited_group.id),
-          orientacion: parseInt(this.edited_group.orientation.id),
-          name: this.edited_group.name.toUpperCase(),
-        };
-        await axios({
-          method: "put",
-          url: this.API_URL + "/group",
-          data: data,
-          headers: this.headers,
-        })
-          .then((res) => {
-            if (res.data == 1) {
-              this.edited_group.full_name =
-                (this.edited_group.orientation.year == "1" ||
-                this.edited_group.orientation.year == "3"
-                  ? this.edited_group.orientation.year + "ero"
-                  : this.edited_group.orientation.year + "do") +
-                ` ${this.edited_group.name}`;
-              this.$emit("modifyGroup", this.edited_group);
-              this.changeModeToList();
-              this.$swal({
-                icon: "success",
-                title: `El grupo ${this.edited_group.full_name} fue modificado correctamente!`,
-              });
-            } else if (res.data == 0) {
-              this.$swal({
-                icon: "info",
-                title: 'No has modificado ningún dato!',
-              });
-            } else {
-              this.$swal({
-                icon: "error",
-                title: res.data.result.error_msg,
-              });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       }
     },
   },
