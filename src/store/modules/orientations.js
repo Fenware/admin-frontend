@@ -44,10 +44,6 @@ export default {
           orientation.year = modified_orientation.year;
         }
       });
-      showAlert({
-        type: "success",
-        message: `La orientación ${modified_orientation.name} fue modificada correctamente!`,
-      });
     },
   },
   actions: {
@@ -187,17 +183,16 @@ export default {
         id: parseInt(state.orientation.id),
         subjects: removed_subjects,
       };
-      console.log(data);
       await axios({
         method: "delete",
         url: rootState.API_URL + "/orientacion-materia",
-        data: data,
+        data,
         headers: rootState.headers,
       })
         .then((res) => {
           if (res.data == 1) {
             console.log("Midificadi corritaminti");
-            /* commit("modifyOrientation", this.modified_orientation); */
+            /* commit("modifyOrientation", .modified_orientation); */
           }
         })
         .catch((error) => {
