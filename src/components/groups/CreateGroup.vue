@@ -11,14 +11,14 @@
       </div>
       <div class="flex items-center">
         <button
-          @click="createGroup()"
+          @click="createGroup(new_group)"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Crear grupo
         </button>
 
         <button
-          @click="changeModeToList()"
+          @click="changeMode({mode: 'list'})"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
           Cancelar
@@ -90,8 +90,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   name: "CreateGroup",
@@ -100,24 +99,20 @@ export default {
       search_word: "",
       new_group: {
         name: "",
-        orientation: {},
+        orientation: null,
       },
     };
   },
-  props:{
-    orientations: Array
-  },
   computed: {
-    ...mapState(["API_URL", "headers"]),
+    ...mapState({orientations: state => state.groups.orientations}),
   },
   methods: {
-    changeModeToList() {
-      // Llamo a la funcion del padre para cambiar el modo
-      this.$emit("changeMode", "list");
-    },
-    toggleOrientation(orientationSelected) {
-      // Deseleccionando todas las orientaciones del DOM
+    ...mapMutations(['changeMode']),
+    ...mapActions(['createGroup']),
 
+    toggleOrientation(orientationSelected) {
+
+      // Deseleccionando todas las orientaciones del DOM
       this.orientations.forEach((orientationToDeselect) => {
         let orientationDiv = document.getElementById(
           "orientation_" + orientationToDeselect.id
@@ -171,60 +166,6 @@ export default {
         yearSpan.classList.remove("px-2");
         yearSpan.classList.remove("hidden");
         this.new_group.orientation = null;
-      }
-    },
-    validateData() {
-      if (this.new_group.name.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar el nombre del grupo!`,
-        });
-        return false;
-      } else if (this.new_group.orientation === null) {
-        this.$swal({
-          icon: "error",
-          title: `Debes seleccionar una orientación!`,
-        });
-        return false;
-      }else{
-        return true;
-      }
-    },
-    async createGroup() {
-      if (this.validateData()) {
-        let data = {
-          orientacion: parseInt(this.new_group.orientation.id),
-          name: this.new_group.name.toUpperCase(),
-        };
-        await axios({
-          method: "post",
-          url: this.API_URL + "/group",
-          data: data,
-          headers: this.headers,
-        })
-          .then((res) => {
-            // Si no existe el objeto result en res.data entonces no hubieron errores
-            console.log(res);
-            if (!("result" in res.data)) {
-              res.data.orientation_name = this.new_group.orientation.name;
-              res.data.year = this.new_group.orientation.year;
-              res.data.full_name = (res.data.year == "1" || res.data.year == "3" ? res.data.year + "ero" : res.data.year + "do") + ` ${res.data.name}`;
-              this.$emit("addGroup", res.data);
-              this.changeModeToList();
-              this.$swal({
-                icon: "success",
-                title: `El grupo ${res.data.full_name} fue creado correctamente!`,
-              });
-            } else {
-              this.$swal({
-                icon: "error",
-                title: res.data.result.error_msg,
-              });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       }
     },
   },
