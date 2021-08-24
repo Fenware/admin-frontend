@@ -19,6 +19,9 @@ export default {
     pushGroup(state, group) {
       state.groups.push(group);
     },
+    clearGroups(state) {
+      state.groups = [];
+    },
     setOrientations(state, orientations) {
       state.orientations = orientations;
     },
@@ -34,13 +37,13 @@ export default {
         }
       });
     },
-    removeGroup(state, id){
+    removeGroup(state, id) {
       state.groups.forEach((group, index, array) => {
         if (parseInt(group.id) == id) {
           array.splice(index, 1);
         }
       });
-    }
+    },
   },
   actions: {
     async getOrientations({ rootState, commit }) {
@@ -59,6 +62,9 @@ export default {
         });
     },
     async getGroups({ rootState, commit }) {
+      // Limpio el array de grupos
+      commit("clearGroups");
+
       await axios({
         method: "get",
         url: rootState.API_URL + "/group",
@@ -81,7 +87,10 @@ export default {
           console.log(error);
         });
     },
-    async deleteGroup({ rootState, commit }, data /* id, group_name, group_year */) {
+    async deleteGroup(
+      { rootState, commit },
+      data /* id, group_name, group_year */
+    ) {
       data.id = parseInt(data.id);
       await axios({
         method: "delete",
@@ -93,7 +102,7 @@ export default {
           // Si la consulta salio bien
           if (res.data == 1) {
             // Elimino el objeto del array
-            commit("removeGroup", data.id)
+            commit("removeGroup", data.id);
 
             // Lanzando alerta
             showAlert({
@@ -110,6 +119,65 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    async createGroup({ rootState, commit }, new_group) {
+      let data_ok = false;
+      console.log(new_group);
+      if (new_group.name.length == 0) {
+        showAlert({
+          type: "error",
+          message: `Debes ingresar el nombre del grupo!`,
+        });
+        data_ok = false;
+      } else if (new_group.orientation === null) {
+        showAlert({
+          type: "error",
+          message: `Debes seleccionar una orientación!`,
+        });
+        data_ok = false;
+      } else {
+        data_ok = true;
+      }
+
+      if (data_ok) {
+        let data = {
+          orientacion: parseInt(new_group.orientation.id),
+          name: new_group.name.toUpperCase(),
+        };
+        await axios({
+          method: "post",
+          url: rootState.API_URL + "/group",
+          data: data,
+          headers: rootState.headers,
+        })
+          .then((res) => {
+            // Si no existe el objeto result en res.data entonces no hubieron errores
+            if (!("result" in res.data)) {
+              res.data.orientation_name = new_group.orientation.name;
+              res.data.year = new_group.orientation.year;
+              res.data.full_name =
+                (res.data.year == "1" || res.data.year == "3"
+                  ? res.data.year + "ero"
+                  : res.data.year + "do") + ` ${res.data.name}`;
+
+              commit("pushGroup", res.data);
+              commit("changeMode", { mode: "list" });
+
+              showAlert({
+                type: "success",
+                message: `El grupo ${res.data.full_name} fue creado correctamente!`,
+              });
+            } else {
+              showAlert({
+                type: "error",
+                message: res.data.result.error_msg,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };
