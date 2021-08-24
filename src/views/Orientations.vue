@@ -6,11 +6,7 @@
 
     <ListOrientation v-show="mode == 'list'" />
 
-    <CreateOrientation
-      v-if="mode == 'create'"
-      @changeMode="changeMode"
-      @addOrientation="addOrientation"
-    />
+    <CreateOrientation v-if="mode == 'create'" />
 
     <EditOrientation
       v-if="mode == 'edit'"
@@ -31,6 +27,7 @@ export default {
   name: "Orientations",
   created() {
     this.getOrientations();
+    this.getSubjects();
   },
   components: {
     ListOrientation,
@@ -38,12 +35,10 @@ export default {
     EditOrientation,
   },
   computed: {
-    ...mapState({
-      mode: (state) => state.orientations.mode,
-    }),
+    ...mapState({ mode: (state) => state.orientations.mode }),
   },
   methods: {
-    ...mapActions(["getOrientations"]),
+    ...mapActions(["getOrientations", "getSubjects"]),
   },
 };
 </script>
