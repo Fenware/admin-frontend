@@ -96,7 +96,7 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-start"
           >
             <button
-              @click="false"
+              @click="changeModeToEdit(user)"
               class=" pr-3 pl-5 font-semibold py-1.5 transition-colors rounded-md border-b-4 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
@@ -160,6 +160,12 @@ export default {
         });
       }
       return users_filtered;
+    },
+  },
+  methods:{ //david codeando
+    changeModeToEdit(user) {
+      this.$emit("changeMode", { mode: 'edit', user});
+      
     },
   },
 };
