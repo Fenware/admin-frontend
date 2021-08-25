@@ -239,32 +239,33 @@ import { mapState } from "vuex";
 
 export default {
   name: "EditUser",
-  data: function () {
+  data: function() {
     return {
-      edited_user: {
-        name: this.user.name,
-        middle_name: this.user.middle_name,
-        surname: this.user.surname,
-        second_surname: this.user.second_surname,
-        email: this.user.email,
-        nickname: this.user.nickname,
-      },
+      edited_user: {},
     };
   },
-
   props: {
     user: {},
+  },
+  created() {
+    let user = {
+      name: this.user.name,
+      middle_name: this.user.middle_name,
+      surname: this.user.surname,
+      second_surname: this.user.second_surname,
+      email: this.user.email,
+      nickname: this.user.nickname,
+    };
+    this.edited_user = user;
   },
   computed: {
     ...mapState(["API_URL", "headers"]),
   },
-
   methods: {
     changeModeToList() {
-      this.$emit("changeMode", "list");
+      this.$emit("changeMode", { mode: "list" });
     },
     validateData() {
-      console.log(this.edited_user);
       if (this.edited_user.name.length == 0) {
         this.$swal({
           icon: "error",
@@ -294,16 +295,17 @@ export default {
       }
     },
     async createUser() {
-      console.log('usuario : '+this.ed);
+      console.log("usuario : " + this.ed);
       if (this.validateData()) {
-        let data = {
+        /* let data = {
           name: this.edited_user.name,
           middle_name: this.edited_user.middle_name,
           surname: this.edited_user.surname,
           second_surname: this.edited_user.second_surname,
           email: this.edited_user.email,
           nickname: this.edited_user.nickname,
-        };
+        }; */
+        let data = this.edited_user;
         await axios({
           method: "put",
           url: this.API_URL + "/user",
@@ -336,14 +338,7 @@ export default {
       }
     },
   },
-  created() {
-    console.log(this.user);
-  },
 };
 </script>
 
-
-
-
-<style>
-</style>
+<style></style>
