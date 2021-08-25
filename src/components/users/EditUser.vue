@@ -68,7 +68,7 @@
     </div>
 
     <!-- Cuerpo__________________________ -->
-    {{ user }}
+    <!-- {{ user }} -->
 
     <div
       class="p-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
@@ -80,10 +80,15 @@
         <!-- <label class="block text-xs pl-12 mt-2 font-semibold select-none"
             >Nombre</label
           > -->
-        <div class="pt-5 shadow-lg rounded-xl">
-          <h1>CI: {{ user.ci }}</h1>
+        <div class=" pt-5  shadow-lg rounded-xl">
+          <div class="flex justify-center">
+            <span class="text-2xl mx-5">CI: {{ user.ci }}</span>
+          </div>
+          
+          
+          
 
-          <div class="pt-5 shadow-lg rounded-xl">
+          <div class="flex flex-wrap sm:justify-center pt-5 shadow-lg rounded-xl">
             <input
               maxlength="16"
               type="text"
@@ -95,7 +100,7 @@
                 placeholder-gray-400
                 py-2
                 px-2
-                m-1
+                my-1
                 |
                 bg-white
                 duration-300
@@ -178,31 +183,6 @@
                 outline-none
               "
             />
-
-            <input
-              maxlength="100"
-              type="email"
-              placeholder="Email"
-              v-model="edited_user.email"
-              class="
-                transition
-                text-sm
-                placeholder-gray-400
-                py-2
-                px-2
-                m-1
-                |
-                bg-white
-                duration-300
-                focus:bg-opacity-20
-                hover:bg-opacity-20
-                bg-opacity-10
-                shadow-lg
-                rounded-xl
-                outline-none
-              "
-            />
-
             <input
               maxlength="32"
               type="text"
@@ -227,7 +207,38 @@
               "
             />
           </div>
+          <div class="pt-5 shadow-lg rounded-xl">
+            <input
+              maxlength="100"
+              type="email"
+              placeholder="Email"
+              v-model="edited_user.email"
+              class="
+                transition
+                text-sm
+                placeholder-gray-400
+                py-2
+                px-2
+                w-full
+                m-1
+                |
+                bg-white
+                duration-300
+                focus:bg-opacity-20
+                hover:bg-opacity-20
+                bg-opacity-10
+                shadow-lg
+                rounded-xl
+                outline-none
+              "
+            />
+          </div>
+         
+        <div class="flex mt-3">
+            <span class="text-1xl my-3 ml-auto mr-3">Tipo de Usuario: {{ user.type }}</span>
+          </div>  
         </div>
+        
       </form>
     </div>
   </div>
@@ -295,7 +306,7 @@ export default {
       }
     },
     async createUser() {
-      console.log("usuario : " + this.ed);
+      console.log("usuario : " + this.edited_user);
       if (this.validateData()) {
         /* let data = {
           name: this.edited_user.name,
