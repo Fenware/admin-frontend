@@ -235,7 +235,7 @@
           </div>
          
         <div class="flex mt-3">
-            <span class="text-1xl my-3 ml-auto mr-3">Tipo de Usuario: {{ user.type }}</span>
+            <span class="text-1xl my-3 ml-auto mr-3">Tipo de Usuario: {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}</span>
           </div>  
         </div>
         
@@ -306,7 +306,7 @@ export default {
       }
     },
     async createUser() {
-      console.log("usuario : " + this.edited_user);
+      // console.log("usuario : " + this.edited_user);
       if (this.validateData()) {
         /* let data = {
           name: this.edited_user.name,
@@ -323,25 +323,22 @@ export default {
           data: data,
           headers: this.headers,
         })
-          .then((res) => {
-            console.log(res.data);
-            // if (res.data) {
-            //   this.changeModeToList();
-            //   this.$swal({
-            //     icon: "success",
-            //     title: `El usuario ${this.edited_user.name} fue modificado correctamente!`,
-            //   });
-            // }else if (res.data == 0) {
-            //   this.$swal({
-            //     icon: "info",
-            //     title: 'No has modificado ningún dato!',
-            //   });
-            // } else {
-            //   this.$swal({
-            //     icon: "error",
-            //     title: res.data.result.error_msg,
-            //   });
-            // }
+          .then(() => {
+              this.changeModeToList();
+              this.$swal({
+                icon: "success",
+                title: `El usuario ${this.edited_user.name} fue modificado correctamente!`,
+              });
+
+              // this.$swal({
+              //   icon: "info",
+              //   title: 'No has modificado ningún dato!',
+              // });
+
+              // this.$swal({
+              //   icon: "error",
+              //   title: res.data.result.error_msg,
+              // }); 
           })
           .catch((error) => {
             console.log(error);

@@ -104,6 +104,12 @@
                 class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
               ></i>
             </button>
+            <button
+              @click="changeModeToDelete(user)"
+              class=" pr-3 pl-5 font-extrabold py-1.5 transition-colors rounded-md border-b-4 hover:border-red-800 border-red-700 bg-red-500 hover:bg-red-600 text-blue-900"            
+            >
+              Eliminar
+            </button>
 
           </div>
         </div>
@@ -166,6 +172,9 @@ export default {
     changeModeToEdit(user) {
       this.$emit("changeMode", { mode: 'edit', user});
       
+    },
+    changeModeToDelete(user){
+      this.$emit("changeMode", { mode: 'delete', user});
     },
   },
 };

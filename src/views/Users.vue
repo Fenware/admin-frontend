@@ -12,6 +12,7 @@
 
     <EditUser v-show="mode == 'edit'" :user="user" @changeMode="changeMode" />
 
+    <DeleteUser v-show="mode == 'delete'" :user="user" @changeMode="changeMode"/>
     <!-- 
       Ejemplo de componente que use para los grupos
       Le paso el array de orientaciones y el grupo para editarlo
@@ -34,6 +35,7 @@ import { mapState } from "vuex";
 // Componentes
 import ListUsers from "@/components/users/ListUsers.vue";
 import EditUser from "@/components/users/EditUser.vue";
+import DeleteUser from "@/components/users/DeleteUser.vue";
 
 export default {
   name: "Users",
@@ -48,6 +50,7 @@ export default {
   components: {
     ListUsers,
     EditUser,
+    DeleteUser
   },
   computed: {
     ...mapState(["API_URL", "headers"]),
