@@ -44,8 +44,8 @@ export default {
   data: function() {
     return {
       user: {
-        user: "Administrador",
-        password: "mnoseadmin1234",
+        user: "",
+        password: "",
         type: "admin",
       },
     };
