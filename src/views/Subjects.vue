@@ -9,6 +9,7 @@
         type="text"
         placeholder="Buscar materia"
         v-model="text_filter"
+        v-on:keyup="setTextFilter(text_filter)"
         class="w-64 my-2 py-2 px-2 text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
       />
       <div
@@ -44,12 +45,13 @@
         <p
           :id="'subject_name_' + subject.id"
           :class="
-            (subject.name.length > 20 && subject.name.length < 35
+            subject.name.length > 20 && subject.name.length < 35
               ? 'text-sm'
               : subject.name.length >= 35
               ? 'text-xs'
-              : ' ') + ' text-center bg-transparent'
+              : ' '
           "
+          class="text-center font-semibold"
           type="text"
         >
           {{ subject.name }}
@@ -71,7 +73,12 @@
           type="text"
           :id="'subject_name_input_' + subject.id"
           v-on:keyup.enter="
-            new_subject_name.trim() != '' ? editSubject(subject.id) : false
+            new_subject_name.trim() != ''
+              ? modifySubject({
+                  id: parseInt(subject.id),
+                  name: new_subject_name,
+                })
+              : false
           "
           v-model="new_subject_name"
           class="hidden text-center py-1 px-2 bg-gray-500 rounded-xl outline-none"
@@ -100,7 +107,12 @@
         >
           <button
             @click="
-              new_subject_name.trim() != '' ? editSubject(subject.id) : false
+              new_subject_name.trim() != ''
+                ? modifySubject({
+                    id: parseInt(subject.id),
+                    name: new_subject_name,
+                  })
+                : false
             "
             class="text-sm px-8 mb-1 cursor-pointer text-green-900  transition-colors mx-1 text-md drop-shadow-lg  font-semibold py-1 rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300"
           >
@@ -119,15 +131,12 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "Subjects",
   data: function() {
     return {
-      subjects: [],
       new_subject: {
-        id: null,
         name: "",
         state: 1,
       },
@@ -140,29 +149,25 @@ export default {
     this.getSubjects();
   },
   computed: {
-    ...mapState(["API_URL", "headers"]),
-    subjectsFiltered() {
-      // Devuelvo las materias filtradas por coincidencias de nombre
-      return this.subjects.filter(
-        (subject) =>
-          subject.name.toLowerCase().indexOf(this.text_filter.toLowerCase()) >=
-          0
-      );
-    },
+    ...mapGetters(["subjectsFiltered"]),
   },
   methods: {
+    ...mapMutations(["setTextFilter"]),
+    ...mapActions([
+      "getSubjects",
+      "createSubject",
+      "removeSubject",
+      "editSubject",
+    ]),
     addSubject() {
       // Creando nuevo objeto con el nombre de la materia
       let newSubject = {
         name: this.new_subject.name,
       };
       this.createSubject(newSubject);
-      this.new_subject.id = null;
       this.new_subject.name = "";
     },
     toggleEditMode(id, name) {
-      /* this.sweetAlertConfirm(); */
-
       // Obtengo el input
       let subjectInput = document.getElementById("subject_name_input_" + id);
 
@@ -202,108 +207,12 @@ export default {
       buttonsEditMode.classList.toggle("hidden");
       buttonsNoEditMode.classList.toggle("hidden");
 
-      //
       if (id == this.previous_subject_edited_id) {
         this.previous_subject_edited_id = null;
       }
     },
-    async getSubjects() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/materia",
-        headers: this.headers,
-      })
-        .then((res) => {
-          // Verifico que la data recibida sea un array
-          if (Array.isArray(res.data)) {
-            this.subjects = res.data;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async createSubject(subject) {
-      await axios({
-        method: "post",
-        url: this.API_URL + "/materia",
-        data: subject,
-        headers: this.headers,
-      })
-        .then((res) => {
-          console.log(res.data);
-          if (!("result" in res.data)) {
-            this.subjects.push(res.data);
-            this.$swal({
-              icon: "success",
-              title: `La materia ${subject.name} fue creada correctamente!`,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async removeSubject(subject_id, subject_name) {
-      let data = {
-        id: parseInt(subject_id),
-      };
-      await axios({
-        method: "delete",
-        url: this.API_URL + "/materia",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            this.subjects.forEach((subject, index, subjects_array) => {
-              if (parseInt(subject_id) == parseInt(subject.id)) {
-                subjects_array.splice(index, 1);
-              }
-            });
-            this.$swal({
-              icon: "warning",
-              title: `La materia ${subject_name} fue borrada!`,
-            });
-          } else {
-            console.log("Error: removeSubject");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async editSubject(subject_id) {
-      let data = {
-        id: parseInt(subject_id),
-        name: this.new_subject_name,
-      };
-      await axios({
-        method: "put",
-        url: this.API_URL + "/materia",
-        data: data,
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            this.subjects.forEach((subject) => {
-              if (parseInt(subject_id) == parseInt(subject.id)) {
-                subject.name = this.new_subject_name;
-              }
-            });
-            this.$swal({
-              icon: "success",
-              title: `Materia renombrada correctamente!`,
-            });
-            this.toggleSubjectCard(subject_id);
-          } else {
-            console.log("Error: editSubject");
-          }
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    modifySubject(subject) {
+      this.editSubject(subject).then(() => this.toggleSubjectCard(subject.id));
     },
     confirmDeletion(subject_id, subject_name) {
       let alert = this.$swal.mixin({
@@ -311,7 +220,7 @@ export default {
         position: "center",
         showConfirmButton: true,
         showDenyButton: true,
-        timer: 50000,
+        timer: 60000,
         timerProgressBar: true,
         iconColor: "white",
         heightAuto: true,
@@ -321,14 +230,14 @@ export default {
       });
       alert
         .fire({
-          html: `<span class="text-white">Estas seguro de borrar la materia <b>${subject_name}</b> ?</span>`,
+          html: `<span class="text-white">¿Estas seguro de borrar la materia <b>${subject_name}</b>?</span>`,
           showCancelButton: false,
           confirmButtonText: `Borrar`,
           denyButtonText: `Cancelar`,
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.removeSubject(subject_id, subject_name);
+            this.removeSubject({id: parseInt( subject_id), name: subject_name});
           }
         });
     },

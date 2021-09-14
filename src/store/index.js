@@ -1,8 +1,21 @@
 import { createStore } from "vuex";
-import router from "@/router/index";
-import axios from "axios";
+
+// Modulos
+import auth from './modules/auth';  
+import usersPending from './modules/usersPending';
+import subjects from './modules/subjects';
+import orientations from './modules/orientations';
+import groups from './modules/groups';
 
 export default createStore({
+  // Declarando modulos para poder usarlos
+  modules:{
+    auth,
+    usersPending,
+    subjects,
+    orientations,
+    groups
+  },
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
     token: null,
@@ -10,9 +23,6 @@ export default createStore({
       Authorization: "",
       "Content-Type": "application/json",
     },
-    text_filter: "",
-    create_group_mode: false,
-    modify_group_mode: false,
   },
   mutations: {
     setToken(state, payload) {
@@ -21,84 +31,8 @@ export default createStore({
     setHeaderToken(state, payload) {
       state.headers.Authorization = payload;
     },
-    setText(state, payload) {
-      state.text_filter = payload;
-    },
-    toogleCreateGroupMode(state) {
-      state.create_group_mode = !state.create_group_mode;
-    },
-    toogleModifyGroupMode(state) {
-      state.modify_group_mode = !state.modify_group_mode;
-    },
-    setGroups(state, groups) {
-      state.groups = groups;
-    },
-    setGroup(state, group) {
-      state.group = group;
-    },
-    addGroup(state, group) {
-      state.groups.push(group);
-    },
-    editGroup(state, modified_group) {
-      /* state.groups.find(
-        (group) => parseInt(group.id) == parseInt(modified_group.id)
-      ).name = modified_group.name; */
-      state.groups.forEach((group) => {
-        if (group.id == modified_group.id) {
-          group.name = modified_group.name;
-          group.id_orientation = modified_group.orientacion;
-
-          let orientation_data = state.orientations.find(
-            (orientation) =>
-              parseInt(orientation.id) == parseInt(modified_group.orientacion)
-          );
-          group.orientation_name = orientation_data.name;
-        }
-      });
-    },
-    removeGroup(state, group_data) {
-      state.groups.forEach((group, index) => {
-        if (group.id == group_data.id) {
-          state.groups.splice(index, 1);
-        }
-      });
-    },
   },
   actions: {
-    searcher({ commit }, payload) {
-      commit("setText", payload.toLowerCase());
-    },
-    syncToken({ commit }) {
-      if (localStorage.getItem("token")) {
-        commit("setToken", localStorage.getItem("token"));
-        commit("setHeaderToken", "Bearer " + localStorage.getItem("token"));
-      } else {
-        /* router.push("login"); */
-        console.log();
-      }
-    },
-    logout({ commit }) {
-      commit("setToken", null);
-      commit("setHeaderToken", "");
-      localStorage.removeItem("token");
-      router.push("login");
-    },
-    async checkSession({ state,  dispatch }) {
-      await axios({
-        method: "post",
-        url: state.API_URL + "/token",
-        data: {},
-        headers: state.headers,
-      })
-        .then((res) => {
-          console.log(res);
-          if (res.data != "OK") {
-            dispatch('logout');
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    
   }
 });
