@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "@/router/index";
 
 // Modulo donde manejo las alertas
-import showAlert from "@/utils/alerts";
+import { showAlert } from "@/utils/alerts";
 
 export default {
   actions: {
@@ -63,7 +63,7 @@ export default {
             // Redirigo al inicio
             router.push("/inicio");
           } else {
-            showAlert({type: "error", message: res.data.result.error_msg});
+            showAlert({ type: "error", message: res.data.result.error_msg });
           }
         })
         .catch((error) => {

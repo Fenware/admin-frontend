@@ -1,5 +1,5 @@
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   state: {
@@ -74,9 +74,12 @@ export default {
             // Ejecuto la mutacion para añadir la materia al array
             commit("addSubject", res.data);
             // Lanzo la alerta
-            showAlert({type: "success", message: `La materia ${subject.name} fue creada correctamente!`});
-          }else{
-            showAlert({type: "error", message: res.data.result.error_msg});
+            showAlert({
+              type: "success",
+              message: `La materia ${subject.name} fue creada correctamente!`,
+            });
+          } else {
+            showAlert({ type: "error", message: res.data.result.error_msg });
           }
         })
         .catch((error) => {
@@ -93,7 +96,10 @@ export default {
         .then((res) => {
           if (res.data == 1) {
             commit("deleteSubject", subject.id);
-            showAlert({type: "warning", message: `La materia ${subject.name} fue borrada!`});
+            showAlert({
+              type: "warning",
+              message: `La materia ${subject.name} fue borrada!`,
+            });
           } else {
             console.log("Error: removeSubject");
           }
@@ -112,7 +118,10 @@ export default {
         .then((res) => {
           if (res.data == 1) {
             commit("renameSubject", subject);
-            showAlert({type: "success", message: 'Materia renombrada correctamente!'});
+            showAlert({
+              type: "success",
+              message: "Materia renombrada correctamente!",
+            });
             /* this.toggleSubjectCard(subject_id); */
             return true;
           } else {

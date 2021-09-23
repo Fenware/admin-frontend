@@ -126,7 +126,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   name: "EditOrientation",

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   state: {
@@ -220,7 +220,7 @@ export default {
                 ` ${edited_group.name}`;
               commit("modifyGroup", edited_group);
               commit("changeMode", { mode: "list" });
-              
+
               showAlert({
                 type: "success",
                 message: `El grupo ${edited_group.full_name} fue modificado correctamente!`,
