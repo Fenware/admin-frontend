@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "ListOrientations",
   data: function() {
@@ -136,60 +136,6 @@ export default {
   },
   methods: {
     ...mapMutations(['changeMode']),
-    ...mapActions(['deleteGroup']),
-    /* orientationsFiltered() {
-      // Filtro las orientaciones por coincidencias de nombre
-      let orientations_filtered = this.orientations.filter(
-        (orientation) =>
-          orientation.name
-            .toLowerCase()
-            .indexOf(this.text_filter.toLowerCase()) >= 0
-      );
-
-      if (this.filter_by == 1) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 1
-        );
-      } else if (this.filter_by == 2) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 2
-        );
-      } else if (this.filter_by == 3) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 3
-        );
-      }
-      return orientations_filtered;
-    }, */
-    confirmDeletion(group_id, group_name, group_year) {
-      // Modal para confirmar si quiere eliminar la orientacion
-      let alert = this.$swal.mixin({
-        toast: false,
-        position: "center",
-        showConfirmButton: true,
-        showDenyButton: true,
-        timer: 50000,
-        timerProgressBar: true,
-        iconColor: "white",
-        heightAuto: true,
-        customClass: {
-          popup: "colored-toast",
-        },
-      });
-      alert
-        .fire({
-          html: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
-          showCancelButton: false,
-          confirmButtonText: `Eliminar`,
-          denyButtonText: `Cancelar`,
-        })
-        .then((result) => {
-          // Si le da al boton de eliminar llamo a la funcion
-          if (result.isConfirmed) {
-            this.deleteGroup({id: group_id, name: group_name, year: group_year});
-          }
-        });
-    },
     focusSearcher() {
       let input = document.getElementById("searcher");
       input.focus();
