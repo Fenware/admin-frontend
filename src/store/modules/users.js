@@ -22,6 +22,18 @@ export default {
         }
       });
     },
+    changeUser(state, edited_user) {
+      state.users.forEach((user) => {
+        if (user.id == edited_user.id) {
+          user.name = edited_user.name;
+          user.middle_name = edited_user.middle_name;
+          user.surname = edited_user.surname;
+          user.email = edited_user.email;
+          user.nickname = edited_user.nickname;
+          user.avatar = edited_user.avatar;
+        }
+      });
+    },
   },
   actions: {
     async getUsers({ rootState, commit }) {
@@ -32,6 +44,14 @@ export default {
       })
         .then((res) => {
           if (Array.isArray(res.data)) {
+            res.data.forEach((user) => {
+              if (!user.middle_name) {
+                user.middle_name = "";
+              }
+              if (!user.second_surname) {
+                user.second_surname = "";
+              }
+            });
             commit("setUsers", res.data);
           } else {
             console.log(res.data);
@@ -59,6 +79,35 @@ export default {
             });
           } else {
             console.log(res.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async editUser({ rootState, commit }, payload) {
+      /* let data = { user: parseInt(payload.id) }; */
+      payload.id = parseInt(payload.id);
+      await axios({
+        method: "put",
+        url: rootState.API_URL + "/user",
+        data: { user: payload },
+        headers: rootState.headers,
+      })
+        .then((res) => {
+          console.log(res);
+
+          if (res.data == 1) {
+            commit("changeUser", payload);
+            showAlert({
+              type: "success",
+              message: `El usuario ${payload.name} fue modificado correctamente!`,
+            });
+          } else {
+            showAlert({
+              type: "error",
+              message: `Hubo un error, intente nuevamente`,
+            });
           }
         })
         .catch((error) => {
