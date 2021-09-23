@@ -6,11 +6,11 @@
       class="flex justify-between pl-3 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
     >
       <div class="flex items-center">
-        <i class="fas fa-user "></i>
+        <span class="material-icons">people</span>
         <h2 class="p-1 font-extrabold">Lista de usuarios</h2>
       </div>
       <div class="flex items-center mr-5">
-        <i class="fas fa-sort-alpha-down mr-2"></i>
+        <span class="material-icons mr-2">filter_list</span>
 
         <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
         <button
@@ -86,10 +86,13 @@
               <span class="font-medium">CI: </span
               ><span class=" tracking-widest">{{ user.ci }}</span>
             </p>
-            <p>
+            <!-- <p>
               <span class="font-medium">Nickname: </span>{{ user.nickname }}
+            </p> -->
+            <p class="flex items-center">
+              <span class="font-medium">{{ user.email }}</span>
+              <span class="material-icons text-xl ml-1 text-gray-400 cursor-pointer transition-colors hover:text-gray-300">content_copy</span>
             </p>
-            <p><span class="font-medium">Correo: </span>{{ user.email }}</p>
           </div>
 
           <div
@@ -97,20 +100,11 @@
           >
             <button
               @click="changeModeToEdit(user)"
-              class=" pr-3 pl-5 font-semibold py-1.5 transition-colors rounded-md border-b-4 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
+              class="btn-info pr-3 mt-1 pl-5 font-semibold flex items-center"
             >
               Ver más
-              <i
-                class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
-              ></i>
+              <span class="material-icons"> expand_more</span>
             </button>
-            <button
-              @click="changeModeToDelete(user)"
-              class=" btn-danger"            
-            >
-              Eliminar
-            </button>
-
           </div>
         </div>
       </div>
@@ -119,6 +113,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "ListUsers",
   data: () => {
@@ -127,16 +122,16 @@ export default {
       text_filter: "",
     };
   },
-  props: {
-    users: Array,
-  },
   computed: {
+    ...mapState({
+      users: (state) => state.users.users,
+    }),
     usersFiltered() {
       // Filtrando siempre por tipo de usuario
       let users_filtered =
         this.filter_by == "all"
-          ? this.users
-          : this.users.filter((user) => user.type == this.filter_by);
+          ? this.users.filter((user) => user.state_account == "1")
+          : this.users.filter((user) => user.type == this.filter_by && user.state_account == "1");
 
       // Si el filtro es un numero ( osea una cedula )
       if (!isNaN(parseInt(this.text_filter))) {
@@ -168,13 +163,11 @@ export default {
       return users_filtered;
     },
   },
-  methods:{ //david codeando
+  methods: {
+    ...mapMutations(["setUser"]),
     changeModeToEdit(user) {
-      this.$emit("changeMode", { mode: 'edit', user});
-      
-    },
-    changeModeToDelete(user){
-      this.$emit("changeMode", { mode: 'delete', user});
+      this.setUser(user);
+      this.$emit("changeMode", "edit");
     },
   },
 };
