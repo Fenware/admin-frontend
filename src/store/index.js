@@ -6,6 +6,7 @@ import usersPending from './modules/usersPending';
 import subjects from './modules/subjects';
 import orientations from './modules/orientations';
 import groups from './modules/groups';
+import users from './modules/users';
 
 export default createStore({
   // Declarando modulos para poder usarlos
@@ -14,7 +15,8 @@ export default createStore({
     usersPending,
     subjects,
     orientations,
-    groups
+    groups,
+    users
   },
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
