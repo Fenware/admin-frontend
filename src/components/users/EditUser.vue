@@ -51,21 +51,25 @@
     <div
       class="p-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
-      <h1 class="text-2xl text-indigo-300 font-bold text-center">{{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}</h1>
+      <h1 class="text-2xl text-indigo-300 font-bold text-center">
+        {{ edited_user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+      </h1>
 
       <div class="grid grid-cols-2 gap-2 px-10">
         <div class="mb-5 mt-2 col-span-2 flex items-center">
           <img
             class="w-3/12 mr-5"
-            :src="require('@/assets/avatars/' + user.avatar)"
+            :src="require('@/assets/avatars/' + edited_user.avatar)"
             alt="avatar"
           />
           <div class="w-full">
             <div class="block">
-              <span class="block select-none text-xs font-medium "
+              <span class="block select-none text-xs "
                 >Cédula de identidad</span
               >
-              <p class="font-medium text-2xl tracking-widest px-2">{{ user.ci }}</p>
+              <p class="font-medium text-2xl tracking-widest px-2">
+                {{ edited_user.ci }}
+              </p>
             </div>
 
             <div class="block mt-2 ">
@@ -76,9 +80,11 @@
                 id="nickname"
                 class="input w-full"
                 type="text"
-                :value="user.nickname"
+                v-model="edited_user.nickname"
                 :placeholder="
-                  user.nickname ? 'Ingrese el nombre de usuario' : 'Ninguno'
+                  edited_user.nickname
+                    ? 'Ingrese el nombre de usuario'
+                    : 'Ninguno'
                 "
               />
             </div>
@@ -87,7 +93,12 @@
 
         <div>
           <label for="name" class="block select-none text-xs">Nombre</label>
-          <input id="name" class="input" type="text" :value="user.name" />
+          <input
+            id="name"
+            class="input"
+            type="text"
+            v-model="edited_user.name"
+          />
         </div>
 
         <div>
@@ -98,9 +109,9 @@
             id="middle_name"
             class="input"
             type="text"
-            :value="user.middle_name"
+            v-model="edited_user.middle_name"
             :placeholder="
-              !user.middle_name ? 'Ninguno' : 'Ingrese el segundo nombre'
+              !edited_user.middle_name ? 'Ninguno' : 'Ingrese el segundo nombre'
             "
           />
         </div>
@@ -108,7 +119,12 @@
           <label for="surname" class="block select-none text-xs"
             >Apellido</label
           >
-          <input id="surname" class="input" type="text" :value="user.surname" />
+          <input
+            id="surname"
+            class="input"
+            type="text"
+            v-model="edited_user.surname"
+          />
         </div>
 
         <div>
@@ -119,9 +135,11 @@
             id="second_surname"
             class="input"
             type="text"
-            :value="user.second_surname"
+            v-model="edited_user.second_surname"
             :placeholder="
-              !user.second_surname ? 'Ninguno' : 'Ingrese el segundo apellido'
+              !edited_user.second_surname
+                ? 'Ninguno'
+                : 'Ingrese el segundo apellido'
             "
           />
         </div>
@@ -133,27 +151,37 @@
             id="email"
             class="input w-full"
             type="email"
-            :value="user.email"
+            v-model="edited_user.email"
             :placeholder="
-              !user.email ? 'Ninguno' : 'Ingrese el segundo apellido'
+              !edited_user.email ? 'Ninguno' : 'Ingrese el segundo apellido'
             "
           />
         </div>
       </div>
-      <button
-        @click="removeUser()"
-        class="btn-danger text-sm mt-5 ml-auto pt-0.5 px-3 flex items-center"
-      >
-        <span class="material-icons text-md mr-1">warning</span>
-        <span class="mt-0.5">Dar de baja</span>
-      </button>
+      <div class="flex justify-between gap-2 mt-5">
+        <button
+          @click="saveChanges()"
+          :disabled="!wasEdited"
+          :class="wasEdited ? 'btn-success' : 'btn-disabled'"
+          class="text-sm mt-5 px-3 flex items-center"
+        >
+          <span class="mt-0.5">Guardar cambios</span>
+        </button>
+        <button
+          @click="removeUser()"
+          class="btn-danger text-sm mt-5 pt-0.5 px-3 flex items-center"
+        >
+          <span class="material-icons text-md mr-1">warning</span>
+          <span class="mt-0.5">Dar de baja</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import { confirmModal } from "@/utils/alerts.js";
+import { confirmModal, showAlert } from "@/utils/alerts.js";
 
 export default {
   name: "EditUser",
@@ -163,53 +191,52 @@ export default {
     };
   },
   created() {
-    let user = {
-      ci: this.user.ci,
-      name: this.user.name,
-      middle_name: this.user.middle_name,
-      surname: this.user.surname,
-      second_surname: this.user.second_surname,
-      email: this.user.email,
-      nickname: this.user.nickname,
-      avatar: this.user.avatar,
-    };
-    this.edited_user = user;
+    this.edited_user = { ...this.user };
   },
   computed: {
     ...mapState({
-      API_URL: (state) => state.API_URL,
-      headers: (state) => state.headers,
       user: (state) => state.users.user,
     }),
+    wasEdited() {
+      return (
+        this.user.name != this.edited_user.name ||
+        this.user.middle_name != this.edited_user.middle_name ||
+        this.user.surname != this.edited_user.surname ||
+        this.user.second_surname != this.edited_user.second_surname ||
+        this.user.nickname != this.edited_user.nickname ||
+        this.user.email != this.edited_user.email
+      );
+    },
   },
   methods: {
-    ...mapActions(["deleteUser"]),
+    ...mapActions(["deleteUser", "editUser"]),
     changeModeToList() {
       this.$emit("changeMode", "list");
     },
+
     validateData() {
       if (this.edited_user.name.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar un nombre!`,
+        showAlert({
+          type: "error",
+          message: `Debes ingresar un nombre`,
         });
         return false;
       } else if (this.edited_user.surname.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar un apellido!`,
+        showAlert({
+          type: "error",
+          message: `Debes ingresar un apellido`,
         });
         return false;
       } else if (this.edited_user.email.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar un email!`,
+        showAlert({
+          type: "error",
+          message: `Debes ingresar un email`,
         });
         return false;
       } else if (this.edited_user.nickname.length == 0) {
-        this.$swal({
-          icon: "error",
-          title: `Debes ingresar un nickname!`,
+        showAlert({
+          type: "error",
+          message: `Debes ingresar un nombre de usuario`,
         });
         return false;
       } else {
@@ -227,28 +254,9 @@ export default {
         },
       });
     },
-
-    /* async createUser() {
-      if (this.validateData()) {
-        let data = this.edited_user;
-        await axios({
-          method: "put",
-          url: this.API_URL + "/user",
-          data: data,
-          headers: this.headers,
-        })
-          .then(() => {
-            this.changeModeToList();
-            this.$swal({
-              icon: "success",
-              title: `El usuario ${this.edited_user.name} fue modificado correctamente!`,
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    }, */
+    saveChanges() {
+      if (this.validateData()) this.editUser(this.edited_user);
+    },
   },
 };
 </script>
