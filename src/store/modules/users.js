@@ -38,8 +38,8 @@ export default {
   actions: {
     async getUsers({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/user",
+        method: "post",
+        url: rootState.API_URL + "/user/getActiveUsers",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -65,8 +65,8 @@ export default {
     async deleteUser({ rootState, commit }, payload) {
       let data = { user: payload.user_id };
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/user",
+        method: "post",
+        url: rootState.API_URL + "/user/delete",
         data,
         headers: rootState.headers,
       })
@@ -89,8 +89,8 @@ export default {
       /* let data = { user: parseInt(payload.id) }; */
       payload.id = parseInt(payload.id);
       await axios({
-        method: "put",
-        url: rootState.API_URL + "/user",
+        method: "post",
+        url: rootState.API_URL + "/user/modify",
         data: { user: payload },
         headers: rootState.headers,
       })
@@ -101,7 +101,7 @@ export default {
             commit("changeUser", payload);
             showAlert({
               type: "success",
-              message: `El usuario ${payload.name} fue modificado correctamente!`,
+              message: `El usuario ${payload.name} fue modificado correctamente`,
             });
           } else {
             showAlert({
