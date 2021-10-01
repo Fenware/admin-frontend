@@ -44,15 +44,16 @@ export default {
     async login({ rootState, commit, dispatch }, user) {
       await axios({
         method: "post",
-        url: rootState.API_URL + "/auth",
+        url: rootState.API_URL + "/login",
         data: user,
         headers: {
           "Content-Type": "application/json",
         },
       })
         .then((res) => {
+          console.log(res);
           // Si el token es un string significa que es correcto
-          if (typeof res.data.result.token == "string") {
+          if ("token" in res.data.result) {
             let token = res.data.result.token;
             // Le meto el token a la variable del state
             commit("setToken", token);
@@ -60,7 +61,7 @@ export default {
             localStorage.setItem("token", token);
             // Sincronizo el token y los headers
             dispatch("syncToken");
-            // Redirigo al inicio
+            // Redirijo al inicio
             router.push("/inicio");
           } else {
             showAlert({ type: "error", message: res.data.result.error_msg });
