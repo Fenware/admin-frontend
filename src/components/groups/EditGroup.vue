@@ -60,7 +60,7 @@
           :id="'orientation_' + orientation.id"
           v-for="orientation in orientations"
           :key="orientation.id"
-          @click="toggleOrientation(orientation)"
+          @click="false"
           style="height:fit-content"
         >
           <div>
