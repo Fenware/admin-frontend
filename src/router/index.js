@@ -68,22 +68,28 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const routeProtected = to.matched.some((record) => record.meta.requireAuth);
-  /* let redirectedFrom = to.redirectedFrom; */
-  /* console.log(redirectedFrom);
+  if (!to.matched.length) {
+    //Acá hay que poner una vista 404
+    next("/inicio");
+  } else {
+    const routeProtected = to.matched.some((record) => record.meta.requireAuth);
+    /* let redirectedFrom = to.redirectedFrom; */
+    /* console.log(redirectedFrom);
   console.log(to); */
-  // Verificando la session en cada ruta
-  store.dispatch('syncToken');
-  if (routeProtected) {
-    store.dispatch("checkSession");
-    if (store.state.token !== null) {
-      next();
-    }
-  } else if (to.fullPath == "/login") {
-    if (store.state.token !== null) {
-      next({ name: "Home" });
-    } else {
-      next();
+    // Verificando la session en cada ruta
+    store.dispatch("syncToken");
+    if (routeProtected) {
+      store.dispatch("checkSession").then(() => {
+        if (store.state.token !== null) {
+          next();
+        }
+      });
+    } else if (to.fullPath == "/login") {
+      if (store.state.token !== null) {
+        next({ name: "Home" });
+      } else {
+        next();
+      }
     }
   }
 });
