@@ -14,19 +14,12 @@ export default {
       state.users = users;
     },
     setUser(state, user) {
-      state.user = user;
+      state.user = { ...user };
     },
     removeUser(state, user_id) {
       state.users.forEach((user, index, array) => {
         if (parseInt(user.id) == user_id) {
           array.splice(index, 1);
-        }
-      });
-    },
-    changeUser(state, edited_user) {
-      state.users.forEach((user) => {
-        if (user.id == edited_user.id) {
-          user = { ...edited_user };
         }
       });
     },
@@ -105,19 +98,19 @@ export default {
         });
     },
     async editUser({ rootState, commit }, payload) {
-      /* let data = { user: parseInt(payload.id) }; */
       payload.id = parseInt(payload.id);
       await axios({
         method: "post",
         url: rootState.API_URL + "/user/modify",
-        data: { user: payload },
+        data: payload,
         headers: rootState.headers,
       })
         .then((res) => {
           console.log(res);
 
-          if (res.data == 1) {
-            commit("changeUser", payload);
+          if (res.data >= 1) {
+            router.push(`/usuario/${payload.nickname}`);
+            commit("setUser", payload);
             showAlert({
               type: "success",
               message: `El usuario ${payload.name} fue modificado correctamente`,
