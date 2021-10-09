@@ -1,4 +1,6 @@
 import axios from "axios";
+import router from "@/router/index";
+
 // Modulo donde manejo las alertas
 // eslint-disable-next-line no-unused-vars
 import { showAlert } from "@/utils/alerts";
@@ -12,7 +14,6 @@ export default {
       state.users = users;
     },
     setUser(state, user) {
-      console.log(user);
       state.user = user;
     },
     removeUser(state, user_id) {
@@ -25,12 +26,7 @@ export default {
     changeUser(state, edited_user) {
       state.users.forEach((user) => {
         if (user.id == edited_user.id) {
-          user.name = edited_user.name;
-          user.middle_name = edited_user.middle_name;
-          user.surname = edited_user.surname;
-          user.email = edited_user.email;
-          user.nickname = edited_user.nickname;
-          user.avatar = edited_user.avatar;
+          user = { ...edited_user };
         }
       });
     },
@@ -55,6 +51,29 @@ export default {
             commit("setUsers", res.data);
           } else {
             console.log(res.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getUserByNickname({ rootState, commit }, nickname) {
+      await axios({
+        method: "post",
+        url: rootState.API_URL + "/user/getUserByNickname",
+        data: { nickname },
+        headers: rootState.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          if (!("result" in res.data)) {
+            commit("setUser", res.data);
+          } else {
+            showAlert({
+              type: "error",
+              message: res.data.result.error_msg,
+            });
+            router.push("/usuarios");
           }
         })
         .catch((error) => {
