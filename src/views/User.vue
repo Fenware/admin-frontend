@@ -20,7 +20,7 @@
       >
         <div class="flex items-center">
           <span class="material-icons">manage_accounts</span>
-          <h2 class="px-2 font-extrabold select-none">Perfil del usuario</h2>
+          <h2 class="px-2 font-extrabold select-none">Perfil</h2>
         </div>
         <div class="flex items-center">
           <!-- <button
@@ -30,14 +30,14 @@
           Guardar
         </button> -->
 
-          <button
-            @click="changeModeToList()"
+          <router-link
+            :to="{ name: 'Users' }"
             class="btn-info rounded-tr-xl px-2 m-1 py-1 border-0 text-xs flex items-center"
           >
             <span class="material-icons text-sm mr-1">arrow_back</span>
 
             Volver
-          </button>
+          </router-link>
         </div>
       </div>
 
