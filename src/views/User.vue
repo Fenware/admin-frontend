@@ -155,11 +155,12 @@
         </div>
 
         <div class="flex justify-center mb-2 col-span-2 mt-5 ">
-          <button
+          <router-link
+          :to="{ name: 'UserConsultations', params: { nickname: user.nickname } }"
             class="px-3 py-0.5 min-w-max text-sm font-semibold rounded-md transition-colors hover:bg-indigo-200 hover:text-blue-900 cursor-pointer"
           >
             Historial de consultas
-          </button>
+          </router-link>
         </div>
 
         <div class="flex justify-between mt-3 gap-2">
