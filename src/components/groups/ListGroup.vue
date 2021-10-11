@@ -18,7 +18,7 @@
         />
 
         <button
-          @click="toogleSearcher()"
+          @click="focusSearcher()"
           class="px-1.5 m-1 py-0.5 min-w-max text-sm font-semibold transition-colors rounded-md bg-indigo-200 hover:bg-indigo-300 text-blue-900"
         >
           <i class="fas fa-search "></i>
@@ -26,7 +26,7 @@
       </div>
       <div class="flex ml-auto items-center">
         <button
-          @click="this.$emit('changeMode', 'create')"
+          @click="changeMode({ mode: 'create' })"
           class="px-2 m-1 py-1 min-w-max text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
           Crear grupo
@@ -49,7 +49,7 @@
             <p>
               <span class="font-bold text-xl text-indigo-400 ">
                 <span>
-                  {{group.full_name}}
+                  {{ group.full_name }}
                 </span>
                 <span class="font-normal text-sm text-white">
                   - {{ group.orientation_name }}
@@ -72,7 +72,7 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
-              @click="changeModeToEdit(group)"
+              @click="changeMode({ mode: 'edit', group: group })"
               class=" pr-3 pl-5 text-xs font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
               Ver más
@@ -120,81 +120,40 @@
 </template>
 
 <script>
+import { mapActions, mapMutations, mapState } from "vuex";
+import { confirmModal } from "@/utils/alerts";
+
 export default {
   name: "ListOrientations",
   data: function() {
     return {
-      // Variable para activa el buscador
-      search: false,
       text_filter: "",
       filter_by: "all",
     };
   },
-  props: {
-    groups: Array,
+  computed: {
+    ...mapState({
+      groups: (state) => state.groups.groups,
+    }),
   },
-  computed: {},
   methods: {
-    orientationsFiltered() {
-      // Filtro las orientaciones por coincidencias de nombre
-      let orientations_filtered = this.orientations.filter(
-        (orientation) =>
-          orientation.name
-            .toLowerCase()
-            .indexOf(this.text_filter.toLowerCase()) >= 0
-      );
-
-      if (this.filter_by == 1) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 1
-        );
-      } else if (this.filter_by == 2) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 2
-        );
-      } else if (this.filter_by == 3) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 3
-        );
-      }
-      return orientations_filtered;
-    },
-    changeModeToEdit(orientation) {
-      // Para la vista de editar necesito pasarle las materias
-      this.$emit("changeMode", "edit", orientation);
-    },
-    confirmDeletion(group_id, group_name, group_year) {
-      // Modal para confirmar si quiere eliminar la orientacion
-      let alert = this.$swal.mixin({
-        toast: false,
-        position: "center",
-        showConfirmButton: true,
-        showDenyButton: true,
-        timer: 50000,
-        timerProgressBar: true,
-        iconColor: "white",
-        heightAuto: true,
-        customClass: {
-          popup: "colored-toast",
-        },
-      });
-      alert
-        .fire({
-          html: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
-          showCancelButton: false,
-          confirmButtonText: `Eliminar`,
-          denyButtonText: `Cancelar`,
-        })
-        .then((result) => {
-          // Si le da al boton de eliminar llamo a la funcion
-          if (result.isConfirmed) {
-            this.$emit("deleteGroup", group_id, group_name, group_year);
-          }
-        });
-    },
-    toogleSearcher() {
+    ...mapMutations(["changeMode"]),
+    ...mapActions(["deleteGroup"]),
+    focusSearcher() {
       let input = document.getElementById("searcher");
       input.focus();
+    },
+    confirmDeletion(group_id, group_name, group_year) {
+      let payload = {
+        text: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
+        function: this.deleteGroup,
+        data: {
+          id: group_id,
+          name: group_name,
+          year: group_year,
+        },
+      };
+      confirmModal(payload);
     },
   },
 };

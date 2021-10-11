@@ -4,7 +4,9 @@
       @submit.prevent="login(user)"
       class=" bg-gray-50 p-4 md:p-10 lg:p-10 xl:p-10 rounded-2xl bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-md"
     >
-      <h1 class="text-center text-white text-4xl mb-12">Ingreso Administrador</h1>
+      <h1 class="text-center text-white text-4xl mb-12">
+        Ingreso Administrador
+      </h1>
       <div class="">
         <input
           class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
@@ -21,8 +23,12 @@
           required
         />
       </div>
-      <input
+      <!-- <input
         class="block mx-auto mt-10 py-2 px-10 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl cursor-pointer bg-gray-50 bg-opacity-25 hover:bg-opacity-40 outline-none focus:ring-4 ring-white ring-opacity-20"
+        
+      /> -->
+      <input
+        class="block mx-auto px-10 mt-10 font-semibold py-1.5 transition-colors rounded-md border-b-4 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900 cursor-pointer"
         type="submit"
         value="Ingresar"
       />
@@ -31,54 +37,21 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "Login",
   data: function() {
     return {
       user: {
-        user: "Administrador",
-        password: "mnoseadmin1234",
+        user: "",
+        password: "",
         type: "admin",
       },
     };
   },
-  computed: {
-    ...mapState(["API_URL", "headers"]),
-  },
   methods: {
-    ...mapActions(["syncToken"]),
-    ...mapMutations(['setToken']),
-    async login(payload) {
-      await axios({
-        method: "post",
-        url: this.API_URL + "/auth",
-        data: payload,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (typeof res.data.result.token == "string") {
-            let token = res.data.result.token;
-            this.setToken(token);
-            localStorage.setItem("token", token);
-            this.syncToken();
-            this.$router.push("/inicio");
-          } else {
-            console.log("Error: login");
-            this.$swal({
-              icon: "error",
-              title: `${res.data.result.error_msg}!`,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    ...mapActions(["login"]),
   },
 };
 </script>

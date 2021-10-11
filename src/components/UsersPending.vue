@@ -15,7 +15,7 @@
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_by = 'all'"
+            @click="setFilter('all')"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
                 (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
@@ -26,7 +26,7 @@
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_by = 'teacher'"
+            @click="setFilter('teacher')"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
                 (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
@@ -37,7 +37,7 @@
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
           <button
-            @click="filter_by = 'student'"
+            @click="setFilter('student')"
             :class="
               'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
                 (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
@@ -61,6 +61,7 @@
         type="text"
         placeholder="Buscar por nombre o cédula"
         v-model="text_filter"
+        v-on:keyup="setTextFilter(text_filter)"
         class="w-9/12 placeholder-gray-300 text-center py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
       />
     </div>
@@ -72,7 +73,7 @@
       >
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
-          v-for="user in filterUser()"
+          v-for="user in usersFiltered"
           :key="user.id"
           class="sm:flex sm:justify-between items-center mt-4 mb-2 mx-5 py-2 px-3 bg-gray-700 border-2 border-gray-600 shadow-md rounded-2xl"
         >
@@ -95,18 +96,15 @@
           >
             <button
               @click="acceptUserPending(user)"
-              class="px-3 mb-1 text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900"
+              class="px-3 mb-1 min-w-max text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900"
             >
-              <i
-                class="fas fa-check mx-1 text-md drop-shadow-lg"
-              ></i>
+              <i class="fas fa-check mx-1 text-md drop-shadow-lg"></i>
               Aceptar
             </button>
             <button
               @click="declineUserPending(user)"
-              class="px-3 mb-1 text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-yellow-500 border-yellow-400 bg-yellow-200 hover:bg-yellow-300 text-yellow-900"
+              class="px-3 mb-1 min-w-max text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-yellow-500 border-yellow-400 bg-yellow-200 hover:bg-yellow-300 text-yellow-900"
             >
-
               <i
                 class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
               ></i>
@@ -118,7 +116,7 @@
       <div
         class="flex justify-center items-center"
         v-show="
-          filterUser().length == 0 &&
+          usersFiltered.length == 0 &&
             filter_by == 'all' &&
             text_filter.trim() == ''
         "
@@ -129,7 +127,7 @@
       </div>
       <div
         class="flex justify-center items-center"
-        v-show="filterUser().length == 0 && text_filter.trim() != ''"
+        v-show="usersFiltered.length == 0 && text_filter.trim() != ''"
       >
         <span class="py-4 text-xl text-white">
           No hay coincidencias
@@ -138,7 +136,7 @@
       <div
         class="flex justify-center items-center"
         v-show="
-          filterUser().length == 0 &&
+          usersFiltered.length == 0 &&
             (filter_by == 'student' || filter_by == 'teacher') &&
             text_filter.trim() == ''
         "
@@ -154,151 +152,40 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 export default {
   name: "UsersPending",
-  data: function() {
-    return {
-      users_pending: [],
-      // "all" para que no me filtre los usuarios por defecto
-      filter_by: "all",
-      // Variable para buscar usuario
-      text_filter: "",
-    };
+  data:() => {
+    return{
+      text_filter: ""
+    }
   },
   computed: {
-    ...mapState(["API_URL", "headers"]),
+    ...mapState({filter_by : state => state.usersPending.filter_by}),
+    ...mapGetters(["usersFiltered"]),
   },
   created() {
     this.getUsersPending();
   },
   methods: {
-    async reloadUsersPending() {
+    ...mapActions([
+      "getUsersPending",
+      "acceptUserPending",
+      "declineUserPending",
+    ]),
+    ...mapMutations(["setTextFilter", "setFilter"]),
+    reloadUsersPending() {
       // Obtengo el icono de actualizar
       let reload = document.getElementById("reload_icon");
       // Le añado la animacion 'animate-spin' para que gire
       reload.classList.replace("animate-none", "animate-spin");
-      // Sincronizo los usuarios pendientes
+      // Obtengo nuevamente los usuarios pendientes
       this.getUsersPending();
       // Despues de 1 segundo detengo la animacion sacandole la clase
       setTimeout(function() {
         reload.classList.replace("animate-spin", "animate-none");
       }, 1000);
-    },
-    async getUsersPending() {
-      await axios({
-        method: "get",
-        url: this.API_URL + "/user-pendiente",
-        headers: this.headers,
-      })
-        .then((res) => {
-          this.users_pending = res.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async declineUserPending(user) {
-      await axios({
-        method: "delete",
-        url: this.API_URL + "/user-pendiente",
-        data: {
-          // Id del usuario a rechazar
-          id: parseInt(user.id),
-        },
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            // Quito al usuario de la lista
-            this.removeUserPending(parseInt(user.id));
-            this.$swal({
-              icon: "info",
-              title: `Has rechazado al ${
-                user.type == "student" ? "estudiante" : "docente"
-              } ${user.name} ${user.surname} correctamente`,
-            });
-          } else {
-            console.log("Error: declineUserPending");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async acceptUserPending(user) {
-      await axios({
-        method: "post",
-        url: this.API_URL + "/user-pendiente",
-        data: {
-          // Id del usuario a aceptar
-          id: parseInt(user.id),
-        },
-        headers: this.headers,
-      })
-        .then((res) => {
-          if (res.data == 1) {
-            // Quito al usuario de la lista
-            this.removeUserPending(parseInt(user.id));
-            this.$swal({
-              icon: "success",
-              title: `Has aceptado al ${
-                user.type == "student" ? "estudiante" : "docente"
-              } ${user.name} ${user.surname}!`,
-            });
-          } else {
-            console.log("Error: acceptUserPending");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    removeUserPending(id) {
-      // Busco al usuario por su id y lo elimino del array
-      this.users_pending.forEach((user, index) => {
-        if (user.id == id) {
-          this.users_pending.splice(index, 1);
-        }
-      });
-    },
-    filterUser() {
-      // Filtrando siempre por tipo de usuario
-      let users_filtered =
-        this.filter_by == "all"
-          ? this.users_pending
-          : this.users_pending.filter((user) => user.type == this.filter_by);
-
-      // Si el filtro es un numero ( osea una cedula )
-      if (!isNaN(parseInt(this.text_filter))) {
-        // Filtra los usuarios por coincidencias de cedula
-        users_filtered = users_filtered.filter(
-          (user) => user.ci.indexOf(this.text_filter.toString()) >= 0
-        );
-
-        // Si no es un numero y lo ingresado no son espacios
-      } else if (
-        isNaN(parseInt(this.text_filter)) &&
-        this.text_filter.trim() != ""
-      ) {
-        users_filtered = users_filtered.filter((user) => {
-          // Concateno nombres y apellidos
-          let nombre =
-            user.name +
-            " " +
-            user.middle_name +
-            " " +
-            user.surname +
-            " " +
-            user.second_surname;
-
-          // Filtro usuario si hay coincidencias de lo ingresado con el nombre
-          return nombre.indexOf(this.text_filter.toString()) >= 0;
-        });
-      }
-      return users_filtered;
     },
   },
 };
