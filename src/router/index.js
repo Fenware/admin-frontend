@@ -7,6 +7,7 @@ import Orientations from "../views/Orientations.vue";
 import Groups from "../views/Groups.vue";
 import Users from "../views/Users.vue";
 import User from "../views/User.vue";
+import Consultations from "../views/Consultations.vue";
 
 const routes = [
   {
@@ -69,6 +70,14 @@ const routes = [
       requireAuth: true,
     },
   },
+  {
+    path: "/usuario/:nickname/consultas",
+    name: "UserConsultations",
+    component: Consultations,
+    meta: {
+      requireAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({
@@ -84,7 +93,7 @@ router.beforeEach((to, from, next) => {
     const routeProtected = to.matched.some((record) => record.meta.requireAuth);
     /* let redirectedFrom = to.redirectedFrom; */
     /* console.log(redirectedFrom);
-  console.log(to); */
+    console.log(to); */
     // Verificando la session en cada ruta
     store.dispatch("syncToken");
     if (routeProtected) {
