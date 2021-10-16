@@ -1,0 +1,30 @@
+{
+    "groups":{
+        "es":"Grupos",
+        "en":"Groups"
+    },
+    "group_list":{
+        "es":"Lista de grupos",
+        "en":"Group list"
+    },
+    "code":{
+        "es":"Codigo",
+        "en":"Code"
+    },
+    "select_orientation":{
+        "es":"Seleccione una orientaicon",
+        "en":"Select a orientation"
+    },
+    "edit_group":{
+        "es":"Editar grupo",
+        "en":"Edit group"
+    },
+    "create_group":{
+        "es":"Crear grupo",
+        "en":"Create group"
+    },
+    "group_name":{
+        "es":"Nombre del grupo",
+        "en":"Group name"
+    }
+}

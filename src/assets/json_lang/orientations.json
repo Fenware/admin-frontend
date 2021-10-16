@@ -1,0 +1,38 @@
+{
+    "orientations":{
+        "es":"Orientaciones",
+        "en":"Orientations"
+    },
+    "list_of_orientations":{
+        "es":"Lista de orientaciones",
+        "en":"List of orientations"
+    },
+    "first":{
+        "es":"1ero",
+        "en":"1st"
+    },
+    "second":{
+        "es":"2do",
+        "en":"2nd"
+    },
+    "third":{
+        "es":"3ero",
+        "en":"3rd"
+    },
+    "year":{
+        "es":"Año",
+        "en":"Year"
+    },
+    "choose_a_name":{
+        "es":"Ingrese un nombre para la nueva orientacion",
+        "en":"Enter a name for the new orientation"
+    },
+    "level":{
+        "es":"Bachillerato",
+        "en":"Level"
+    },
+    "select_subjects":{
+        "es":"Seleccionar materias",
+        "en":"Select subjects"
+    }
+}
