@@ -26,5 +26,9 @@
     "group_name":{
         "es":"Nombre del grupo",
         "en":"Group name"
+    },
+    "orientation":{
+        "es":"Nombre del grupo",
+        "en":"Group name"
     }
 }
