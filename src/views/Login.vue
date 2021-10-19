@@ -5,7 +5,9 @@
       class=" bg-gray-50 p-4 md:p-10 lg:p-10 xl:p-10 rounded-2xl bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-md"
     >
       <h1 class="text-center text-white text-4xl mb-12">
-        Ingreso Administrador
+        {{
+          getWord({file:"login",word:"login_header"})
+        }}
       </h1>
       <div class="">
         <input
@@ -51,7 +53,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login","getWord"]),
   },
 };
 </script>
