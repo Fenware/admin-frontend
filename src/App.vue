@@ -51,6 +51,10 @@ body {
   width: 100vw;
 }
 
+.form-input{
+  @apply text-lg bg-white bg-opacity-20 hover:bg-opacity-30 focus:bg-opacity-30 transition-all outline-none rounded-lg px-2 py-2 w-full;
+}
+
 .material-icons {
   font-family: 'Material Icons Round';
   font-weight: normal;
