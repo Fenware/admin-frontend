@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white w-full">
+  <div class="text-white w-full px-3">
     <h1 class="text-center text-3xl mt-1 font-semibold">Usuarios</h1>
 
     <div
@@ -12,41 +12,50 @@
           <span class="material-icons">people</span>
           <h2 class="p-1 font-extrabold">Lista de usuarios</h2>
         </div>
-        <div class="flex items-center mr-5">
+        <div class="flex items-center mr-1">
           <span class="material-icons mr-2">filter_list</span>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'all'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
-            "
-          >
-            Todos
-          </button>
+          <div class="flex mr-2">
+            <button
+              @click="filter_by = 'all'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
+              "
+            >
+              Todos
+            </button>
 
-          <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'teacher'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
-            "
-          >
-            Docentes
-          </button>
+            <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
+            <button
+              @click="filter_by = 'teacher'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
+              "
+            >
+              Docentes
+            </button>
 
-          <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'student'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
-            "
+            <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
+            <button
+              @click="filter_by = 'student'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
+              "
+            >
+              Estudiantes
+            </button>
+          </div>
+
+          <router-link
+          :to="{name: 'UserRegistration'}"
+            class="btn-success border-0 rounded-tr-xl py-0.5 px-2 text-sm"
           >
-            Estudiantes
-          </button>
+            Crear
+          </router-link>
         </div>
       </div>
       <div
@@ -63,6 +72,9 @@
       <div
         class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
       >
+        <div v-show="usersFiltered.length == 0">
+          <p class="text-center text-2xl my-5">Cargando...</p>
+        </div>
         <div
           class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 max-h-96 overflow-auto "
         >
