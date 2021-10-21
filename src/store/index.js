@@ -8,7 +8,6 @@ import orientations from './modules/orientations';
 import groups from './modules/groups';
 import users from './modules/users';
 import consultations from './modules/consultations';
-import lang from './modules/lang';
 
 export default createStore({
   // Declarando modulos para poder usarlos
@@ -19,8 +18,7 @@ export default createStore({
     orientations,
     groups,
     users,
-    consultations,
-    lang
+    consultations
   },
   state: {
     API_URL: process.env.VUE_APP_ROOT_API,
@@ -29,6 +27,7 @@ export default createStore({
       Authorization: "",
       "Content-Type": "application/json",
     },
+    lang: "en"
   },
   mutations: {
     setToken(state, payload) {
@@ -37,6 +36,9 @@ export default createStore({
     setHeaderToken(state, payload) {
       state.headers.Authorization = payload;
     },
+    setLang(state,lang){
+      state.lang = lang;
+    }
   },
   actions: {
     
