@@ -6,7 +6,7 @@
     >
       <h1 class="text-center text-white text-4xl mb-12">
         {{
-          getWord({file:"login",word:"login_header"})
+          getWord({file:"login",word:"login_header",lang})
         }}
       </h1>
       <div class="">
@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "Login",
@@ -53,8 +54,16 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["login","getWord"]),
+    ...mapActions(["login"]),
+    getWord
   },
+  computed: {
+    ...mapState(['lang']),
+  },
+  created(){
+    //console.log(this.lang);
+  }
+
 };
 </script>
 
