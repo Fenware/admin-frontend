@@ -7,21 +7,21 @@
     >
       <div class="flex items-center">
         <i class="fas fa-folder-plus pb-1"></i>
-        <h2 class="px-2 font-extrabold select-none">Editar orientación</h2>
+        <h2 class="px-2 font-extrabold select-none">{{getWord({file:'orientation',word:'edit_orientation',lang})}}</h2>
       </div>
       <div class="flex items-center">
         <button
           @click="saveChanges()"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-blue-200 hover:bg-blue-300 text-blue-900"
         >
-          Guardar cambios
+          {{getWord({file:'lang',word:'save',lang})}}
         </button>
 
         <button
           @click="changeMode({ mode: 'list' })"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
-          Cancelar
+          {{getWord({file:'lang',word:'cancel',lang})}}
         </button>
       </div>
     </div>
@@ -33,11 +33,11 @@
       >
         <div class="">
           <label class="block text-xs pl-1 mt-2 font-semibold select-none"
-            >Nombre</label
+            >{{getWord({file:'orientation',word:'name',lang})}}</label
           >
           <input
             type="text"
-            placeholder="Ingrese nombre de la orientación"
+            :placeholder="getWord({file:'orientation',word:'choose_a_name',lang})"
             v-model="modified_orientation.name"
             class="w-60 transition sm:w-80 text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
           />
@@ -46,7 +46,7 @@
           <div>
             <label
               class="block text-xs text-center pb-0.5 font-semibold select-none"
-              >Bachillerato</label
+              >{{getWord({file:'orientation',word:'year',lang})}}</label
             >
             <button
               @click="this.modified_orientation.year = 1"
@@ -57,7 +57,7 @@
                     : '')
               "
             >
-              1ero
+              {{getWord({file:'orientation',word:'first',lang})}}
             </button>
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -70,7 +70,7 @@
                     : '')
               "
             >
-              2do
+              {{getWord({file:'orientation',word:'second',lang})}}
             </button>
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -83,12 +83,12 @@
                     : '')
               "
             >
-              3ero
+              {{getWord({file:'orientation',word:'third',lang})}}
             </button>
           </div>
         </div>
       </div>
-      <label class="block text-lg text-center">Seleccionar materias</label>
+      <label class="block text-lg text-center">{{getWord({file:'orientation',word:'select_subjects',lang})}}</label>
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-72 overflow-auto"
       >
@@ -127,6 +127,7 @@
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 import { showAlert } from "@/utils/alerts.js";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "EditOrientation",
@@ -144,6 +145,7 @@ export default {
       orientation: (state) => state.orientations.orientation,
       subjects: (state) => state.orientations.subjects,
       preselected_subjects: (state) => state.orientations.preselected_subjects,
+      lang: (state) => state.lang,
     }),
   },
   created() {
@@ -278,6 +280,7 @@ export default {
       );
       subjectName.classList.toggle("text-indigo-400");
     },
+    getWord
   },
 };
 </script>

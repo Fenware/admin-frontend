@@ -14,14 +14,14 @@
           class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-transparent focus:ring-4 ring-white ring-opacity-20"
           v-model="user.user"
           type="text"
-          placeholder="Nombre de usuario o Email "
+          :placeholder="getWord({file:'login',word:'user_input',lang})"
           required
         />
         <input
           class="block w-72 mx-auto my-5 p-2 | text-white rounded-lg shadow-lg transition-all ease-in-out hover:shadow-xl bg-gray-50 bg-opacity-25 hover:bg-opacity-40 focus:bg-opacity-40 outline-none placeholder-white focus:placeholder-opacity-0 focus:ring-4 ring-white ring-opacity-20"
           v-model="user.password"
           type="password"
-          placeholder="Contraseña"
+          :placeholder="getWord({file:'login',word:'password',lang})"
           required
         />
       </div>
@@ -32,7 +32,7 @@
       <input
         class="block mx-auto px-10 mt-10 font-semibold py-1.5 transition-colors rounded-md border-b-4 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900 cursor-pointer"
         type="submit"
-        value="Ingresar"
+        :value="getWord({file:'login',word:'login',lang})"
       />
     </form>
   </div>
