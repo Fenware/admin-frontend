@@ -9,10 +9,15 @@
     },
     "login":{
         "es":"Ingresar",
-        "en":"log in"
+        "en":" Log in "
     },
     "logout":{
         "es":"Cerrar sesion",
         "en":"log out"
+    },
+    "password":{
+        "es":"Contraseña",
+        "en":"Password"
     }
+
 }

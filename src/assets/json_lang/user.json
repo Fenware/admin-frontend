@@ -7,6 +7,10 @@
         "es":"Buscar por nombre deo cedula de identidad"  ,
         "en":"Search by name or identification document"
     },
+    "user":{
+        "es":"Usuario",
+        "en":"User"
+    },
     "users":{
         "es":"Usuarios",
         "en":"Users"

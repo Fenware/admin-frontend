@@ -7,9 +7,17 @@
         "es":"Docente",
         "en":"Teacher"
     },
+    "teachers":{
+        "es":"Docentes",
+        "en":"Teachers"
+    },
     "student":{
         "es":"Estudiante",
         "en":"Student"
+    },
+    "students":{
+        "es":"Estudiantes",
+        "en":"Students"
     },
     "accept":{
         "es":"Aceptar",
@@ -58,5 +66,18 @@
     "send":{
         "es":"Enviar",
         "en":"Send"
+    },
+    "all":{
+        "es":"Todos",
+        "en":"All"
+    },
+    "none":{
+        "es":"Ninguno",
+        "en":"None"
+    },
+    "no_coincidences":{
+        "es":"No hay coincidencias",
+        "en":"No coincidences"
     }
+
 }

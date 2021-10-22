@@ -3,6 +3,10 @@
         "es":"Orientaciones",
         "en":"Orientations"
     },
+    "create_orientation":{
+        "es":"Crear orientación",
+        "en":"Create orientation"
+    },
     "list_of_orientations":{
         "es":"Lista de orientaciones",
         "en":"List of orientations"
@@ -34,5 +38,17 @@
     "select_subjects":{
         "es":"Seleccionar materias",
         "en":"Select subjects"
+    },
+    "name":{
+        "es":"Nombre",
+        "en":"Name"
+    },
+    "search_orientation":{
+        "es":"Buscar orientación por nombre",
+        "en":"Search orientation by name"
+    },
+    "edit_orientation":{
+        "es":"Editar orientación",
+        "en":"Edit orientation"
     }
 }
