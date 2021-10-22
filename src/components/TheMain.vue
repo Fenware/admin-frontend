@@ -1,6 +1,10 @@
 <template>
   <main class="mx-auto w-full overflow-y-auto" v-if="isLoginView()">
-    <router-view/>
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </main>
 </template>
 
