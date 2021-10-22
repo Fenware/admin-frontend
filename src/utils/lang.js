@@ -34,8 +34,9 @@ export function getWord({word,file,lang}){
             palabra =  user_j[word][lang];
             break;
         default:
-            palabra = "me rompi";
+            palabra = "{missing}";
             break;
     }
+    palabra = palabra ? palabra : "{missing}";
     return palabra;
 }
