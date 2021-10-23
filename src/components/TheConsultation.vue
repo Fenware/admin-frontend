@@ -28,25 +28,25 @@
       </div>
 
       <div class="flex items-center mx-20 text-sm">
-        <span class="mr-3 font-medium">Alumno: </span>
+        <span class="mr-3 font-medium">{{getWord({file:'lang',word:'student',lang})}}: </span>
         <p class=" text-white rounded-lg px-1 py-1">
           {{ consultation.student_name }}
         </p>
       </div>
 
       <div class="mx-20 mt-2">
-        <span class="mr-3 text-sm font-bold">Consulta: </span>
+        <span class="mr-3 text-sm font-bold">{{getWord({file:'consultation',word:'consultation',lang})}}: </span>
         <p class="text-white  rounded-lg py-1 | outline-none">
           {{ consultation.body }}
         </p>
       </div>
 
       <div class="mt-5 pb-2">
-        <h3 class="pl-3 text-xl">Respuestas</h3>
+        <h3 class="pl-3 text-xl">{{getWord({file:'consultation',word:'responses',lang})}}</h3>
 
         <div class="my-2 mx-8 overflow-y-auto max-h-64">
           <p class="text-center" v-if="consultation.messages.length == 0">
-            Aún no hay respuestas
+            {{getWord({file:'consultation',word:'no_responses',lang})}}
           </p>
           <div
             class=" flex mb-2"
@@ -71,6 +71,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "TheConsultation",
@@ -78,6 +79,7 @@ export default {
     ...mapState({
       consultation: (state) => state.consultations.consultation,
       new_message_mode: (state) => state.consultations.new_message_mode,
+      lang: (state) => state.lang,
     }),
   },
   methods: {
@@ -98,6 +100,7 @@ export default {
       this.sendConsultationMessage(parseInt(this.consultation.id));
       this.new_message = "";
     },
+    getWord,
   },
 };
 </script>

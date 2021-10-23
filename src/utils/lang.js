@@ -5,6 +5,7 @@ import group_j from '@/assets/json_lang/group.json';
 import orientations_j from '@/assets/json_lang/orientations.json';
 import subjects_j from '@/assets/json_lang/subject.json';
 import user_j from '@/assets/json_lang/user.json';
+import consultation_j from '@/assets/json_lang/consultation.json';
 
 
 export function getWord({word,file,lang}){
@@ -32,6 +33,9 @@ export function getWord({word,file,lang}){
             break;
         case 'user':
             palabra =  user_j[word][lang];
+            break;
+        case 'consultation':
+            palabra =  consultation_j[word][lang];
             break;
         default:
             palabra = "{missing}";

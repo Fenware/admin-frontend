@@ -7,6 +7,10 @@
         "es":"Lista de grupos",
         "en":"Group list"
     },
+    "search_group_by_name":{
+        "es":"Buscar grupo por nombre",
+        "en":"Search group by name"
+    },
     "code":{
         "es":"Codigo",
         "en":"Code"
@@ -24,11 +28,11 @@
         "en":"Create group"
     },
     "group_name":{
-        "es":"Nombre del grupo",
-        "en":"Group name"
+        "es":"Nombre del grupo. Ej: BE",
+        "en":"Group name. Ej: BE"
     },
     "orientation":{
-        "es":"Nombre del grupo",
+        "es":"Nombre del grupo. Ej: BE",
         "en":"Group name"
     }
 }

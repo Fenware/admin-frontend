@@ -7,21 +7,21 @@
     >
       <div class="flex items-center">
         <i class="fas fa-folder-plus pb-1"></i>
-        <h2 class="px-2 font-extrabold select-none">Crear grupo</h2>
+        <h2 class="px-2 font-extrabold select-none">  {{getWord({file:'group',word:'create_group',lang})}}   </h2>
       </div>
       <div class="flex items-center">
         <button
           @click="createGroup(new_group)"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
-          Crear grupo
+          {{getWord({file:'lang',word:'create',lang})}}
         </button>
 
         <button
           @click="changeMode({mode: 'list'})"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
-          Cancelar
+          {{getWord({file:'lang',word:'cancel',lang})}}
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@
             <input
               maxlength="2"
               type="text"
-              placeholder="Nombre del grupo. Ej: BE"
+              :placeholder="getWord({file:'group',word:'group_name',lang})"
               v-model="new_group.name"
               class=" transition text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
             />
@@ -49,7 +49,7 @@
         </div>
       </form>
       <label class="block text-lg text-center select-none"
-        >Seleccionar una orientación</label
+        >{{getWord({file:'group',word:'select_orientation',lang})}}</label
       >
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-72 overflow-auto"
@@ -77,7 +77,7 @@
             >
               {{ orientation.name }}
             </p>
-            <p class="select-none">Año: {{ orientation.year }}</p>
+            <p class="select-none">{{getWord({file:'orientation',word:'year',lang})}}: {{ orientation.year }}</p>
           </div>
           <i
             :id="'orientation_icon_' + orientation.id"
@@ -91,6 +91,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "CreateGroup",
@@ -104,7 +105,10 @@ export default {
     };
   },
   computed: {
-    ...mapState({orientations: state => state.groups.orientations}),
+    ...mapState({
+      orientations: state => state.groups.orientations,
+      lang: (state) => state.lang,
+    }),
   },
   methods: {
     ...mapMutations(['changeMode']),
@@ -168,6 +172,7 @@ export default {
         this.new_group.orientation = null;
       }
     },
+    getWord,
   },
 };
 </script>

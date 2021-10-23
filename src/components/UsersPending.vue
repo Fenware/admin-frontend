@@ -80,7 +80,7 @@
           <div>
             <p class="mb-2 text-xs tracking-widest font-extrabold">
               <!-- Poniendo si es estudiante o docente segun el tipo -->
-              {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+              {{ user.type == "student" ? getWord({file:'lang',word:'student',lang}).toUpperCase() : getWord({file:'lang',word:'teacher',lang}).toUpperCase() }}
             </p>
             <p><span class="font-bold">{{getWord({file:'lang',word:'id',lang})}}:</span> {{ user.ci }}</p>
 
