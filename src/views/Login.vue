@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen justify-center items-center">
+  <div class="flex h-screen justify-center items-center relative">
     <form
       @submit.prevent="login(user)"
       class=" bg-gray-50 p-4 md:p-10 lg:p-10 xl:p-10 rounded-2xl bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-md"
@@ -35,12 +35,14 @@
         :value="getWord({file:'login',word:'login',lang})"
       />
     </form>
+    <ToggleLanguageButton class="absolute bottom-0 right-0 m-2"/>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import { getWord } from "@/utils/lang";
+import ToggleLanguageButton from '@/components/ToggleLanguageButton.vue';
 
 export default {
   name: "Login",
@@ -62,6 +64,9 @@ export default {
   },
   created(){
     //console.log(this.lang);
+  },
+  components: {
+    ToggleLanguageButton,
   }
 
 };
