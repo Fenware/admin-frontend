@@ -6,7 +6,7 @@
     >
       <div class="w-full mx-auto px-5 py-5">
         <!-- <div v-show.transition="step === 'complete'"> -->
-        <div v-show="step === 'complete'">
+        <div v-if="step === 'complete'">
           <div class="rounded-lg p-10 flex items-center justify-center">
             <div>
               <h2 class="text-2xl mb-4 text-center font-bold">
@@ -19,10 +19,17 @@
               </div>
 
               <div class="flex justify-around mt-10">
-                <router-link :to="{name: 'Users'}" type="button"  class="btn-info text-md px-4 py-1 mx-auto">
+                <router-link
+                  :to="{ name: 'Users' }"
+                  type="button"
+                  class="btn-info text-md px-4 py-1 mx-auto"
+                >
                   Volver a sección de usuarios
                 </router-link>
-                <router-link :to="{ name: 'User', params: { nickname: user.nickname } }"  class="btn-success text-md px-4 py-1 mx-auto">
+                <router-link
+                  :to="{ name: 'User', params: { nickname: user.nickname } }"
+                  class="btn-success text-md px-4 py-1 mx-auto"
+                >
                   Ver usuario creado
                 </router-link>
               </div>
@@ -88,178 +95,246 @@
 
           <!-- Step Content -->
           <div class="max-w-5xl mx-auto py-10">
-              <div v-if="step === 1" class="grid grid-cols-2 gap-5 justify-center">
-                <div class="">
-                  <label class="font-medium text-sm mb-1 block" for="firstname"
+            <div
+              v-if="step === 1"
+              class="grid grid-cols-2 gap-5 justify-center"
+            >
+              <div class="">
+                <label class="font-medium text-sm mb-1 block" for="firstname"
                   >Primer nombre *</label
-                  >
-                  <input
-                    id="firstname"
-                    v-model="user.name"
-                    autocomplete="off"
-                    class="input"
-                    placeholder="Ingrese su nombre..."
-                    required
-                    type="text"
-                  />
-                </div>
-
-                <div>
-                  <label class="font-medium text-sm mb-1 block" for="middle_name"
-                  >Segundo nombre</label
-                  >
-                  <input
-                    id="middle_name"
-                    v-model="user.middle_name"
-                    autocomplete="off"
-                    class="input"
-                    placeholder="Ingrese su segundo nombre..."
-                    type="text"
-                  />
-                </div>
-
-                <div class="">
-                  <label class="font-medium text-sm mb-1 block" for="surname"
-                  >Primer apellido *</label
-                  >
-                  <input
-                    id="surname"
-                    v-model="user.surname"
-                    autocomplete="off"
-                    class="input"
-                    placeholder="Ingrese su apellido..."
-                    required
-                    type="text"
-                  />
-                </div>
-
-                <div class="">
-                  <label
-                    class="font-medium text-sm mb-1 block"
-                    for="second_surname"
-                  >Segundo apellido</label
-                  >
-                  <input
-                    id="second_surname"
-                    v-model="user.second_surname"
-                    autocomplete="off"
-                    class="input"
-                    placeholder="Ingrese su segundo apellido..."
-                    type="text"
-                  />
-                </div>
-
-                <span
-                  class="mt-2 col-span-2 text-right  text-sm font-bold text-yellow-200"
-                >* campos obligatorios</span
                 >
+                <input
+                  id="firstname"
+                  v-model="user.name"
+                  autocomplete="off"
+                  class="input"
+                  placeholder="Ingrese su nombre..."
+                  required
+                  type="text"
+                />
               </div>
+
+              <div>
+                <label class="font-medium text-sm mb-1 block" for="middle_name"
+                  >Segundo nombre</label
+                >
+                <input
+                  id="middle_name"
+                  v-model="user.middle_name"
+                  autocomplete="off"
+                  class="input"
+                  placeholder="Ingrese su segundo nombre..."
+                  type="text"
+                />
+              </div>
+
+              <div class="">
+                <label class="font-medium text-sm mb-1 block" for="surname"
+                  >Primer apellido *</label
+                >
+                <input
+                  id="surname"
+                  v-model="user.surname"
+                  autocomplete="off"
+                  class="input"
+                  placeholder="Ingrese su apellido..."
+                  required
+                  type="text"
+                />
+              </div>
+
+              <div class="">
+                <label
+                  class="font-medium text-sm mb-1 block"
+                  for="second_surname"
+                  >Segundo apellido</label
+                >
+                <input
+                  id="second_surname"
+                  v-model="user.second_surname"
+                  autocomplete="off"
+                  class="input"
+                  placeholder="Ingrese su segundo apellido..."
+                  type="text"
+                />
+              </div>
+
+              <span
+                class="mt-2 col-span-2 text-right  text-sm font-bold text-yellow-200"
+                >* campos obligatorios</span
+              >
+            </div>
 
             <!-- ------------------------------------------- -->
-              <div v-if="step === 2" class="grid grid-cols-2 gap-5">
-                <div class="">
-                  <label class="font-medium text-sm mb-1 block" for="ci"
+            <div v-if="step === 2" class="grid grid-cols-2 gap-5">
+              <div class="relative">
+                <label class="font-medium text-sm mb-1 block" for="ci"
                   >Cédula de identidad</label
+                >
+                <input
+                  id="ci"
+                  v-model="user.ci"
+                  autocomplete="off"
+                  class="input tracking-widest"
+                  :class="
+                    user.ci.toString().length === 8
+                      ? ciIsTaken
+                        ? 'ring-2 ring-red-500'
+                        : 'ring-2 ring-green-500'
+                      : user.ci.toString().length > 8
+                      ? 'ring-2 ring-red-500'
+                      : ''
+                  "
+                  max="99999999"
+                  min="10000000"
+                  pattern="^(0|[1-9][0-9]*)$"
+                  placeholder="Ingrese su cédula de identidad..."
+                  required
+                  type="number"
+                />
+                <span class="text-xs leading-3 pl-1"></span>
+                <transition name="fade" type="out-in">
+                  <span class="mt-1 absolute text-xs" v-show="!ciIsTaken"
+                    >* Sín puntos ni guiones. Ej: 56781234</span
                   >
-                  <input
-                    id="ci"
-                    v-model="user.ci"
-                    autocomplete="off"
-                    class="input"
-                    max="99999999"
-                    min="10000000"
-                    pattern="^(0|[1-9][0-9]*)$"
-                    placeholder="Ingrese su cédula de identidad..."
-                    required
-                    type="number"
-                  />
-                  <span class="text-xs leading-3 pl-1"
-                  >* Sín puntos ni guiones. Ej: 56478622</span
+                </transition>
+                <transition name="fade" type="out-in">
+                  <span
+                    class="mt-1 absolute text-sm text-red-500 font-medium"
+                    v-show="ciIsTaken && user.ci.toString().length > 0"
+                    >La cédula ingresada ya esta tomada</span
                   >
-                </div>
+                </transition>
+              </div>
 
-                <div>
-                  <label class="font-medium text-center text-sm mb-1 block" for="student"
+              <div>
+                <label
+                  class="font-medium text-center text-sm mb-1 block"
+                  for="student"
                   >Tipo de usuario</label
-                  >
-                  <div class="flex justify-around pt-2">
-                    <div class="flex gap-1 items-center">
-                      <input
-                        id="student"
-                        v-model="user.type"
-                        class="form-radio text-blue-600"
-                        name="user_type"
-                        required
-                        type="radio"
-                        value="student"
-                      />
-                      <label for="student">Estudiante</label>
-                    </div>
-                    <div class="flex gap-1 items-center">
-                      <input
-                        id="teacher"
-                        v-model="user.type"
-                        class="form-radio text-blue-600"
-                        name="user_type"
-                        required
-                        type="radio"
-                        value="teacher"
-                      />
-                      <label for="teacher">Docente</label>
-                    </div>
+                >
+                <div class="flex justify-around pt-2">
+                  <div class="flex gap-1 items-center">
+                    <input
+                      id="student"
+                      v-model="user.type"
+                      class="form-radio text-blue-600"
+                      name="user_type"
+                      required
+                      type="radio"
+                      value="student"
+                    />
+                    <label for="student">Estudiante</label>
+                  </div>
+                  <div class="flex gap-1 items-center">
+                    <input
+                      id="teacher"
+                      v-model="user.type"
+                      class="form-radio text-blue-600"
+                      name="user_type"
+                      required
+                      type="radio"
+                      value="teacher"
+                    />
+                    <label for="teacher">Docente</label>
                   </div>
                 </div>
+              </div>
 
-                <div class="mt-2">
-                  <label class="font-medium text-sm mb-1 block" for="code"
+              <div class="mt-5 relative">
+                <label class="font-medium text-sm mb-1 block" for="code"
                   >Código de grupo</label
-                  >
-                  <input
-                    id="code"
-                    v-model="user.group_code"
-                    :class="user.type === 'teacher' ? 'opacity-50 hover:bg-opacity-50' : ''"
-                    :disabled="user.type === 'teacher'"
-                    autocomplete="off"
-                    class="input w-2/3"
-                    placeholder="Ingrese el codigo del grupo..."
-                    required
-                    type="text"
-                  />
-                  <span :class="user.type === 'teacher' ? 'text-yellow-400 font-medium' : ''"
-                        class="text-xs leading- pl-1"
-                  >{{
-                      user.type === 'teacher' ? '* El docente debe unirse a los grupos por cuenta propia' : 'Código de grupo que le porporcionó el administrador'
+                >
+                <input
+                  id="code"
+                  v-model="user.group"
+                  :class="
+                    user.type === 'teacher'
+                      ? 'opacity-50 hover:bg-opacity-50'
+                      : user.group !== ''
+                      ? codeExists && user.type === 'student'
+                        ? 'ring-2 ring-green-500'
+                        : 'ring-2 ring-red-500'
+                      : ''
+                  "
+                  :disabled="user.type === 'teacher' || user.type.length === 0"
+                  autocomplete="off"
+                  class="input w-2/3"
+                  placeholder="Ingrese el codigo del grupo..."
+                  required
+                  type="text"
+                />
+                <transition name="fade" type="out-in">
+                  <span
+                    v-show="
+                      user.type.length > 0 &&
+                        (codeExists || this.user.group.length < 8)
+                    "
+                    :class="
+                      user.type === 'teacher'
+                        ? 'text-yellow-400 font-medium'
+                        : ''
+                    "
+                    class="mt-1 absolute text-xs leading- pl-1"
+                    >{{
+                      user.type === "teacher"
+                        ? "* El docente debe unirse a los grupos por cuenta propia"
+                        : "Código de grupo que le porporcionó el administrador"
                     }}</span
                   >
-                </div>
+                </transition>
+
+                <transition name="fade" type="out-in">
+                  <span
+                    v-show="user.type.length === 0"
+                    class="mt-1 absolute text-sm pl-1 text-yellow-400 font-medium"
+                    >Debe seleccionar el tipo de usuario</span
+                  >
+                </transition>
+
+                <transition name="fade" type="out-in">
+                  <span
+                    v-show="!codeExists && user.group.length >= 8"
+                    class="mt-1  absolute text-sm font-medium pl-1 text-red-500"
+                    >Código de grupo inválido</span
+                  >
+                </transition>
               </div>
+            </div>
 
             <!-- -------------------------------------------  -->
 
             <div v-if="step === 3" class="flex items-center gap-5">
               <div class="w-1/4 mx-10">
-                <transition>
-                  <img
-                    :src="require('@/assets/avatars/' + user.avatar)"
-                    alt="user_avatar"
-                    class="w-90per mx-auto"
-                  />
-                </transition>
-                <button class="mt-4 btn-info mx-auto block text-xs border-0" type="button"
-                        @click="this.$refs.theModal.openModal()/*openModal()*/">
+                <img
+                  :src="require('@/assets/avatars/' + user.avatar)"
+                  alt="user_avatar"
+                  class="w-90per mx-auto"
+                />
+                <button
+                  class="mt-4 btn-info mx-auto block text-xs border-0"
+                  type="button"
+                  @click="this.$refs.theModal.openModal() /*openModal()*/"
+                >
                   Cambiar avatar
                 </button>
               </div>
               <div class="w-9/12">
-                <div class="mb-5">
+                <div class="mb-10 ">
                   <label class="font-medium text-sm mb-1 block" for="nickname"
-                  >Nombre de usuario</label
+                    >Nombre de usuario</label
                   >
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 relative">
                     <input
                       id="nickname"
                       v-model="user.nickname"
-                      :class="!nicknameIsTaken ? (user.nickname !== '' ? 'ring-2 ring-green-500' : '') : 'ring-2 ring-red-500'"
+                      :class="
+                        !nicknameIsTaken
+                          ? user.nickname !== ''
+                            ? 'ring-2 ring-green-500'
+                            : ''
+                          : 'ring-2 ring-red-500'
+                      "
                       autocomplete="off"
                       class="input max-w-sm"
                       minlength="4"
@@ -267,31 +342,55 @@
                       required
                       type="text"
                     />
-                    <span v-if="!nicknameIsTaken && user.nickname !== ''"
-                          class="material-icons text-green-500">check</span>
-                    <span v-else-if="user.nickname !== ''" class="material-icons text-red-500">close</span>
+                    <span
+                      v-if="!nicknameIsTaken && user.nickname !== ''"
+                      class="material-icons text-green-500"
+                      >check</span
+                    >
+                    <span
+                      v-else-if="user.nickname !== ''"
+                      class="material-icons text-red-500"
+                      >close</span
+                    >
                   </div>
-                  <span v-show="nicknameIsTaken" class="text-xs text-red-500 font-medium">El nombre de usuario ya esta tomado</span>
+                  <span
+                    v-show="nicknameIsTaken"
+                    class="absolute my-1 text-sm text-red-500 font-medium"
+                    >El nombre de usuario ya esta tomado</span
+                  >
                 </div>
-                <div class="">
+                <div class="relative">
                   <label class="font-medium text-sm mb-1 block" for="email"
-                  >Email</label
+                    >Email</label
                   >
                   <input
                     id="email"
                     v-model="user.email"
                     autocomplete="off"
                     class="input "
+                    :class="emailIsTaken ? 'ring-2 ring-red-500' : ''"
                     minlength="4"
                     placeholder="Ingrese su correo electrónico..."
                     required
                     type="email"
                   />
+                  <transition name="fade" type="out-in">
+                    <span
+                      class="mt-1 text-red-500 text-sm font-medium absolute"
+                      v-show="emailIsTaken"
+                    >
+                      El email ingresado ya esta tomado
+                    </span>
+                  </transition>
                 </div>
               </div>
             </div>
 
-            <TheModal ref="theModal" closeButtonText="Seleccionar" title="Cambiar avatar">
+            <TheModal
+              ref="theModal"
+              closeButtonText="Seleccionar"
+              title="Cambiar avatar"
+            >
               <div class="my-10">
                 <div class="flex justify-center flex-wrap gap-3 px-5 mt-2">
                   <button
@@ -316,7 +415,7 @@
             <div v-if="step === 4" class="grid grid-cols-2 gap-5">
               <div class="">
                 <label class="font-medium text-sm mb-1 block" for="password"
-                >Contraseña</label
+                  >Contraseña</label
                 >
                 <input
                   id="password"
@@ -331,13 +430,13 @@
 
                 <ul class="text-xs mt-1">
                   <li>
-                    * Mínimo 6 caracteres
+                    * Mínimo 8 caracteres
                   </li>
                 </ul>
               </div>
               <div class="">
                 <label class="font-medium text-sm mb-1 block" for="password"
-                >Confirmar contraseña</label
+                  >Confirmar contraseña</label
                 >
                 <div class="flex items-center">
                   <input
@@ -347,7 +446,9 @@
                       user.password === user.confirm_password &&
                       user.password !== ''
                         ? 'ring-2 ring-green-500'
-                        : (user.confirm_password !== '' ? 'ring-2 ring-red-500' : '')
+                        : user.confirm_password !== ''
+                        ? 'ring-2 ring-red-500'
+                        : ''
                     "
                     autocomplete="off"
                     class="input"
@@ -364,7 +465,7 @@
                         : 'opacity-0'
                     "
                     class="material-icons ml-2 text-3xl text-green-500 transition-all"
-                  >check</span
+                    >check</span
                   >
                 </div>
               </div>
@@ -392,7 +493,7 @@
             </div>
 
             <div class="w-1/2 flex justify-end">
-              <button
+              <!-- <button
                 v-show="step < steps_amount"
                 :class="step === 3 && nicknameIsTaken ? 'btn-disabled' : ''"
                 :disabled="step === 3 && nicknameIsTaken"
@@ -402,12 +503,22 @@
                 <span class="material-icons text-lg ml-2">
                   arrow_forward
                 </span>
+              </button> -->
+
+              <button
+                v-show="step < steps_amount"
+                :class="!validateDataByStep ? 'btn-disabled' : ''"
+                :disabled="!validateDataByStep"
+                class="btn-info pl-5 pr-3 py-1.5 flex items-center select-none"
+              >
+                Siguiente
+                <span class="material-icons text-lg ml-2">
+                  arrow_forward
+                </span>
               </button>
 
               <div>
-                <span>
-
-                </span>
+                <span> </span>
                 <button
                   type="button"
                   id="create_user_button"
@@ -428,7 +539,7 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
+import { mapActions, mapState } from "vuex";
 import TheModal from "../components/TheModal";
 /*import { showAlert } from "../utils/alerts";*/
 
@@ -436,54 +547,90 @@ export default {
   name: "UserRegistration",
   data: () => {
     return {
-      step: "complete",
+      step: 1,
       steps_amount: 4,
       togglePassword: false,
       selectedAvatar: null,
       user: {
         /* ci: null, */
-        ci: 52650714,
-        nickname: "lucaspintos",
-        name: "Lucas",
-        middle_name: "Mateo",
-        surname: "Pintos",
-        second_surname: "Fitipaldi",
-        group_code: "YJ52YqUe",
-        type: 'teacher',
-        email: "lucaspintos9090@gmail.com",
+        ci: "",
+        nickname: "",
+        name: "",
+        middle_name: "",
+        surname: "",
+        second_surname: "",
+        group: "",
+        type: "",
+        email: "",
         avatar: "01-man.svg",
-        password: "mnoseadmin1234",
-        confirm_password: "mnoseadmin1234",
+        password: "",
+        confirm_password: "",
       },
       avatars: [
-        {id: 1, file: "01-man.svg"},
-        {id: 2, file: "02-boy.svg"},
-        {id: 3, file: "03-woman.svg"},
-        {id: 4, file: "04-boy-1.svg"},
-        {id: 5, file: "05-girl-1.svg"},
-        {id: 6, file: "06-woman-3.svg"},
-        {id: 7, file: "07-boy-2.svg"},
+        { id: 1, file: "01-man.svg" },
+        { id: 2, file: "02-boy.svg" },
+        { id: 3, file: "03-woman.svg" },
+        { id: 4, file: "04-boy-1.svg" },
+        { id: 5, file: "05-girl-1.svg" },
+        { id: 6, file: "06-woman-3.svg" },
+        { id: 7, file: "07-boy-2.svg" },
       ],
     };
   },
   components: {
-    TheModal
+    TheModal,
   },
   computed: {
     ...mapState({
       users: (state) => state.users.users,
+      groups: (state) => state.groups.groups,
+      registration_state: (state) => state.users.registration_state,
     }),
-    nicknameIsTaken: function () {
-      return this.users.find(user => user.nickname === this.user.nickname);
+    nicknameIsTaken: function() {
+      return this.users.find((user) => user.nickname === this.user.nickname);
+    },
+    emailIsTaken: function() {
+      return this.users.find((user) => user.email === this.user.email);
+    },
+    ciIsTaken: function() {
+      return this.users.find((user) => user.ci === this.user.ci.toString());
+    },
+    codeExists: function() {
+      return this.groups.find((group) => group.code === this.user.group);
+    },
+    validateDataByStep: function() {
+      let isOk = false;
+      if (this.step === 3 && !this.nicknameIsTaken && !this.emailIsTaken) {
+        isOk = true;
+      }
+      if (this.step === 2) {
+        if (this.user.type == "student") {
+          if (
+            this.codeExists &&
+            !this.ciIsTaken &&
+            this.user.ci.toString().length === 8
+          ) {
+            isOk = true;
+          }
+        } else if (this.user.type == "teacher" && !this.ciIsTaken) {
+          isOk = true;
+        }
+      }
+      if (this.step === 1 || this.step === 4) {
+        isOk = true;
+      }
+
+      return isOk;
     },
   },
   created() {
     if (this.users.length === 0) {
       this.getUsers();
     }
+    this.getGroups();
   },
   methods: {
-    ...mapActions(["getUsers", "createUser"]),
+    ...mapActions(["getUsers", "createUser", "getGroups"]),
     nextStep() {
       if (this.step === this.steps_amount) {
         this.step = "complete";
@@ -492,41 +639,53 @@ export default {
       } else {
         this.step++;
       }
-    }
-    ,
+    },
     previusStep() {
       this.step--;
-    }
-    ,
+    },
     create() {
-      if(this.validateData()){
-        this.user.ci = this.user.ci.toString();
-        this.createUser(this.user);
-
-        let button = document.getElementById('create_user_button');
+      if (this.validateData()) {
+        let button = document.getElementById("create_user_button");
         button.disabled = true;
-        button.classList.replace('btn-success', 'btn-disabled');
+        button.classList.replace("btn-success", "btn-disabled");
 
-        setTimeout(()=>{
-          button.disabled = false;
-          button.classList.replace('btn-disabled', 'btn-success');
-        }, 1500);
-        setTimeout(()=>{
-          this.nextStep();
-        }, 1000);
-
+        this.user.ci = this.user.ci.toString();
+        this.createUser(this.user).then(() => {
+          console.log(this.registration_state);
+          if (this.registration_state) {
+            setTimeout(() => {
+              button.disabled = false;
+              button.classList.replace("btn-disabled", "btn-success");
+            }, 1500);
+            setTimeout(() => {
+              this.nextStep();
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              button.disabled = false;
+              button.classList.replace("btn-disabled", "btn-success");
+            }, 1500);
+          }
+        });
+      } else {
+        console.log("Datos invalidos");
       }
     },
     validateData() {
       let isOk = true;
-      Object.values(this.user).forEach(element => {
-        if (element.toString() === '') {
+      let keys = Object.keys(this.user);
+      Object.values(this.user).forEach((element, index) => {
+        if (
+          element.toString() === "" &&
+          keys[index] != "middle_name" &&
+          keys[index] != "second_surname" && 
+          (keys[index] === "type" && element === 'student') 
+        ) {
           isOk = false;
         }
       });
       return isOk;
-    }
-    ,
+    },
     selectAvatar(id) {
       let selectedAvatar = document.getElementById(id);
       this.selectedAvatar = id;
@@ -547,10 +706,8 @@ export default {
       selectedAvatar.classList.add("scale-110");
       selectedAvatar.classList.add("bg-opacity-30");
     },
-  }
-  ,
-}
-;
+  },
+};
 </script>
 
 <style scoped>
@@ -571,24 +728,13 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-.slide-enter-active, .slide-leave-active {
-  transition: margin-bottom .2s ease-out;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
 }
 
-/*
-you set the css property before transition starts
-*/
-.slide-enter, .slide-leave-to {
-  margin-bottom: -200px;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
-
-/*
-you set the css property it will be when transition ends
-*/
-.slide-enter-to, .slide-leave {
-  margin-bottom: 0px;
-}
-
-
 </style>
