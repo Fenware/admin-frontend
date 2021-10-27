@@ -9,6 +9,7 @@ export default {
   state: {
     users: [],
     user: {},
+    registration_state: false,
   },
   mutations: {
     setUsers(state, users) {
@@ -24,6 +25,9 @@ export default {
         }
       });
     },
+    setRegistrationState(state, registration_state){
+      state.registration_state = registration_state;
+    }
   },
   actions: {
     async getUsers({rootState, commit}) {
@@ -127,7 +131,7 @@ export default {
           console.log(error);
         });
     },
-    async createUser({rootState, /*commit*/}, payload) {
+    async createUser({rootState, commit}, payload) {
       await axios({
         method: "post",
         url: rootState.API_URL + "/user/create",
@@ -135,9 +139,11 @@ export default {
         headers: rootState.headers,
       })
         .then((res) => {
-          if (res.data !== 1) {
-            /**/
+          console.log(res);
+          if (res.data === 1) {
+            commit("setRegistrationState", true);
           } else {
+            commit("setRegistrationState", false);
             showAlert({
               type: "error",
               message: res.data.result.error_msg,
