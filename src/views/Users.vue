@@ -51,7 +51,7 @@
           </div>
 
           <router-link
-          :to="{name: 'UserRegistration'}"
+            :to="{ name: 'UserRegistration' }"
             class="btn-success border-0 rounded-tr-xl py-0.5 px-2 text-sm"
           >
             Crear
@@ -108,11 +108,26 @@
               <span class="font-medium">Nickname: </span>{{ user.nickname }}
             </p> -->
               <p class="flex items-center">
-                <span class="font-medium">{{ user.email }}</span>
+                <span class="font-medium">
+                  {{ user.email }}
+                </span>
+                <transition name="fade" type="out-in">
+
                 <span
-                  class="material-icons text-xl ml-1 text-gray-400 cursor-pointer transition-colors hover:text-gray-300"
+                  :id="`${user.email}_copy_icon`"
+                  @click="copyEmail(user.email)"
+                  class="material-icons transition-all text-xl ml-1 text-gray-400 cursor-pointer hover:text-gray-300"
                   >content_copy</span
                 >
+                </transition>
+
+                <transition name="fade" type="out-in">
+                  <span
+                    :id="`${user.email}_check_icon`"
+                    class="hidden material-icons transition-all text-xl ml-1 text-green-500"
+                    >check</span
+                  >
+                </transition>
               </p>
             </div>
 
@@ -145,6 +160,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { showAlert } from "@/utils/alerts";
 
 export default {
   name: "Users",
@@ -203,8 +219,29 @@ export default {
   methods: {
     ...mapActions(["getUsers"]),
     ...mapMutations(["setUser"]),
+    copyEmail(email) {
+      let copy_icon = document.getElementById(email + "_copy_icon");
+      let check_icon = document.getElementById(email + "_check_icon");
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email).then(function() {
+          copy_icon.classList.add("hidden");
+          check_icon.classList.remove("hidden");
+
+          setTimeout(() => {
+            copy_icon.classList.remove("hidden");
+            check_icon.classList.add("hidden");
+          }, 1500);
+        });
+      } else {
+        showAlert({
+          type: "error",
+          message: `Tu navegador no soporta la copia automatica, hazlo manualmente.`,
+        });
+      }
+    },
   },
 };
 </script>
 
-<style></style>
+<style>
+</style>
