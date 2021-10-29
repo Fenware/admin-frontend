@@ -2,54 +2,32 @@
   <nav
     class="w-full sm:w-1/6 md:w-16 lg:w-16 sm:h-full rounded-2xl | bg-gray-700 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl"
   >
-    <ul class="p-2 sm:py-4 sm:px-0 h-full text-center flex flex-row sm:flex-col justify-between">
+    <ul
+      class="p-2 sm:py-4 sm:px-0 h-full text-center flex flex-row sm:flex-col justify-between"
+    >
       <div class="flex gap-2 sm:gap-0 sm:block">
-        <li>
-          <router-link :to="{ name: 'Home' }"  v-slot="{ isActive }">
-            <span :class="[isActive && 'active']" class="nav-icon mt-1 material-icons">
-              home
+        <li v-for="item in nav_items" :key="item" >
+          <router-link class="relative group" :to="{ name: item.view }" v-slot="{ isActive }">
+            <span
+              :class="[isActive && 'active']"
+              class="nav-icon group mt-1 material-icons"
+            >
+              {{ item.icon }}
             </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'Subjects' }" v-slot="{ isActive }">
-            <span :class="[isActive && 'active']" class="nav-icon material-icons">
-              library_books
-            </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'Orientations' }" v-slot="{ isActive }">
-            <span :class="[isActive && 'active']" class="nav-icon material-icons">
-              dashboard
-            </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'Groups' }" v-slot="{ isActive }">
-            <span :class="[isActive && 'active']" class="nav-icon material-icons">
-              groups
-            </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'Users' }" v-slot="{ isActive }">
-            <span :class="[isActive && 'active']" class="nav-icon material-icons">
-              assignment_ind
-            </span>
+
+            <span class="tooltip group-hover:opacity-100">{{ item.tooltip }}</span>
           </router-link>
         </li>
       </div>
       <div class="flex gap-2 sm:gap-0 sm:block">
-        <!-- <li>
-          <router-link :to="{ name: 'Home' }">
-            <i :class="'fa-cog ' + icon_class"></i>
-          </router-link>
-        </li> -->
-        <li class="cursor-pointer">
-          <span @click="logout()" class="nav-icon material-icons">
-            logout
-          </span>
+        <li class="group relative cursor-pointer">
+          <a  @click="logout()">
+            <span class="nav-icon material-icons">
+              logout
+            </span>
+          </a>
+          
+          <span class="tooltip group-hover:opacity-100 ml-3">Cerrar sesión</span>
         </li>
       </div>
     </ul>
@@ -60,9 +38,20 @@
 import { mapActions } from "vuex";
 export default {
   name: "Navbar",
-  methods:{
-    ...mapActions(['logout'])
-  }
+  data: () => {
+    return {
+      nav_items: [
+        { view: "Home", icon: "home", tooltip: "Inicio" },
+        { view: "Subjects", icon: "library_books", tooltip: "Materias" },
+        { view: "Orientations", icon: "dashboard", tooltip: "Orientaciones" },
+        { view: "Groups", icon: "groups", tooltip: "Grupos" },
+        { view: "Users", icon: "assignment_ind", tooltip: "Usuarios" },
+      ],
+    };
+  },
+  methods: {
+    ...mapActions(["logout"]),
+  },
 };
 </script>
 
@@ -70,7 +59,11 @@ export default {
 .nav-icon {
   @apply mt-0 px-2 py-1 sm:mt-2 text-3xl text-white transition-colors ease-in-out hover:bg-gray-600 rounded-xl;
 }
-.active{
+.active {
   @apply bg-gray-600 transition-colors shadow-lg;
+}
+
+.tooltip {
+  @apply absolute mt-3.5 w-auto p-2 m-2 min-w-max left-12 rounded-md shadow-lg text-white bg-gray-900 text-sm font-bold transition-all duration-100 opacity-0;
 }
 </style>
