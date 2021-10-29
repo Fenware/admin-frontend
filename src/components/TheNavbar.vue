@@ -15,7 +15,7 @@
               {{ item.icon }}
             </span>
 
-            <span class="tooltip group-hover:opacity-100">{{ item.tooltip }}</span>
+            <span class="tooltip group-hover:scale-100">{{ item.tooltip }}</span>
           </router-link>
         </li>
       </div>
@@ -27,7 +27,7 @@
             </span>
           </a>
           
-          <span class="tooltip group-hover:opacity-100 ml-3">Cerrar sesión</span>
+          <span class="tooltip group-hover:scale-100 ml-3">Cerrar sesión</span>
         </li>
       </div>
     </ul>
@@ -64,6 +64,6 @@ export default {
 }
 
 .tooltip {
-  @apply absolute mt-3.5 w-auto p-2 m-2 min-w-max left-12 rounded-md shadow-lg text-white bg-gray-900 text-sm font-bold transition-all duration-100 opacity-0;
+  @apply transform absolute mt-3.5 w-auto p-2 m-2 min-w-max left-12 rounded-md shadow-lg text-white bg-gray-900 text-sm font-bold transition-all duration-100 scale-0 origin-left;
 }
 </style>
