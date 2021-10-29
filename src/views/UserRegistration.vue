@@ -651,7 +651,6 @@ export default {
 
         this.user.ci = this.user.ci.toString();
         this.createUser(this.user).then(() => {
-          console.log(this.registration_state);
           if (this.registration_state) {
             setTimeout(() => {
               button.disabled = false;
