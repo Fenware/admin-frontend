@@ -6,12 +6,11 @@ import orientations_j from '@/assets/json_lang/orientations.json';
 import subjects_j from '@/assets/json_lang/subject.json';
 import user_j from '@/assets/json_lang/user.json';
 import consultation_j from '@/assets/json_lang/consultation.json';
-
+import nav_j from '@/assets/json_lang/nav.json';
 
 export function getWord({word,file,lang}){
     let palabra = "???";
-    console.log(palabra);
-
+    //console.log(palabra);
     switch(file){
         case 'lang':
             palabra = lang_j[word][lang];
@@ -36,6 +35,10 @@ export function getWord({word,file,lang}){
             break;
         case 'consultation':
             palabra =  consultation_j[word][lang];
+            break;
+        case 'nav':
+            //console.log('idioma : ' + lang);
+            palabra =  nav_j[word][lang];
             break;
         default:
             palabra = "{missing}";
