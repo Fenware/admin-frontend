@@ -1,0 +1,30 @@
+{
+    "home":{
+        "es":"Inicio",
+        "en":"Home"
+    },
+    "subjects":{
+        "es":"Materias",
+        "en":"Subjects"
+    },
+    "orientations":{
+        "es":"Orientaciones",
+        "en":"Orientations"
+    },
+    "groups":{
+        "es":"Grupos",
+        "en":"Groups"
+    },
+    "users":{
+        "es":"Usuarios",
+        "en":"Users"
+    },
+    "close_session":{
+        "es":"Cerrar sesión",
+        "en":"Close session"
+    },
+    "lang":{
+        "es":"Idioma",
+        "en":"Language"
+    }
+}
