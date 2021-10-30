@@ -45,7 +45,7 @@
                   (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
               "
             >
-              Estudiantes
+              {{getWord({file:'lang',word:'students',lang})}}
             </button>
           </div>
 
@@ -53,7 +53,7 @@
             :to="{ name: 'UserRegistration' }"
             class="btn-success border-0 rounded-tr-xl py-0.5 px-2 text-sm"
           >
-            {{getWord({file:'lang',word:'students',lang})}}
+            {{getWord({file:'lang',word:'create',lang})}}
           </router-link>
         </div>
       </div>
