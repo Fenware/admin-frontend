@@ -7,7 +7,7 @@
     >
       <div class="flex items-center">
         <i class="fas fa-plane"></i>
-        <h2 class="p-1 font-extrabold">Lista de orientaciones</h2>
+        <h2 class="p-1 font-extrabold">{{getWord({file:'orientation',word:'list_of_orientations',lang})}}</h2>
       </div>
       <div class="flex items-center">
         <div class="mr-3">
@@ -21,7 +21,7 @@
                 (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
             "
           >
-            Todos
+            {{getWord({file:'lang',word:'all',lang})}}
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -32,7 +32,7 @@
                 (filter_by == 1 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
-            1ero
+            {{getWord({file:'orientation',word:'first',lang})}}
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -43,7 +43,7 @@
                 (filter_by == 2 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
-            2do
+            {{getWord({file:'orientation',word:'second',lang})}}
           </button>
 
           <button
@@ -53,14 +53,14 @@
                 (filter_by == 3 ? ' bg-white bg-opacity-20 ' : '')
             "
           >
-            3ero
+            {{getWord({file:'orientation',word:'third',lang})}}
           </button>
         </div>
         <button
           @click="changeMode({mode: 'create'})"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
-          Agregar
+          {{getWord({file:'lang',word:'create',lang})}}
         </button>
       </div>
     </div>
@@ -70,7 +70,7 @@
       <!-- Mostrando el input solo si hay usuarios pendientes para buscar -->
       <input
         type="text"
-        placeholder="Buscar orientación por nombre"
+        :placeholder="getWord({file:'orientation',word:'search_orientation',lang})"
         v-model="text_filter"
         class="w-1/3 focus:w-2/5 placeholder-gray-300 text-center py-2 px-2 | bg-white transition-all transform duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
       />
@@ -91,7 +91,7 @@
             <p>
               <span class="font-bold">{{ orientation.name }}</span>
             </p>
-            <p><span class="font-bold">Año:</span> {{ orientation.year }}</p>
+            <p><span class="font-bold">{{getWord({file:'orientation',word:'year',lang})}}:</span> {{ orientation.year }}</p>
           </div>
 
           <div
@@ -101,7 +101,7 @@
               @click="changeMode({mode: 'edit', orientation})"
               class=" pl-2 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
-              Ver más
+              {{getWord({file:'lang',word:'more',lang})}}
               <i
                 class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
               ></i>
@@ -110,7 +110,7 @@
               @click="confirmDeletion(orientation.id, orientation.name)"
               class=" px-5 py-1 text-xs font-semibold transition-colors duration-200 rounded-md border-b-2 hover:border-red-400 border-red-300    bg-red-200 hover:bg-red-300 text-red-900"
             >
-              Eliminar
+              {{getWord({file:'lang',word:'delete',lang})}}
             </button>
           </div>
         </div>
@@ -158,6 +158,8 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
+
 export default {
   name: "ListOrientations",
   data: function() {
@@ -167,7 +169,10 @@ export default {
     };
   },
   computed: {
-    ...mapState({ orientations: (state) => state.orientations.orientations }),
+    ...mapState({ 
+      orientations: (state) => state.orientations.orientations,
+      lang: (state) => state.lang,
+    }),
   },
   methods: {
     ...mapMutations(["changeMode"]),
@@ -228,6 +233,7 @@ export default {
           }
         });
     },
+    getWord
   },
 };
 </script>

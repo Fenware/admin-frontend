@@ -9,12 +9,17 @@
 </template>
 
 <script>
+import ToggleLanguageButton from '@/components/ToggleLanguageButton.vue';
+
 export default {
   name: "MainComponent",
   methods: {
     isLoginView() {
       return this.$route.name != "Login";
     },
+  },
+  components: {
+    ToggleLanguageButton,
   },
 };
 </script>

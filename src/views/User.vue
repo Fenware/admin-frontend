@@ -1,6 +1,6 @@
 <template>
   <div class="text-white">
-    <h1 class="text-center text-3xl mt-1 font-semibold">Usuario</h1>
+    <h1 class="text-center text-3xl mt-1 font-semibold">  {{getWord({file:'user',word:'user',lang})}}   </h1>
     <div
       v-if="'id' in edited_user"
       class="max-w-screen-sm mx-auto mt-2 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl
@@ -20,7 +20,7 @@
       >
         <div class="flex items-center">
           <span class="material-icons">manage_accounts</span>
-          <h2 class="px-2 font-extrabold select-none">Perfil</h2>
+          <h2 class="px-2 font-extrabold select-none">  {{getWord({file:'user',word:'profile',lang})}}   </h2>
         </div>
         <div class="flex items-center">
           <!-- <button
@@ -36,7 +36,7 @@
           >
             <span class="material-icons text-sm mr-1">arrow_back</span>
 
-            Volver
+            {{getWord({file:'lang',word:'back',lang})}}
           </router-link>
         </div>
       </div>
@@ -47,7 +47,7 @@
         class="p-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
       >
         <h1 class="text-2xl text-indigo-300 font-bold text-center">
-          {{ edited_user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+          {{ edited_user.type == "student" ? getWord({file:'lang',word:'student',lang}).toUpperCase()  : getWord({file:'lang',word:'teacher',lang}).toUpperCase() }}
         </h1>
 
         <div class="grid grid-cols-2 gap-2 px-10">
@@ -60,7 +60,7 @@
             <div class="w-full">
               <div class="block">
                 <span class="block select-none text-xs "
-                  >Cédula de identidad</span
+                  >{{getWord({file:'user',word:'identification_document',lang})}}</span
                 >
                 <p class="font-medium text-2xl tracking-widest px-2">
                   {{ edited_user.ci }}
@@ -69,7 +69,7 @@
 
               <div class="block mt-2 ">
                 <label for="nickname" class="block select-none text-xs"
-                  >Nombre de usuario</label
+                  >{{getWord({file:'user',word:'nickname',lang})}}</label
                 >
                 <input
                   id="nickname"
@@ -79,7 +79,7 @@
                   :placeholder="
                     edited_user.nickname
                       ? 'Ingrese el nombre de usuario'
-                      : 'Ninguno'
+                      : getWord({file:'lang',word:'none',lang})
                   "
                 />
               </div>
@@ -87,7 +87,7 @@
           </div>
 
           <div>
-            <label for="name" class="block select-none text-xs">Nombre</label>
+            <label for="name" class="block select-none text-xs">{{getWord({file:'user',word:'name',lang})}}</label>
             <input
               id="name"
               class="input"
@@ -98,7 +98,7 @@
 
           <div>
             <label for="middle_name" class="block select-none text-xs"
-              >Segundo nombre</label
+              >{{getWord({file:'user',word:'middle_name',lang})}}</label
             >
             <input
               id="middle_name"
@@ -107,14 +107,14 @@
               v-model="edited_user.middle_name"
               :placeholder="
                 !edited_user.middle_name
-                  ? 'Ninguno'
+                  ? getWord({file:'lang',word:'none',lang})
                   : 'Ingrese el segundo nombre'
               "
             />
           </div>
           <div>
             <label for="surname" class="block select-none text-xs"
-              >Apellido</label
+              >{{getWord({file:'user',word:'surname',lang})}}</label
             >
             <input
               id="surname"
@@ -126,7 +126,7 @@
 
           <div>
             <label for="second_surname" class="block select-none text-xs"
-              >Segundo apellido</label
+              >{{getWord({file:'user',word:'second_surname',lang})}}</label
             >
             <input
               id="second_surname"
@@ -135,20 +135,20 @@
               v-model="edited_user.second_surname"
               :placeholder="
                 !edited_user.second_surname
-                  ? 'Ninguno'
+                  ? getWord({file:'lang',word:'none',lang})
                   : 'Ingrese el segundo apellido'
               "
             />
           </div>
           <div class=" col-span-2 mt-">
-            <label for="email" class="block select-none text-xs">Email</label>
+            <label for="email" class="block select-none text-xs">{{getWord({file:'user',word:'email',lang})}}</label>
             <input
               id="email"
               class="input w-full"
               type="email"
               v-model="edited_user.email"
               :placeholder="
-                !edited_user.email ? 'Ninguno' : 'Ingrese el segundo apellido'
+                !edited_user.email ? getWord({file:'lang',word:'none',lang}) : 'Ingrese el segundo apellido'
               "
             />
           </div>
@@ -159,7 +159,7 @@
           :to="{ name: 'UserConsultations', params: { nickname: user.nickname } }"
             class="px-3 py-0.5 min-w-max text-sm font-semibold rounded-md transition-colors hover:bg-indigo-200 hover:text-blue-900 cursor-pointer"
           >
-            Historial de consultas
+            {{getWord({file:'user',word:'consultations_history',lang})}}
           </router-link>
         </div>
 
@@ -170,7 +170,7 @@
             :class="wasEdited ? 'btn-success' : 'btn-disabled'"
             class="text-sm mt-1 px-3 flex items-center"
           >
-            <span class="mt-0.5">Guardar cambios</span>
+            <span class="mt-0.5">{{getWord({file:'lang',word:'save',lang})}}</span>
           </button>
 
           <button
@@ -178,7 +178,7 @@
             class="btn-danger text-sm mt-1 pt-0.5 px-3 flex items-center"
           >
             <span class="material-icons text-md mr-1">warning</span>
-            <span class="mt-0.5">Dar de baja</span>
+            <span class="mt-0.5">{{getWord({file:'user',word:'take_down',lang})}}</span>
           </button>
         </div>
       </div>
@@ -189,6 +189,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import { confirmModal, showAlert } from "@/utils/alerts.js";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "User",
@@ -218,6 +219,7 @@ export default {
   computed: {
     ...mapState({
       user: (state) => state.users.user,
+      lang: (state) => state.lang,
     }),
     wasEdited() {
       return (
@@ -275,6 +277,7 @@ export default {
     saveChanges() {
       if (this.validateData()) this.editUser(this.edited_user);
     },
+    getWord
   },
 };
 </script>

@@ -1,7 +1,6 @@
 <template>
   <div class="text-white w-full px-3">
-    <h1 class="text-center text-3xl mt-1 font-semibold">Usuarios</h1>
-
+    <h1 class="text-center text-3xl mt-1 font-semibold"> {{getWord({file:'user',word:'users',lang})}} </h1>
     <div
       class="my-2 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
     >
@@ -10,7 +9,7 @@
       >
         <div class="flex items-center">
           <span class="material-icons">people</span>
-          <h2 class="p-1 font-extrabold">Lista de usuarios</h2>
+          <h2 class="p-1 font-extrabold"> {{getWord({file:'user',word:'user_list',lang})}} </h2>
         </div>
         <div class="flex items-center mr-1">
           <span class="material-icons mr-2">filter_list</span>
@@ -24,7 +23,7 @@
                   (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
               "
             >
-              Todos
+              {{getWord({file:'lang',word:'all',lang})}}
             </button>
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -35,7 +34,7 @@
                   (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
               "
             >
-              Docentes
+              {{getWord({file:'lang',word:'teachers',lang})}}
             </button>
 
             <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -54,7 +53,7 @@
             :to="{ name: 'UserRegistration' }"
             class="btn-success border-0 rounded-tr-xl py-0.5 px-2 text-sm"
           >
-            Crear
+            {{getWord({file:'lang',word:'students',lang})}}
           </router-link>
         </div>
       </div>
@@ -64,7 +63,7 @@
         <!-- Mostrando el input solo si hay usuarios pendientes para buscar -->
         <input
           type="text"
-          placeholder="Buscar por nombre o cédula"
+          :placeholder="getWord({file:'user',word:'search_by_name_or_id',lang})"
           v-model="text_filter"
           class="w-1/3 focus:w-2/5 placeholder-gray-300 text-center py-2 px-2 | bg-white transition-all transform duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
         />
@@ -92,7 +91,7 @@
                 class="mb-1 text-xs tracking-widest font-extrabold select-none text-indigo-300"
               >
                 <!-- Poniendo si es estudiante o docente segun el tipo -->
-                {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+                {{ user.type == "student" ? getWord({file:'lang',word:'student',lang}).toUpperCase()  : getWord({file:'lang',word:'teacher',lang}).toUpperCase() }}
               </p>
 
               <p class="font-bold text-xl">
@@ -101,7 +100,7 @@
                 {{ user.second_surname }}
               </p>
               <p>
-                <span class="font-medium">CI: </span
+                <span class="font-medium">{{getWord({file:'lang',word:'id',lang})}}: </span
                 ><span class=" tracking-widest">{{ user.ci }}</span>
               </p>
               <!-- <p>
@@ -138,7 +137,7 @@
                 :to="{ name: 'User', params: { nickname: user.nickname } }"
                 class="btn-info pr-3 mt-1 pl-5 font-semibold flex items-center"
               >
-                Ver más
+                {{getWord({file:'lang',word:'more',lang})}}
                 <span class="material-icons">expand_more</span>
               </router-link>
             </div>
@@ -160,6 +159,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
 import { showAlert } from "@/utils/alerts";
 
 export default {
@@ -176,6 +176,7 @@ export default {
   computed: {
     ...mapState({
       users: (state) => state.users.users,
+      lang: (state) => state.lang,
     }),
     usersFiltered() {
       // Filtrando siempre por tipo de usuario
@@ -219,6 +220,7 @@ export default {
   methods: {
     ...mapActions(["getUsers"]),
     ...mapMutations(["setUser"]),
+    getWord,
     copyEmail(email) {
       let copy_icon = document.getElementById(email + "_copy_icon");
       let check_icon = document.getElementById(email + "_check_icon");

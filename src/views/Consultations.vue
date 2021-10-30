@@ -3,14 +3,14 @@
     <div class="flex justify-between h-85vh">
       <TheConsultation v-if="consultation.active" />
       <div class="flex justify-center items-center mx-auto" v-else>
-        <p class="text-2xl">Seleccione una consulta</p>
+        <p class="text-2xl">  {{getWord({file:'consultation',word:'select_consultation',lang})}}  </p>
       </div>
 
       <div class="h-92vh bg-gray-700 rounded-2xl shadow-xl">
         <div class="text-center px-2 rounded-t-2xl rounded-b-md bg-gray-600">
           <div class="flex justify-between items-center pt-1">
             <h2 class="text-center text-2xl">
-              Consultas
+              {{getWord({file:'consultation',word:'consultations',lang})}}
             </h2>
             <div>
               <router-link
@@ -18,7 +18,7 @@
                 :to="{ name: 'User', params: { nickname: user.nickname } }"
                 @click="clearConsultation()"
               >
-                Volver
+                {{getWord({file:'lang',word:'back',lang})}}
               </router-link>
             </div>
           </div>
@@ -59,6 +59,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
 import TheConsultation from "@/components/TheConsultation";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "Consultations",
@@ -75,6 +76,7 @@ export default {
       consultations: (state) => state.consultations.user_consultations,
       consultation: (state) => state.consultations.consultation,
       user: (state) => state.users.user,
+      lang: (state) => state.lang,
     }),
   },
   created() {
@@ -116,6 +118,7 @@ export default {
 
       this.consultation_selected = id;
     },
+    getWord
   },
 };
 </script>

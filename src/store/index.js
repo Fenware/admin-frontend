@@ -27,6 +27,7 @@ export default createStore({
       Authorization: "",
       "Content-Type": "application/json",
     },
+    lang: "en"
   },
   mutations: {
     setToken(state, payload) {
@@ -35,6 +36,9 @@ export default createStore({
     setHeaderToken(state, payload) {
       state.headers.Authorization = payload;
     },
+    setLang(state,lang){
+      state.lang = lang;
+    }
   },
   actions: {
     

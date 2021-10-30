@@ -6,13 +6,13 @@
       class="flex justify-center pl-3 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
     >
       <div class="flex items-center mr-auto">
-        <h2 class="p-1 font-extrabold">Lista de grupos</h2>
+        <h2 class="p-1 font-extrabold">   {{getWord({file:'group',word:'group_list',lang})}}  </h2>
       </div>
       <div class="flex items-center mr-9">
         <input
           id="searcher"
           type="text"
-          placeholder="Buscar grupo por nombre"
+          :placeholder="getWord({file:'group',word:'search_group_by_name',lang})"
           v-model="text_filter"
           class=" px-2 w-16 focus:w-28 transform placeholder-gray-300  pt-0.5 pb-0.5 text-sm | bg-white transition-all duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-md outline-none"
         />
@@ -29,7 +29,7 @@
           @click="changeMode({ mode: 'create' })"
           class="px-2 m-1 py-1 min-w-max text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
-          Crear grupo
+          {{getWord({file:'group',word:'create_group',lang})}}
         </button>
       </div>
     </div>
@@ -60,7 +60,7 @@
               >
             </p>
             <p class="w-max">
-              <span class="font-semibold select-none">Código:</span>
+              <span class="font-semibold select-none">{{getWord({file:'group',word:'code',lang})}}:</span>
               <span
                 class="px-2 py-0.5 ml-1 bg-white rounded-md bg-opacity-10"
                 >{{ group.code }}</span
@@ -78,7 +78,7 @@
               @click="changeMode({ mode: 'edit', group: group })"
               class=" pr-3 pl-5 text-xs font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
-              Ver más
+              {{getWord({file:'lang',word:'more',lang})}}
               <i
                 class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
               ></i>
@@ -90,7 +90,7 @@
               <i
                 class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
               ></i>
-              Eliminar
+              {{getWord({file:'lang',word:'delete',lang})}}
             </button>
           </div>
         </div>
@@ -125,6 +125,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
 import { confirmModal } from "@/utils/alerts";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "ListOrientations",
@@ -137,6 +138,7 @@ export default {
   computed: {
     ...mapState({
       groups: (state) => state.groups.groups,
+      lang: (state) => state.lang,
     }),
   },
   methods: {
@@ -158,6 +160,7 @@ export default {
       };
       confirmModal(payload);
     },
+    getWord,
   },
 };
 </script>

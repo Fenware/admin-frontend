@@ -1,13 +1,13 @@
 <template>
   <div class="text-white w-full h-full">
-    <h2 class="font-semibold text-center text-3xl pt-1">Materias</h2>
+    <h2 class="font-semibold text-center text-3xl pt-1">  {{getWord({file:'subject',word:'subjects',lang})}}   </h2>
 
     <div
       class="flex justify-center gap-1 md:justify-between flex-wrap mt-10 mx-10"
     >
       <input
         type="text"
-        placeholder="Buscar materia"
+        :placeholder="getWord({file:'subject',word:'search_subject',lang})"
         v-model="text_filter"
         v-on:keyup="setTextFilter(text_filter)"
         class="w-64 my-2 py-2 px-2 text-sm bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl | rounded-xl  outline-none placeholder-gray-300"
@@ -18,7 +18,7 @@
         <input
           type="text"
           v-model="new_subject.name"
-          placeholder="Agregar materia"
+          :placeholder="getWord({file:'subject',word:'search_subject',lang})"
           v-on:keyup.enter="
             new_subject.name.trim() != '' ? addSubject() : false
           "
@@ -61,7 +61,7 @@
           :id="'subject_header_' + subject.id"
           class="hidden flex justify-between items-center mb-1 "
         >
-          <p class="text-xs pl-2 select-none">Cambiar nombre</p>
+          <p class="text-xs pl-2 select-none">  {{getWord({file:'subject',word:'change_name',lang})}}   </p>
           <button
             @click="toggleSubjectCard(subject.id)"
             class="text-sm px-2 py-0.5 mb-1 text-red-900  transition-colors font-semibold rounded-md bg-red-200 hover:bg-red-300 shadow-lg"
@@ -92,7 +92,7 @@
             @click="toggleEditMode(subject.id, subject.name)"
             class="px-2 mb-1 text-xs font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
           >
-            Cambiar nombre
+            {{getWord({file:'subject',word:'change_name',lang})}}
           </button>
 
           <i
@@ -116,7 +116,7 @@
             "
             class="text-sm px-8 mb-1 cursor-pointer text-green-900  transition-colors mx-1 text-md drop-shadow-lg  font-semibold py-1 rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300"
           >
-            Guardar
+            {{getWord({file:'lang',word:'save',lang})}}
           </button>
         </div>
       </div>
@@ -125,13 +125,15 @@
       class="py-5 mx-5 mt-10 bg-gray-700 bg-opacity-90 border-2 border-gray-600 rounded-xl"
       v-show="subjectsFiltered.length == 0"
     >
-      <p class="text-center">No hay coincidencias</p>
+      <p class="text-center"> {{getWord({file:'lang',word:'no_coincidences',lang})}} </p>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations,mapState } from "vuex";
+import { getWord } from "@/utils/lang";
+
 export default {
   name: "Subjects",
   data: function() {
@@ -150,6 +152,9 @@ export default {
   },
   computed: {
     ...mapGetters(["subjectsFiltered"]),
+    ...mapState({
+      lang: (state) => state.lang,
+    }),
   },
   methods: {
     ...mapMutations(["setTextFilter"]),
@@ -241,6 +246,7 @@ export default {
           }
         });
     },
+    getWord
   },
 };
 </script>
