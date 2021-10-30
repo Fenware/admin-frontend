@@ -1,7 +1,6 @@
 <template>
-  <div class="text-white w-full">
+  <div class="text-white w-full px-3">
     <h1 class="text-center text-3xl mt-1 font-semibold"> {{getWord({file:'user',word:'users',lang})}} </h1>
-
     <div
       class="my-2 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
     >
@@ -12,41 +11,50 @@
           <span class="material-icons">people</span>
           <h2 class="p-1 font-extrabold"> {{getWord({file:'user',word:'user_list',lang})}} </h2>
         </div>
-        <div class="flex items-center mr-5">
+        <div class="flex items-center mr-1">
           <span class="material-icons mr-2">filter_list</span>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'all'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
-            "
-          >
-            {{getWord({file:'lang',word:'all',lang})}}
-          </button>
+          <div class="flex mr-2">
+            <button
+              @click="filter_by = 'all'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
+              "
+            >
+              {{getWord({file:'lang',word:'all',lang})}}
+            </button>
 
-          <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'teacher'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
-            "
-          >
-            {{getWord({file:'lang',word:'teachers',lang})}}
-          </button>
+            <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
+            <button
+              @click="filter_by = 'teacher'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
+              "
+            >
+              {{getWord({file:'lang',word:'teachers',lang})}}
+            </button>
 
-          <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
-          <button
-            @click="filter_by = 'student'"
-            :class="
-              'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
-                (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
-            "
+            <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
+            <button
+              @click="filter_by = 'student'"
+              :class="
+                'text-sm px-2 py-0.5 transition-colors rounded-lg ' +
+                  (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
+              "
+            >
+              Estudiantes
+            </button>
+          </div>
+
+          <router-link
+            :to="{ name: 'UserRegistration' }"
+            class="btn-success border-0 rounded-tr-xl py-0.5 px-2 text-sm"
           >
             {{getWord({file:'lang',word:'students',lang})}}
-          </button>
+          </router-link>
         </div>
       </div>
       <div
@@ -63,6 +71,12 @@
       <div
         class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
       >
+        <div v-show="usersFiltered.length == 0 && text_filter.length === 0">
+          <p class="text-center text-2xl my-5">Cargando...</p>
+        </div>
+        <div v-show="usersFiltered.length == 0 && text_filter.length > 0">
+          <p class="text-center text-2xl my-5">No hay coincidencias</p>
+        </div>
         <div
           class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 max-h-96 overflow-auto "
         >
@@ -93,11 +107,26 @@
               <span class="font-medium">Nickname: </span>{{ user.nickname }}
             </p> -->
               <p class="flex items-center">
-                <span class="font-medium">{{ user.email }}</span>
+                <span class="font-medium">
+                  {{ user.email }}
+                </span>
+                <transition name="fade" type="out-in">
+
                 <span
-                  class="material-icons text-xl ml-1 text-gray-400 cursor-pointer transition-colors hover:text-gray-300"
+                  :id="`${user.email}_copy_icon`"
+                  @click="copyEmail(user.email)"
+                  class="material-icons transition-all text-xl ml-1 text-gray-400 cursor-pointer hover:text-gray-300"
                   >content_copy</span
                 >
+                </transition>
+
+                <transition name="fade" type="out-in">
+                  <span
+                    :id="`${user.email}_check_icon`"
+                    class="hidden material-icons transition-all text-xl ml-1 text-green-500"
+                    >check</span
+                  >
+                </transition>
               </p>
             </div>
 
@@ -131,6 +160,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
 import { getWord } from "@/utils/lang";
+import { showAlert } from "@/utils/alerts";
 
 export default {
   name: "Users",
@@ -190,9 +220,30 @@ export default {
   methods: {
     ...mapActions(["getUsers"]),
     ...mapMutations(["setUser"]),
-    getWord
+    getWord,
+    copyEmail(email) {
+      let copy_icon = document.getElementById(email + "_copy_icon");
+      let check_icon = document.getElementById(email + "_check_icon");
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email).then(function() {
+          copy_icon.classList.add("hidden");
+          check_icon.classList.remove("hidden");
+
+          setTimeout(() => {
+            copy_icon.classList.remove("hidden");
+            check_icon.classList.add("hidden");
+          }, 1500);
+        });
+      } else {
+        showAlert({
+          type: "error",
+          message: `Tu navegador no soporta la copia automatica, hazlo manualmente.`,
+        });
+      }
+    },
   },
 };
 </script>
 
-<style></style>
+<style>
+</style>

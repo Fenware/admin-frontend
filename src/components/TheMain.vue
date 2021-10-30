@@ -1,7 +1,10 @@
 <template>
-  <main class="mx-auto w-full overflow-y-auto relative" v-if="isLoginView()">
-    <ToggleLanguageButton class="absolute top-0 right-0 p-1 bg-opacity-0"/>
-    <router-view/>
+  <main class="mx-auto w-full overflow-y-auto" v-if="isLoginView()">
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </main>
 </template>
 

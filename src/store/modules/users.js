@@ -3,18 +3,20 @@ import router from "@/router/index";
 
 // Modulo donde manejo las alertas
 // eslint-disable-next-line no-unused-vars
-import { showAlert } from "@/utils/alerts";
+import {showAlert} from "@/utils/alerts";
+
 export default {
   state: {
     users: [],
     user: {},
+    registration_state: false,
   },
   mutations: {
     setUsers(state, users) {
       state.users = users;
     },
     setUser(state, user) {
-      state.user = { ...user };
+      state.user = {...user};
     },
     removeUser(state, user_id) {
       state.users.forEach((user, index, array) => {
@@ -23,9 +25,12 @@ export default {
         }
       });
     },
+    setRegistrationState(state, registration_state){
+      state.registration_state = registration_state;
+    }
   },
   actions: {
-    async getUsers({ rootState, commit }) {
+    async getUsers({rootState, commit}) {
       await axios({
         method: "post",
         url: rootState.API_URL + "/user/getActiveUsers",
@@ -50,11 +55,11 @@ export default {
           console.log(error);
         });
     },
-    async getUserByNickname({ rootState, commit }, nickname) {
+    async getUserByNickname({rootState, commit}, nickname) {
       await axios({
         method: "post",
         url: rootState.API_URL + "/user/getUserByNickname",
-        data: { nickname },
+        data: {nickname},
         headers: rootState.headers,
       })
         .then((res) => {
@@ -74,8 +79,8 @@ export default {
         });
     },
     // eslint-disable-next-line no-unused-vars
-    async deleteUser({ rootState, commit }, payload) {
-      let data = { user: payload.user_id };
+    async deleteUser({rootState, commit}, payload) {
+      let data = {user: payload.user_id};
       await axios({
         method: "post",
         url: rootState.API_URL + "/user/delete",
@@ -97,7 +102,7 @@ export default {
           console.log(error);
         });
     },
-    async editUser({ rootState, commit }, payload) {
+    async editUser({rootState, commit}, payload) {
       payload.id = parseInt(payload.id);
       await axios({
         method: "post",
@@ -119,6 +124,29 @@ export default {
             showAlert({
               type: "error",
               message: `Hubo un error, intente nuevamente`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async createUser({rootState, commit}, payload) {
+      await axios({
+        method: "post",
+        url: rootState.API_URL + "/user/create",
+        data: payload,
+        headers: rootState.headers,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data === 1) {
+            commit("setRegistrationState", true);
+          } else {
+            commit("setRegistrationState", false);
+            showAlert({
+              type: "error",
+              message: res.data.result.error_msg,
             });
           }
         })

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="my-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+    class="m-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
   >
     <div
       class="flex justify-center pl-3 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
@@ -36,9 +36,12 @@
     <div
       class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
+        <div v-if="groups.length == 0">
+          <p class="text-center text-2xl my-5">Cargando...</p>
+        </div>
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 max-h-96 overflow-auto "
-      >
+      > 
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
           v-for="group in groups"
