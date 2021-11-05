@@ -9,6 +9,8 @@ import groups from './modules/groups';
 import users from './modules/users';
 import consultations from './modules/consultations';
 
+import env_vars from "@/static/env_vars.json";
+
 export default createStore({
   // Declarando modulos para poder usarlos
   modules:{
@@ -21,7 +23,7 @@ export default createStore({
     consultations
   },
   state: {
-    API_URL: process.env.VUE_APP_ROOT_API,
+    API_URL: env_vars.VUE_APP_ROOT_API || "http://localhost:8080",
     token: null,
     headers: {
       Authorization: "",
