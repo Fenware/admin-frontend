@@ -1,7 +1,7 @@
 <template>
   <div class="text-white w-full h-full">
     <h2 class="text-center text-3xl pt-1 font-semibold">
-      Orientaciones
+      {{getWord({file:'orientation',word:'orientations',lang})}}
     </h2>
 
     <ListOrientation v-show="mode == 'list'" />
@@ -15,6 +15,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { getWord } from "@/utils/lang";
 import ListOrientation from "@/components/orientations/ListOrientation";
 import CreateOrientation from "@/components/orientations/CreateOrientation";
 import EditOrientation from "@/components/orientations/EditOrientation";
@@ -31,10 +32,14 @@ export default {
     EditOrientation,
   },
   computed: {
-    ...mapState({ mode: (state) => state.orientations.mode }),
+    ...mapState({ 
+      mode: (state) => state.orientations.mode,
+      lang: (state) => state.lang,
+    }),
   },
   methods: {
     ...mapActions(["getOrientations", "getSubjects"]),
+    getWord
   },
 };
 </script>

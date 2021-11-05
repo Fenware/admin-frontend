@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 export default {
   state: {
     mode: "list",
@@ -49,8 +49,8 @@ export default {
   actions: {
     async getSubjects({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/materia",
+        method: "post",
+        url: rootState.API_URL + "/subject/getSubjects",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -65,8 +65,8 @@ export default {
     },
     async getOrientations({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/orientacion",
+        method: "post",
+        url: rootState.API_URL + "/orientation/getOrientations",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -81,7 +81,7 @@ export default {
     async createOrientation({ rootState, commit }, orientation) {
       await axios({
         method: "post",
-        url: rootState.API_URL + "/orientacion",
+        url: rootState.API_URL + "/orientation/create",
         data: orientation,
         headers: rootState.headers,
       })
@@ -92,7 +92,7 @@ export default {
             commit("changeMode", { mode: "list" });
             showAlert({
               type: "success",
-              message: `La orientación ${orientation.name} fue creada correctamente!`,
+              message: `La orientación ${orientation.name} fue creada correctamente`,
             });
           } else {
             showAlert({
@@ -109,10 +109,9 @@ export default {
       var data = {
         id: parseInt(orientation.id),
       };
-      console.log(data);
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/orientacion",
+        method: "post",
+        url: rootState.API_URL + "/orientation/delete",
         data,
         headers: rootState.headers,
       })
@@ -139,10 +138,11 @@ export default {
         });
     },
     async getOrientationSubjects({ rootState, state, commit }) {
-      let data = `id=${state.orientation.id}`;
+      let data = { id: parseInt(state.orientation.id) };
       await axios({
-        method: "get",
-        url: rootState.API_URL + `/orientacion-materia?${data}`,
+        method: "post",
+        url: rootState.API_URL + `/orientation/getOrienationSubjects`,
+        data: data,
         headers: rootState.headers,
       })
         .then((res) => {
@@ -160,9 +160,11 @@ export default {
     async editOrientation({ rootState, commit }, modified_orientation) {
       let data = modified_orientation;
       data.id = parseInt(data.id);
+      data.year = parseInt(data.year);
+
       await axios({
-        method: "put",
-        url: rootState.API_URL + "/orientacion",
+        method: "post",
+        url: rootState.API_URL + "/orientation/modify",
         data: data,
         headers: rootState.headers,
       })
@@ -175,17 +177,14 @@ export default {
           console.log(error);
         });
     },
-    async removeSubjectsOrientation(
-      { rootState, state, commit },
-      removed_subjects
-    ) {
+    async removeSubjectsOrientation({ rootState, state }, removed_subjects) {
       let data = {
         id: parseInt(state.orientation.id),
         subjects: removed_subjects,
       };
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/orientacion-materia",
+        method: "post",
+        url: rootState.API_URL + "/orientation/removeOrienationSubjects",
         data,
         headers: rootState.headers,
       })
@@ -201,12 +200,12 @@ export default {
     },
     async addSubjectsOrientation({ rootState, state, commit }, added_subjects) {
       let data = {
-        id: parseInt(state.orientation.id),
+        orientation: parseInt(state.orientation.id),
         subjects: added_subjects,
       };
       await axios({
         method: "post",
-        url: rootState.API_URL + "/orientacion-materia",
+        url: rootState.API_URL + "/orientation/addOrientationSubjects",
         data: data,
         headers: rootState.headers,
       })

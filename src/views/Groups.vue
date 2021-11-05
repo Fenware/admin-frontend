@@ -1,7 +1,7 @@
 <template>
   <div class="text-white w-full ">
     <h2 class="text-center text-3xl mt-1 font-semibold">
-      Grupos
+    {{  getWord({file:'group',word:'groups',lang})  }}
     </h2>
 
     <ListGroup v-show="mode == 'list'" />
@@ -15,6 +15,7 @@ import { mapActions, mapState } from "vuex";
 import ListGroup from "@/components/groups/ListGroup";
 import CreateGroup from "@/components/groups/CreateGroup";
 import EditGroup from "@/components/groups/EditGroup";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "Groups",
@@ -35,10 +36,12 @@ export default {
   computed: {
     ...mapState({
       mode: (state) => state.groups.mode,
+      lang: (state) => state.lang,
     }),
   },
   methods: {
     ...mapActions(["getGroups", "getOrientations"]),
+    getWord,
   },
 };
 </script>

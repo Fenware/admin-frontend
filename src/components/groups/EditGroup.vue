@@ -7,21 +7,21 @@
     >
       <div class="flex items-center">
         <i class="fas fa-folder-plus pb-1"></i>
-        <h2 class="px-2 font-extrabold select-none">Editar grupo</h2>
+        <h2 class="px-2 font-extrabold select-none">{{getWord({file:'group',word:'edit_group',lang})}}</h2>
       </div>
       <div class="flex items-center">
         <button
           @click="editGroup(edited_group)"
           class="px-3 m-1 py-1 text-xs font-semibold transition-colors rounded-md bg-indigo-200 hover:bg-indigo-300 text-blue-900"
         >
-          Guardar
+          {{getWord({file:'lang',word:'save',lang})}}
         </button>
 
         <button
           @click="changeMode({ mode: 'list' })"
           class="px-2 m-1 py-1 text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-red-200 hover:bg-red-300 text-red-900"
         >
-          Cancelar
+          {{getWord({file:'lang',word:'cancel',lang})}}
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@
             <input
               maxlength="2"
               type="text"
-              placeholder="Nombre del grupo. Ej: BE"
+              :placeholder="getWord({file:'group',word:'group_name',lang})"
               v-model="edited_group.name"
               class=" transition text-sm placeholder-gray-400 py-2 px-2 | bg-white duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-lg rounded-xl outline-none"
             />
@@ -49,7 +49,7 @@
         </div>
       </form>
       <label class="block text-lg text-center select-none"
-        >Seleccionar una orientación</label
+        >{{getWord({file:'group',word:'select_orientation',lang})}}</label
       >
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 max-h-72 overflow-auto"
@@ -60,7 +60,7 @@
           :id="'orientation_' + orientation.id"
           v-for="orientation in orientations"
           :key="orientation.id"
-          @click="toggleOrientation(orientation)"
+          @click="false"
           style="height:fit-content"
         >
           <div>
@@ -77,7 +77,7 @@
             >
               {{ orientation.name }}
             </p>
-            <p class="select-none">Año: {{ orientation.year }}</p>
+            <p class="select-none">{{getWord({file:'orientation',word:'year',lang})}}: {{ orientation.year }}</p>
           </div>
           <i
             :id="'orientation_icon_' + orientation.id"
@@ -91,6 +91,8 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
+
 
 export default {
   name: "EditGroup",
@@ -104,6 +106,7 @@ export default {
     ...mapState({
       orientations: (state) => state.groups.orientations,
       group: (state) => state.groups.group,
+      lang: (state) => state.lang,
     }),
   },
   created() {
@@ -161,6 +164,7 @@ export default {
         this.edited_group.orientation = orientationSelected;
 
         // Cambio el span del año al lado del nombre
+        
         yearSpan.innerHTML =
           orientationSelected.year +
           (orientationSelected.year == "1" || orientationSelected.year == "3"
@@ -186,6 +190,7 @@ export default {
         this.edited_group.orientation = null;
       }
     },
+    getWord,
   },
 };
 </script>

@@ -1,18 +1,18 @@
 <template>
   <div
-    class="my-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+    class="m-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
   >
     <div
       class="flex justify-center pl-3 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
     >
       <div class="flex items-center mr-auto">
-        <h2 class="p-1 font-extrabold">Lista de grupos</h2>
+        <h2 class="p-1 font-extrabold">   {{getWord({file:'group',word:'group_list',lang})}}  </h2>
       </div>
       <div class="flex items-center mr-9">
         <input
           id="searcher"
           type="text"
-          placeholder="Buscar grupo por nombre"
+          :placeholder="getWord({file:'group',word:'search_group_by_name',lang})"
           v-model="text_filter"
           class=" px-2 w-16 focus:w-28 transform placeholder-gray-300  pt-0.5 pb-0.5 text-sm | bg-white transition-all duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-md outline-none"
         />
@@ -26,19 +26,22 @@
       </div>
       <div class="flex ml-auto items-center">
         <button
-          @click="changeMode({mode: 'create'})"
+          @click="changeMode({ mode: 'create' })"
           class="px-2 m-1 py-1 min-w-max text-xs font-semibold rounded-tr-xl transition-colors rounded-md bg-green-200 hover:bg-green-300 text-green-900"
         >
-          Crear grupo
+          {{getWord({file:'group',word:'create_group',lang})}}
         </button>
       </div>
     </div>
     <div
       class="py-3 border-b-2 border-l-2 border-r-2 border-gray-700 rounded-b-2xl"
     >
+        <div v-if="groups.length == 0">
+          <p class="text-center text-2xl my-5">Cargando...</p>
+        </div>
       <div
         class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 max-h-96 overflow-auto "
-      >
+      > 
         <!-- Haciendo un for de los usuarios filtrados (por defecto se muestran todos) -->
         <div
           v-for="group in groups"
@@ -57,7 +60,7 @@
               >
             </p>
             <p class="w-max">
-              <span class="font-semibold select-none">Código:</span>
+              <span class="font-semibold select-none">{{getWord({file:'group',word:'code',lang})}}:</span>
               <span
                 class="px-2 py-0.5 ml-1 bg-white rounded-md bg-opacity-10"
                 >{{ group.code }}</span
@@ -72,10 +75,10 @@
             class="flex md:flex-col flex-wrap gap-2 justify-center md:justify-end"
           >
             <button
-              @click="changeMode({mode: 'edit', group: group})"
+              @click="changeMode({ mode: 'edit', group: group })"
               class=" pr-3 pl-5 text-xs font-semibold py-1.5 transition-colors rounded-md border-b-2 hover:border-indigo-500 border-indigo-400 bg-indigo-200 hover:bg-indigo-300 text-blue-900"
             >
-              Ver más
+              {{getWord({file:'lang',word:'more',lang})}}
               <i
                 class="fas fa-caret-down text-blue-600 mx-1 text-md drop-shadow-lg"
               ></i>
@@ -87,7 +90,7 @@
               <i
                 class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
               ></i>
-              Eliminar
+              {{getWord({file:'lang',word:'delete',lang})}}
             </button>
           </div>
         </div>
@@ -121,6 +124,9 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+import { confirmModal } from "@/utils/alerts";
+import { getWord } from "@/utils/lang";
+
 export default {
   name: "ListOrientations",
   data: function() {
@@ -132,68 +138,29 @@ export default {
   computed: {
     ...mapState({
       groups: (state) => state.groups.groups,
+      lang: (state) => state.lang,
     }),
   },
   methods: {
-    ...mapMutations(['changeMode']),
-    ...mapActions(['deleteGroup']),
-    /* orientationsFiltered() {
-      // Filtro las orientaciones por coincidencias de nombre
-      let orientations_filtered = this.orientations.filter(
-        (orientation) =>
-          orientation.name
-            .toLowerCase()
-            .indexOf(this.text_filter.toLowerCase()) >= 0
-      );
-
-      if (this.filter_by == 1) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 1
-        );
-      } else if (this.filter_by == 2) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 2
-        );
-      } else if (this.filter_by == 3) {
-        orientations_filtered = orientations_filtered.filter(
-          (orientation) => parseInt(orientation.year) == 3
-        );
-      }
-      return orientations_filtered;
-    }, */
-    confirmDeletion(group_id, group_name, group_year) {
-      // Modal para confirmar si quiere eliminar la orientacion
-      let alert = this.$swal.mixin({
-        toast: false,
-        position: "center",
-        showConfirmButton: true,
-        showDenyButton: true,
-        timer: 50000,
-        timerProgressBar: true,
-        iconColor: "white",
-        heightAuto: true,
-        customClass: {
-          popup: "colored-toast",
-        },
-      });
-      alert
-        .fire({
-          html: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
-          showCancelButton: false,
-          confirmButtonText: `Eliminar`,
-          denyButtonText: `Cancelar`,
-        })
-        .then((result) => {
-          // Si le da al boton de eliminar llamo a la funcion
-          if (result.isConfirmed) {
-            this.deleteGroup({id: group_id, name: group_name, year: group_year});
-          }
-        });
-    },
+    ...mapMutations(["changeMode"]),
+    ...mapActions(["deleteGroup"]),
     focusSearcher() {
       let input = document.getElementById("searcher");
       input.focus();
     },
+    confirmDeletion(group_id, group_name, group_year) {
+      let payload = {
+        text: `<span class="text-white">¿Eliminar el grupo <b>${group_year}${group_name}</b>?</span>`,
+        function: this.deleteGroup,
+        data: {
+          id: group_id,
+          name: group_name,
+          year: group_year,
+        },
+      };
+      confirmModal(payload);
+    },
+    getWord,
   },
 };
 </script>

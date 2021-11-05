@@ -6,6 +6,9 @@ import Subjects from "../views/Subjects.vue";
 import Orientations from "../views/Orientations.vue";
 import Groups from "../views/Groups.vue";
 import Users from "../views/Users.vue";
+import User from "../views/User.vue";
+import UserRegistration from "../views/UserRegistration.vue";
+import Consultations from "../views/Consultations.vue";
 
 const routes = [
   {
@@ -60,6 +63,30 @@ const routes = [
       requireAuth: true,
     },
   },
+  {
+    path: "/usuario/crear",
+    name: "UserRegistration",
+    component: UserRegistration,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: "/usuario/:nickname",
+    name: "User",
+    component: User,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: "/usuario/:nickname/consultas",
+    name: "UserConsultations",
+    component: Consultations,
+    meta: {
+      requireAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({
@@ -68,22 +95,28 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const routeProtected = to.matched.some((record) => record.meta.requireAuth);
-  /* let redirectedFrom = to.redirectedFrom; */
-  /* console.log(redirectedFrom);
-  console.log(to); */
-  // Verificando la session en cada ruta
-  store.dispatch('syncToken');
-  if (routeProtected) {
-    store.dispatch("checkSession");
-    if (store.state.token !== null) {
-      next();
-    }
-  } else if (to.fullPath == "/login") {
-    if (store.state.token !== null) {
-      next({ name: "Home" });
-    } else {
-      next();
+  if (!to.matched.length) {
+    //Acá hay que poner una vista 404
+    next("/inicio");
+  } else {
+    const routeProtected = to.matched.some((record) => record.meta.requireAuth);
+    /* let redirectedFrom = to.redirectedFrom; */
+    /* console.log(redirectedFrom);
+    console.log(to); */
+    // Verificando la session en cada ruta
+    store.dispatch("syncToken");
+    if (routeProtected) {
+      store.dispatch("checkSession").then(() => {
+        if (store.state.token !== null) {
+          next();
+        }
+      });
+    } else if (to.fullPath == "/login") {
+      if (store.state.token !== null) {
+        next({ name: "Home" });
+      } else {
+        next();
+      }
     }
   }
 });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   state: {
@@ -47,8 +47,8 @@ export default {
   actions: {
     async getSubjects({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/materia",
+        method: "post",
+        url: rootState.API_URL + "/subject/getSubjects",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -64,19 +64,21 @@ export default {
     async createSubject({ rootState, commit }, subject) {
       await axios({
         method: "post",
-        url: rootState.API_URL + "/materia",
+        url: rootState.API_URL + "/subject/create",
         data: subject,
         headers: rootState.headers,
       })
         .then((res) => {
-          console.log(res.data);
           if (!("result" in res.data)) {
             // Ejecuto la mutacion para añadir la materia al array
             commit("addSubject", res.data);
             // Lanzo la alerta
-            showAlert({type: "success", message: `La materia ${subject.name} fue creada correctamente!`});
-          }else{
-            showAlert({type: "error", message: res.data.result.error_msg});
+            showAlert({
+              type: "success",
+              message: `La materia ${subject.name} fue creada correctamente`,
+            });
+          } else {
+            showAlert({ type: "error", message: res.data.result.error_msg });
           }
         })
         .catch((error) => {
@@ -85,15 +87,18 @@ export default {
     },
     async removeSubject({ rootState, commit }, subject) {
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/materia",
+        method: "post",
+        url: rootState.API_URL + "/subject/delete",
         data: subject,
         headers: rootState.headers,
       })
         .then((res) => {
           if (res.data == 1) {
             commit("deleteSubject", subject.id);
-            showAlert({type: "warning", message: `La materia ${subject.name} fue borrada!`});
+            showAlert({
+              type: "warning",
+              message: `La materia ${subject.name} fue borrada`,
+            });
           } else {
             console.log("Error: removeSubject");
           }
@@ -104,15 +109,18 @@ export default {
     },
     async editSubject({ rootState, commit }, subject) {
       await axios({
-        method: "put",
-        url: rootState.API_URL + "/materia",
+        method: "post",
+        url: rootState.API_URL + "/subject/modify",
         data: subject,
         headers: rootState.headers,
       })
         .then((res) => {
           if (res.data == 1) {
             commit("renameSubject", subject);
-            showAlert({type: "success", message: 'Materia renombrada correctamente!'});
+            showAlert({
+              type: "success",
+              message: "Materia renombrada correctamente",
+            });
             /* this.toggleSubjectCard(subject_id); */
             return true;
           } else {

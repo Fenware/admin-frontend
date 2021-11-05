@@ -1,0 +1,23 @@
+{
+    "consultations":{
+        "es":"Consultas",
+        "en":"Consultations"
+    },
+    "consultation":{
+        "es":"Consulta",
+        "en":"Consultation"
+    },
+    "select_consultation":{
+        "es":"Seleccione una consulta",
+        "en":"Select a consultation"
+    },
+    "responses":{
+        "es":"Respuestas",
+        "en":"Responses"
+    },
+    "no_responses":{
+        "es":"Aún no hay respuestas",
+        "en":"No answers yet"
+    }
+
+}

@@ -1,0 +1,18 @@
+{
+    "subjects":{
+        "es":"Materias",
+        "en":"Subjects"
+    },
+    "search_subject":{
+        "es":"Buscar materias",
+        "en":"Search subjects"
+    },
+    "add_subject":{
+        "es":"Agregar materia",
+        "en":"Add subject"
+    },
+    "change_name":{
+        "es":"Cambiar nombre",
+        "en":"Change name"
+    }
+}

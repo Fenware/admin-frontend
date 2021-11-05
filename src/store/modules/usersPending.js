@@ -1,5 +1,5 @@
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   state: () => ({
@@ -69,8 +69,8 @@ export default {
   actions: {
     async getUsersPending({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/user-pendiente",
+        method: "post",
+        url: rootState.API_URL + "/user/getPendantUsers",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -82,8 +82,8 @@ export default {
     },
     async declineUserPending({ rootState, commit }, user) {
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/user-pendiente",
+        method: "post",
+        url: rootState.API_URL + "/user/rejectUser",
         data: {
           // Id del usuario a rechazar
           id: parseInt(user.id),
@@ -112,7 +112,7 @@ export default {
     async acceptUserPending({ rootState, commit }, user) {
       await axios({
         method: "post",
-        url: rootState.API_URL + "/user-pendiente",
+        url: rootState.API_URL + "/user/acceptUser",
         data: {
           // Id del usuario a aceptar
           id: parseInt(user.id),
@@ -128,7 +128,7 @@ export default {
               type: "info",
               message: `Has aceptado al ${
                 user.type == "student" ? "estudiante" : "docente"
-              } ${user.name} ${user.surname}!`,
+              } ${user.name} ${user.surname}`,
             });
           } else {
             console.log("Error: acceptUserPending");

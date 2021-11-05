@@ -1,13 +1,13 @@
 <template>
   <div
-    class="my-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
+    class="m-4 text-white bg-gray-600 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-2xl"
   >
     <div
       class="flex justify-between px-5 items-center bg-gray-200 bg-opacity-10 backdrop-filter backdrop-blur-xl shadow-2xl rounded-t-2xl"
     >
       <div class="flex items-center">
         <i class="fas fa-user-clock"></i>
-        <h2 class="p-1 font-extrabold">Usuarios pendientes</h2>
+        <h2 class="p-1 font-extrabold">{{getWord({file:'user',word:'pendent_users',lang})}}</h2>
       </div>
       <div class="flex items-center">
         <div class="mr-7">
@@ -21,7 +21,7 @@
                 (filter_by == 'all' ? '  bg-white bg-opacity-20 ' : '')
             "
           >
-            Todos
+            {{getWord({file:'lang',word:'all',lang})}}
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -32,7 +32,7 @@
                 (filter_by == 'teacher' ? ' bg-white bg-opacity-20 ' : '')
             "
           >
-            Docentes
+            {{getWord({file:'lang',word:'teachers',lang})}}
           </button>
 
           <!-- Al darle click cambia la variable del filtro y se le agregan las clases para que quede "seleccionado" el boton -->
@@ -43,7 +43,7 @@
                 (filter_by == 'student' ? ' bg-white bg-opacity-20 ' : '')
             "
           >
-            Estudiantes
+            {{getWord({file:'lang',word:'students',lang})}}
           </button>
         </div>
         <i
@@ -59,7 +59,7 @@
       <!-- Mostrando el input solo si hay usuarios pendientes para buscar -->
       <input
         type="text"
-        placeholder="Buscar por nombre o cédula"
+        :placeholder="getWord({file:'user',word:'search_by_name_or_id',lang})"
         v-model="text_filter"
         v-on:keyup="setTextFilter(text_filter)"
         class="w-9/12 placeholder-gray-300 text-center py-2 px-2 | bg-white transition duration-300 focus:bg-opacity-20 hover:bg-opacity-20 bg-opacity-10 shadow-xl | rounded-xl  outline-none"
@@ -80,12 +80,12 @@
           <div>
             <p class="mb-2 text-xs tracking-widest font-extrabold">
               <!-- Poniendo si es estudiante o docente segun el tipo -->
-              {{ user.type == "student" ? "ESTUDIANTE" : "DOCENTE" }}
+              {{ user.type == "student" ? getWord({file:'lang',word:'student',lang}).toUpperCase() : getWord({file:'lang',word:'teacher',lang}).toUpperCase() }}
             </p>
-            <p><span class="font-bold">CI:</span> {{ user.ci }}</p>
+            <p><span class="font-bold">{{getWord({file:'lang',word:'id',lang})}}:</span> {{ user.ci }}</p>
 
             <p>
-              <span class="font-bold">Nombre:</span> {{ user.name }}
+              <span class="font-bold">{{getWord({file:'lang',word:'name',lang})}}:</span> {{ user.name }}
               {{ user.middle_name }} {{ user.surname }}
               {{ user.second_surname }}
             </p>
@@ -99,7 +99,7 @@
               class="px-3 mb-1 min-w-max text-sm font-semibold py-1 transition-colors rounded-md border-b-2 hover:border-green-500 border-green-400 bg-green-200 hover:bg-green-300 text-green-900"
             >
               <i class="fas fa-check mx-1 text-md drop-shadow-lg"></i>
-              Aceptar
+              {{getWord({file:'lang',word:'accept',lang})}}
             </button>
             <button
               @click="declineUserPending(user)"
@@ -108,7 +108,7 @@
               <i
                 class="fas fa-exclamation-triangle mx-1 text-md drop-shadow-lg "
               ></i>
-              Rechazar
+              {{getWord({file:'lang',word:'reject',lang})}}
             </button>
           </div>
         </div>
@@ -153,6 +153,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+import { getWord } from "@/utils/lang";
 
 export default {
   name: "UsersPending",
@@ -162,7 +163,10 @@ export default {
     }
   },
   computed: {
-    ...mapState({filter_by : state => state.usersPending.filter_by}),
+    ...mapState({
+      filter_by : state => state.usersPending.filter_by,
+      lang: (state) => state.lang,
+    }),
     ...mapGetters(["usersFiltered"]),
   },
   created() {
@@ -187,6 +191,7 @@ export default {
         reload.classList.replace("animate-spin", "animate-none");
       }, 1000);
     },
+    getWord
   },
 };
 </script>

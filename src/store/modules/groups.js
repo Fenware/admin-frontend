@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import showAlert from "@/utils/alerts.js";
+import { showAlert } from "@/utils/alerts.js";
 
 export default {
   state: {
@@ -48,8 +48,8 @@ export default {
   actions: {
     async getOrientations({ rootState, commit }) {
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/orientacion",
+        method: "post",
+        url: rootState.API_URL + "/orientation/getOrientations",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -66,8 +66,8 @@ export default {
       commit("clearGroups");
 
       await axios({
-        method: "get",
-        url: rootState.API_URL + "/group",
+        method: "post",
+        url: rootState.API_URL + "/group/getGroups",
         headers: rootState.headers,
       })
         .then((res) => {
@@ -87,14 +87,11 @@ export default {
           console.log(error);
         });
     },
-    async deleteGroup(
-      { rootState, commit },
-      data /* id, group_name, group_year */
-    ) {
+    async deleteGroup({ rootState, commit }, data) {
       data.id = parseInt(data.id);
       await axios({
-        method: "delete",
-        url: rootState.API_URL + "/group",
+        method: "post",
+        url: rootState.API_URL + "/group/delete",
         data,
         headers: rootState.headers,
       })
@@ -107,7 +104,7 @@ export default {
             // Lanzando alerta
             showAlert({
               type: "info",
-              message: `El grupo ${data.year}${data.name} fue eliminado correctamente!`,
+              message: `El grupo ${data.year}${data.name} fue eliminado correctamente`,
             });
           } else {
             showAlert({
@@ -126,13 +123,13 @@ export default {
       if (new_group.name.length == 0) {
         showAlert({
           type: "error",
-          message: `Debes ingresar el nombre del grupo!`,
+          message: `Debes ingresar el nombre del grupo`,
         });
         data_ok = false;
       } else if (new_group.orientation === null) {
         showAlert({
           type: "error",
-          message: `Debes seleccionar una orientación!`,
+          message: `Debes seleccionar una orientación`,
         });
         data_ok = false;
       } else {
@@ -141,13 +138,14 @@ export default {
 
       if (data_ok) {
         let data = {
-          orientacion: parseInt(new_group.orientation.id),
+          orientation: parseInt(new_group.orientation.id),
           name: new_group.name.toUpperCase(),
         };
+        console.log(data);
         await axios({
           method: "post",
-          url: rootState.API_URL + "/group",
-          data: data,
+          url: rootState.API_URL + "/group/create",
+          data,
           headers: rootState.headers,
         })
           .then((res) => {
@@ -165,7 +163,7 @@ export default {
 
               showAlert({
                 type: "success",
-                message: `El grupo ${res.data.full_name} fue creado correctamente!`,
+                message: `El grupo ${res.data.full_name} fue creado correctamente`,
               });
             } else {
               showAlert({
@@ -185,13 +183,13 @@ export default {
       if (edited_group.name.length == 0) {
         showAlert({
           type: "error",
-          message: `Debes ingresar el nombre del grupo!`,
+          message: `Debes ingresar el nombre del grupo`,
         });
         data_ok = false;
       } else if (edited_group.orientation === null) {
         showAlert({
           type: "error",
-          message: `Debes seleccionar una orientación!`,
+          message: `Debes seleccionar una orientación`,
         });
         data_ok = false;
       } else {
@@ -201,13 +199,13 @@ export default {
       if (data_ok) {
         let data = {
           id: parseInt(edited_group.id),
-          orientacion: parseInt(edited_group.orientation.id),
+          orientation: parseInt(edited_group.orientation.id),
           name: edited_group.name.toUpperCase(),
         };
         await axios({
-          method: "put",
-          url: rootState.API_URL + "/group",
-          data: data,
+          method: "post",
+          url: rootState.API_URL + "/group/modify",
+          data,
           headers: rootState.headers,
         })
           .then((res) => {
@@ -220,10 +218,10 @@ export default {
                 ` ${edited_group.name}`;
               commit("modifyGroup", edited_group);
               commit("changeMode", { mode: "list" });
-              
+
               showAlert({
                 type: "success",
-                message: `El grupo ${edited_group.full_name} fue modificado correctamente!`,
+                message: `El grupo ${edited_group.full_name} fue modificado correctamente`,
               });
             } else if (res.data == 0) {
               showAlert({
